@@ -1,7 +1,7 @@
 import pandas as pd
 
 csv_path = "data/balances.csv"
-
+  
 def main():
     #read CSV
     df = pd.read_csv(csv_path, parse_dates=["date"])
