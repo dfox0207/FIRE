@@ -1,6 +1,25 @@
 import pandas as pd
 
-csv_path = "data/Balances.csv"
+def get_csv_path() -> Path:
+    """
+    Priority order:
+    1) BALANCES_CSV env var (works local + Colab)
+    2) Colab default Google Drive location
+    3) Repo local fallback (data/Balances.csv)
+    """
+    env = os.environ.get("BALANCES_CSV")
+    if env:
+        return Path(env)
+    
+    #Colab Drive mount default
+    colab_drive = Path("/content/drive/My Drive/Finances/FIRE/Balances.csv")
+    if colab_drive.exists():
+        return colab_drive
+
+    # Local / repo fallback
+    return Path("data/Balances.csv")
+    
+csv_path = get_csv_path()
   
 def main():
     #read CSV
