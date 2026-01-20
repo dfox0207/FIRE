@@ -68,9 +68,9 @@ def read_existing_dates(path: Path) -> set[str]:
         return set()
     with path.open("r", newline="") as f:
         reader = csv.DictReader(f)
-        if "date" not in (reader.fieldnames or []):
-            raise ValueError(f"{path} is missing required 'date' column.")
-        return {row["date"] for row in reader if row.get("date")}
+        if "Date" not in (reader.fieldnames or []):
+            raise ValueError(f"{path} is missing required 'Date' column.")
+        return {row["Date"] for row in reader if row.get("Date")}
 
 def ensure_csv_header(path: Path, fieldnames: List[str]) -> None:
     """
@@ -113,7 +113,7 @@ def append_row(path: Path, row: Dict[str, object], fieldnames: List[str]) -> Non
         writer.writerow(row)
 
 def main():
-    fieldnames= ["date"] + ACCOUNTS
+    fieldnames= ["Date"] + ACCOUNTS
     ensure_csv_header(CSV_Path, fieldnames)
 
     entry_date = prompt_date()
@@ -128,7 +128,7 @@ def main():
     print("n\Enter balances (you can values like $437,133.95):")
     balances = prompt_balances(ACCOUNTS)
 
-    row: Dict[str, object] = {"date": entry_date, **balances}
+    row: Dict[str, object] = {"Date": entry_date, **balances}
 
     print("\nAbout to append this row:")
     for k in fieldnames:
