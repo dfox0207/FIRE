@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 import os
 import re
-from datetime import datetime, datetime
+from datetime import datetime, date
 from pathlib import Path
 from typing import Dict, List, Optional
 
