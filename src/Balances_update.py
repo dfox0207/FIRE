@@ -144,7 +144,7 @@ def main():
         if ans != "YES":
             print("Aborted (no changes made).")
             return
-    print("n\Enter balances (you can values like $437,133.95):")
+    print("\nEnter balances (you can values like $437,133.95):")
     balances = prompt_balances(ACCOUNTS)
 
     row: Dict[str, object] = {"Date": entry_date, **balances}
