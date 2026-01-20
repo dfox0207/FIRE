@@ -1,6 +1,6 @@
 import pandas as pd
 
-csv_path = "data/balances.csv"
+csv_path = "data/Balances.csv"
   
 def main():
     #read CSV
