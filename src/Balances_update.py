@@ -4,7 +4,7 @@ import csv
 import os
 import re
 from datetime import datetime, datetime
-from pathlib import pathlib
+from pathlib import Path
 from typing import Dict, List, Optional
 
 CSV_Path = Path("data/Balances.csv")
