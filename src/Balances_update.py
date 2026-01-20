@@ -7,7 +7,26 @@ from datetime import datetime, date
 from pathlib import Path
 from typing import Dict, List, Optional
 
-CSV_Path = Path("data/Balances.csv")
+def get_csv_path() -> Path:
+    """
+    Priority order:
+    1) BALANCES_CSV env var (works local + Colab)
+    2) Colab default Google Drive location
+    3) Repo local fallback (data/Balances.csv)
+    """
+    env = os.environ.get("BALANCES_CSV")
+    if env:
+        return Path(env)
+    
+    #Colab Drive mount default
+    colab_drive = Path("/content/drive/My Drive/Finances/FIRE/Balances.csv")
+    if colab_drive.exists():
+        return colab_drive
+
+    # Local / repo fallback
+    return Path("data/Balances.csv")
+    
+CSV_Path = get_csv_path()
 
 ACCOUNTS = ["TSP", "SERS", "403(b)", "457(b)", "ROTH IRA", "Brokerage"]
 
