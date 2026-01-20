@@ -133,7 +133,7 @@ def main():
     print("\nAbout to append this row:")
     for k in fieldnames:
         v = row[k]
-        if k =="date":
+        if k =="Date":
             print(f"  {k}:  {v}")
         else:
             print(f"  {k}: {float(v):,.2f}")
