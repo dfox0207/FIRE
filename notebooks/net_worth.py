@@ -1,4 +1,4 @@
-import pandas as pandas
+import pandas as pd
 
 csv_path = "data/balances.csv"
 
