@@ -4,6 +4,15 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+from dataclasses import dataclass
+from typing import Dict, Optional, List
+
+
+"""
+Takes nominal net worth calculated from Balances.csv and plots it. 
+
+"""
+"""
 def get_csv_path() -> Path:
     """
     Priority order:
@@ -24,10 +33,15 @@ def get_csv_path() -> Path:
     return Path("data/Balances.csv")
     
 csv_path = get_csv_path()
+"""
+DRIVE_BASE = Path("/content/drive/MyDrive/Finances/FIRE")
 
-def main():
-    #read CSV
-    df = pd.read_csv(csv_path, parse_dates=["Date"])
+BALANCES_CSV = DRIVE_BASE / "Balances.csv"
+CASHFLOW_CSV = DRIVE_BASE / "cashflow_schedule.csv"
+
+def net_worth():
+    #read BALANCES.CSV
+    df = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            #changed csv_path to BALANCES_CSV
 
     #identify balance columns (everything except date)
     balance_cols = [c for c in df.columns if c != "Date"]
@@ -46,6 +60,11 @@ def main():
     plt.grid(True)
     plt.tight_layout()
     plt.show()
+
+
+
+def main():                     #this is the main function that runs the other helper functions
+    net_worth()
 
 if __name__ == "__main__":
     main()
