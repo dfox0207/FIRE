@@ -35,7 +35,7 @@ def main():
 
     #print latest net worth
     latest = df.sort_values("Date").iloc[-1]
-    print(f"Date: {latest['Date'].date()}")
+    print(f"Date: {latest['Date']}")
     print(f"Net Worth: ${latest['net_worth']:,.2f}")
 
 if __name__ == "__main__":
