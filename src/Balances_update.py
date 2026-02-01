@@ -5,7 +5,7 @@ import os
 import re
 from datetime import datetime, date
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 def get_csv_path() -> Path:
     """
@@ -58,38 +58,79 @@ def parse_money(s:str) -> float:
 
 def prompt_date() -> str:
     """
-    Returns YYYY-MM-01.
-    Default: current month (local time).
+    Returns a month-start date string in M/D/YYYY format (e.g., 2/1/2026).
+
+    Input accepted:
+      - blank (uses current month)
+      - YYYY-MM
+      - YYYY-MM-DD
+      - M/D/YYYY or MM/DD/YYYY
+
+    The stored/appended date is normalized to the *first* day of the month.
     """
-
     today = date.today()
-    default = date(today.year, today.month, 1).strftime("%Y-%m-%d")
+    default_dt = date(today.year, today.month, 1)
+    default = f"{default_dt.month}/{default_dt.day}/{default_dt.year}"
 
-    raw = input(f"Date for this entry (YYYY-MM-01) [default {default}]: ").strip()
-    if raw =="":
+    raw = input(
+        f"Date for this entry (month start) [default {default}]: "
+    ).strip()
+
+    if raw == "":
         return default
 
-    # Allow YYYY-MM or YYYY-MM-DD
+    # Allow YYYY-MM -> YYYY-MM-01
     if re.match(r"^\d{4}-\d{2}$", raw):
         raw = raw + "-01"
 
-    try:
-        dt = datetime.strptime(raw, "%Y-%m-%d").date()
-    except ValueError as e:
-        raise ValueError("Date must be YYYY-MMM-01 (or YYYY-MM, or YYYY-MM-DD).") from ValueError
-    
-    #Normalize to first of Month
+    # Try supported formats
+    dt = None
+    for fmt in ("%Y-%m-%d", "%m/%d/%Y"):
+        try:
+            dt = datetime.strptime(raw, fmt).date()
+            break
+        except ValueError:
+            continue
+
+    if dt is None:
+        raise ValueError(
+            "Date must be YYYY-MM, YYYY-MM-DD, or M/D/YYYY (e.g., 2026-02, 2026-02-01, 2/1/2026)."
+        )
+
+    # Normalize to first of month
     dt = date(dt.year, dt.month, 1)
-    return dt.strftime("%Y-%m-%d")
+    return f"{dt.month}/{dt.day}/{dt.year}"
 
 def read_existing_dates(path: Path) -> set[str]:
+    """
+    Returns existing Date values normalized to M/D/YYYY.
+    This lets you detect duplicates even if older rows were saved as YYYY-MM-DD.
+    """
     if not path.exists():
         return set()
+
+    def _normalize_date_str(s: str) -> str:
+        s = (s or "").strip()
+        if not s:
+            return ""
+        for fmt in ("%Y-%m-%d", "%m/%d/%Y"):
+            try:
+                dt = datetime.strptime(s, fmt).date()
+                dt = date(dt.year, dt.month, 1)
+                return f"{dt.month}/{dt.day}/{dt.year}"
+            except ValueError:
+                continue
+        return s  # unknown format; keep as-is
+
     with path.open("r", newline="") as f:
         reader = csv.DictReader(f)
         if "Date" not in (reader.fieldnames or []):
             raise ValueError(f"{path} is missing required 'Date' column.")
-        return {row["Date"] for row in reader if row.get("Date")}
+        return {
+            _normalize_date_str(row.get("Date", ""))
+            for row in reader
+            if row.get("Date")
+        }
 
 def ensure_csv_header(path: Path, fieldnames: List[str]) -> None:
     """
@@ -126,8 +167,34 @@ def prompt_balances(accounts: List[str]) -> Dict[str, float]:
                 print(f"  {e}. Try again (examples: 1234.56, $1,234.56).")
     return values
 
+def ensure_trailing_newline(path: Path) -> None:
+    """
+    Ensure the file ends with a newline before appending.
+
+    If a CSV file's last line does not end with a newline character, appending a
+    new row will appear to continue on the same line (i.e., "to the right" of
+    the last entry). This fixes that by adding a newline when needed.
+    """
+    if not path.exists():
+        return
+    try:
+        with path.open("rb") as fb:
+            fb.seek(0, os.SEEK_END)
+            if fb.tell() == 0:
+                return  # empty file
+            fb.seek(-1, os.SEEK_END)
+            last = fb.read(1)
+        if last not in (b"\n", b"\r"):
+            # Force a newline so the next writerow starts on a fresh line.
+            with path.open("a", newline="") as f:
+                f.write("\n")
+    except OSError:
+        # If we can't read/seek for some reason, fall back to no-op.
+        return
+
 def append_row(path: Path, row: Dict[str, object], fieldnames: List[str]) -> None:
-    with path.open("a", newline= "") as f:
+    ensure_trailing_newline(path)
+    with path.open("a", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow(row)
 
@@ -168,6 +235,3 @@ def main():
 if __name__ == "__main__":
     main()    
     
-
-
-
