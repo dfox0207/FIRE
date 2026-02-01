@@ -55,7 +55,7 @@ def net_worth():
     plt.show()
 
 
-def _to_month_start(dt: pd.Timestamp) -> pd.Timestamp
+def _to_month_start(dt: pd.Timestamp) -> pd.Timestamp:
     """Normalize a timestamp to the first day of that month."""
 
     dt = pd.Timestamp(dt)
