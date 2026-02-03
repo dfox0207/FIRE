@@ -55,7 +55,7 @@ for m in months:
     balances = balances.add(flows, fill_value=0)
 
     #4 create record row
-    row = {"Date": m, **balance.to_dict()}
+    row = {"Date": m, **balances.to_dict()}
     
     #5 sum net worth  
     row["Net_Worth"] = balances.sum() 
