@@ -27,7 +27,7 @@ cf["end_date"]= pd.to_datetime(cf["end_date"], errors="coerce").dt.to_period("M"
 cf["monthly_amount"]= pd.to_numeric(cf["monthly_amount"]).fillna(0.0)
 cf["account"]= cf["account"].astype(str).str.strip()                        #remove spaces before or after account names
 
-if cf["end_date"].notna.any():
+if cf["end_date"].notna().any():
     last_sched_end = cf["end_date"].dropna().max()
 else:
     last_sched_end = pd.NaT 
