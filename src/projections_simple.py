@@ -7,7 +7,7 @@ import matplotlib.dates as mdates
 
 #read Balances.csv
 BALANCES_CSV = Path("/content/drive/MyDrive/Finances/FIRE/Balances.csv")
-bal = pd.read(BALANCES_CSV)
+bal = pd.read_csv(BALANCES_CSV)
 bal["Date"] = pd.to_datetime(bal["Date"])
 bal = bal.sort_values["Dates"]              #sort on Dates so last month's balances are the last row
 latest = bal.iloc[-1]                       #take the last row (last month)
@@ -21,7 +21,7 @@ start_bal = latest[accounts].fillna(0).astype(float)        #last month's balanc
 
 #read cashflow_schedule.csv
 CASHFLOW_CSV = Path("/content/drive/MyDrive/Finances/FIRE/cashflow_schedule.csv")
-cf = pd.read(CASHFLOW_CSV)
+cf = pd.read_csv(CASHFLOW_CSV)
 cf["start_date"]= pd.to_datetime(cf["start_date"]).dt.to_period("M").dt.to_timestamp()      #convert start dates to beginning of month
 cf["end_date"]= pd.to_datetime(cf["end_date"], errors="coerce").dt.to_period("M").dt.to_timestamp()  #convert end dates to beginning of month, if no end date, convert to NaT
 cf["monthly_amount"]= pd.to_numeric(cf["monthly_amount"]).fillna(0.0)
