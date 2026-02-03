@@ -20,7 +20,7 @@ start_bal = latest[accounts].fillna(0).astype(float)        #last month's balanc
 
 
 #read cashflow_schedule.csv
-CASHFLOW_CSV = Path("/content/drive/MyDrive/Finances/FIRE/cashflow_schedule.csv)"
+CASHFLOW_CSV = Path("/content/drive/MyDrive/Finances/FIRE/cashflow_schedule.csv")
 cf = pd.read(CASHFLOW_CSV)
 cf["start_date"]= pd.to_datetime(cf["start_date"]).dt.to_period("M").dt.to_timestamp()      #convert start dates to beginning of month
 cf["end_date"]= pd.to_datetime(cf["end_date"], errors="coerce").dt.to_period("M").dt.to_timestamp()  #convert end dates to beginning of month, if no end date, convert to NaT
