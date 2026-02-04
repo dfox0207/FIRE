@@ -32,12 +32,13 @@ def plot_balances():
 
     #plot Net Worth Actuals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['net_worth'], label='actual', marker='o', linestyle='-', color='b')
-    plt.title('Net Worth')
+    plt.plot(df['Date'],df['net_worth'], label='actual', linestyle='-', color='b')
+    plt.title('Net Worth- Nominal')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
     plt.xticks(rotation=45)
+    plt.subplots().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
     plt.grid(True)
     plt.tight_layout()
     
@@ -51,14 +52,14 @@ def plot_proj_nom():
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth'], label='projected', marker='*', linestyle='dotted', color='r')
-    plt.title('Net Worth')
-    plt.xlabel('Date')
-    plt.ylabel('Net Worth ($)')
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.tight_layout()
+    plt.plot(df['Date'],df['Net_Worth'], label='projected', linestyle='dotted', color='r')
+    # plt.title('Net Worth')
+    # plt.xlabel('Date')
+    # plt.ylabel('Net Worth ($)')
+    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    # plt.xticks(rotation=45)
+    # plt.grid(True)
+    # plt.tight_layout()
     plt.show()
 
 
