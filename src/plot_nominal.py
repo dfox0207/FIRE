@@ -32,7 +32,7 @@ def plot_balances():
 
     #plot Net Worth Actuals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['net_worth'], marker='o', linestyle='-', color='b')
+    plt.plot(df['Date'],df['net_worth'], label='actual', marker='o', linestyle='-', color='b')
     plt.title('Net Worth')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
@@ -51,7 +51,7 @@ def plot_proj_nom():
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth'], marker='*', linestyle=':', color='r')
+    plt.plot(df['Date'],df['Net_Worth'], label='projected', marker='*', linestyle='dotted', color='r')
     plt.title('Net Worth')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
