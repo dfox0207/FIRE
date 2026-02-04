@@ -51,7 +51,7 @@ def plot_proj_nom():
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['net_worth'], marker='*', linestyle=':', color='r')
+    plt.plot(df['Date'],df['Net_Worth'], marker='*', linestyle=':', color='r')
     plt.title('Net Worth')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
