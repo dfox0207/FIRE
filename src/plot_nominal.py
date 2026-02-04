@@ -3,6 +3,7 @@ from pathlib import Path
 import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.ticker as ticker
 
 from dataclasses import dataclass
 from typing import Dict, Optional, List
