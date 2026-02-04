@@ -40,7 +40,7 @@ def plot_balances():
     plt.xticks(rotation=45)
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    
 
 def plot_proj_nom():
     #read projection_nominal.csv
