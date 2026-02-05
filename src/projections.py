@@ -1,9 +1,28 @@
+###
+Reads:
+    -Balances.csv 
+    -cashflow_schedule.csv
+
+Output:
+    -projection_nominal.csv
+
+Produces:
+    Takes the latest balances applies growth and adds planned cashflows to produce a nominal projection of account balances and networth for the next 30 years. 
+    Cashflows also include withdrawals in retirement.
+
+Assumptions:
+    Nominal growth rate: 10%
+
+
+###
+
 #load packages
 import pandas as pd
 import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+
 
 #read Balances.csv
 BALANCES_CSV = Path("/content/drive/MyDrive/Finances/FIRE/Balances.csv")
@@ -13,7 +32,7 @@ bal = bal.sort_values("Date")              #sort on Date so last month's balance
 latest = bal.iloc[-1]                       #take the last row (last month)
 
 #select last months balances
-start_month = latest["Date"].to_period("M").to_timestamp()  #month start
+start_month = latest["Date"].to_period("M").to_timestamp() + pd.DateOffset(months=1)  #start month is the last month plus 1.
 
 accounts = [c for c in bal.columns if c != "Date"]
 start_bal = latest[accounts].fillna(0).astype(float)        #last month's balances
@@ -22,7 +41,7 @@ start_bal = latest[accounts].fillna(0).astype(float)        #last month's balanc
 #read cashflow_schedule.csv
 CASHFLOW_CSV = Path("/content/drive/MyDrive/Finances/FIRE/cashflow_schedule.csv")
 cf = pd.read_csv(CASHFLOW_CSV)
-cf["start_date"]= pd.to_datetime(cf["start_date"]).dt.to_period("M").dt.to_timestamp()      #convert start dates to beginning of month
+cf["start_date"]= pd.to_datetime(cf["start_date"]).dt.to_period("M").dt.to_timestamp() + pd.DateOffset(months=1)     #convert start dates to beginning of next month
 cf["end_date"]= pd.to_datetime(cf["end_date"], errors="coerce").dt.to_period("M").dt.to_timestamp()  #convert end dates to beginning of month, if no end date, convert to NaT
 cf["monthly_amount"]= pd.to_numeric(cf["monthly_amount"]).fillna(0.0)
 cf["account"]= cf["account"].astype(str).str.strip()                        #remove spaces before or after account names
@@ -32,7 +51,7 @@ if cf["end_date"].notna().any():
 else:
     last_sched_end = pd.NaT 
 
-end_month= ((start_month + pd.DateOffset(years = 30))
+end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_date is blank, applies rule for 30 years.
     if cf["end_date"].isna().any()
     else last_sched_end
 )
@@ -46,7 +65,7 @@ rows =[]
 #For each month apply: 
 for m in months:
     #1.apply growth to balances
-    balances *= (1+0.07/12)
+    balances *= (1+0.10/12)
     #2.select active cashflows
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
