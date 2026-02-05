@@ -83,12 +83,31 @@ def plot_proj_real():
     plt.tight_layout()
     plt.show()
 
+def plot_withdrawals_real():
+    #read projection_nominal.csv
+    df = pd.read_csv(PROJ_NOM_CSV, parse_dates=["Date"])            
 
+    #identify balance columns (everything except date)
+    balance_cols = [c for c in df.columns if c != "Date"]
+
+    #plot Prjected Net Worth Nominals
+    df['Date'] = pd.to_datetime(df['Date'])
+    plt.plot(df['Date'],df['Withdrawal_Real'], label='projected', linestyle='dotted', color='g')
+    plt.title('Withdrawl- Real')
+    plt.xlabel('Date')
+    plt.ylabel('($)')
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    plt.xticks(rotation=45)
+    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 def main():                     #this is the main function that runs the other helper functions
     plot_balances()
     plot_proj_nom()
     plot_proj_real()
+    plot_withdrawals_real()
 
 if __name__ == "__main__":
     main()
