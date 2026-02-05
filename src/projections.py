@@ -12,6 +12,8 @@ Produces:
 
 Assumptions:
     Nominal growth rate: 10%
+    Retire in Oct 2035
+    4% withdrawals begin in Nov 2035
 
 
 """
@@ -61,6 +63,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 #iterate to build projection
 balances = start_bal.copy()
 rows =[]
+withdrawal_rate = .04
 
 #For each month apply: 
 for m in months:
@@ -70,16 +73,20 @@ for m in months:
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
 
-    #3.add cashflows to new balances
+    #3. Take Retirement withdrawals
+    if m >= pd.to_timestamp("2035-11-01"):
+        balances = balances.multiply(1-withdrawal_rate/12)
+
+    #4. add cashflows to new balances
     balances = balances.add(flows, fill_value=0)
 
-    #4 create record row
+    #5 create record row
     row = {"Date": m, **balances.to_dict()}
     
-    #5 sum net worth  
+    #6 sum net worth  
     row["Net_Worth"] = balances.sum() 
 
-    #6 append record row
+    #7 append record row
     rows.append(row)
 
 proj = pd.DataFrame(rows)
