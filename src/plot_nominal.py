@@ -98,7 +98,7 @@ def plot_withdrawals_real():
     plt.ylabel('($)')
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
     plt.xticks(rotation=45)
-    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
+    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
     plt.grid(True)
     plt.tight_layout()
     plt.show()
