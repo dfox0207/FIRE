@@ -1,4 +1,4 @@
-###
+"""
 Reads:
     -Balances.csv 
     -cashflow_schedule.csv
@@ -14,7 +14,7 @@ Assumptions:
     Nominal growth rate: 10%
 
 
-###
+"""
 
 #load packages
 import pandas as pd
