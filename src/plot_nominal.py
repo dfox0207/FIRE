@@ -92,7 +92,7 @@ def plot_withdrawals_real():
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Withdrawal_Real'], label='projected', linestyle='dotted', color='g')
+    plt.plot(df['Date'],df['Withdrawal_real'], label='projected', linestyle='dotted', color='g')
     plt.title('Withdrawl- Real')
     plt.xlabel('Date')
     plt.ylabel('($)')
