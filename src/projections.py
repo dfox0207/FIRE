@@ -64,7 +64,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 #iterate to build projection
 balances = start_bal.copy()
 rows =[]
-withdrawal_rate = .04
+withdrawal_rate = .05
 withdrawal = 0
 birthday = pd.Timestamp("1978-02-07")
 inflation = 0.025
