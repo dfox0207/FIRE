@@ -13,7 +13,8 @@ Produces:
 Assumptions:
     Nominal growth rate: 10%
     Retire in Oct 2035
-    4% withdrawals begin in Nov 2035
+    4% withdrawals begin in Sep 2037 when I turn 59.5.
+    The base year for real values is 2025.
 
 
 """
@@ -66,24 +67,31 @@ rows =[]
 withdrawal_rate = .04
 withdrawal = 0
 birthday = pd.Timestamp("1978-02-07")
+inflation = 0.025
+basis = pd.Timestamp("2025-01-01")
 
 #For each month apply: 
 for m in months:
     #1.apply growth to balances
-    balances *= (1+0.10/12)
+    balances *= (1+0.10)**(1/12)
     #2.select active cashflows
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
 
     #3. Take Retirement withdrawals
-    if m >= pd.Timestamp("2035-11-01"):
+    if m >= pd.Timestamp("2037-09-01"):
         withdrawal = balances.sum()*withdrawal_rate/12
-        balances = balances.multiply(1-withdrawal_rate/12)
+        balances = balances.multiply((1-withdrawal_rate)**(1/12))
         
 
 
     #4. add cashflows to new balances
     balances = balances.add(flows, fill_value=0)
+    
+    #5 Calculate Real values
+    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
+    balances_real = balances*(1+inflation)**(delta_months/12)
+    withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
 
     #5 create record row
     row = {"Date": m, **balances.to_dict()}
@@ -92,6 +100,8 @@ for m in months:
     row["Net_Worth"] = balances.sum() 
     row["Withdrawal"] = withdrawal
     row["Age"] = (m-birthday).days / 365.2425
+    row["Net_Worth_Real"] = balances_real.sum()
+    row["Withdrawal_real"] = withdrawal_real
 
     #7 append record row
     rows.append(row)
