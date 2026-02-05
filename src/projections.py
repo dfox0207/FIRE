@@ -74,7 +74,7 @@ for m in months:
     flows = active.groupby("account")["monthly_amount"].sum()
 
     #3. Take Retirement withdrawals
-    if m >= pd.to_timestamp("2035-11-01"):
+    if m >= pd.to_Timestamp("2035-11-01"):
         balances = balances.multiply(1-withdrawal_rate/12)
 
     #4. add cashflows to new balances
