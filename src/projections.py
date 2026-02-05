@@ -64,6 +64,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 balances = start_bal.copy()
 rows =[]
 withdrawal_rate = .04
+withdrawal = 0
 
 #For each month apply: 
 for m in months:
@@ -75,7 +76,9 @@ for m in months:
 
     #3. Take Retirement withdrawals
     if m >= pd.Timestamp("2035-11-01"):
+        withdrawal = balances.sum()*withdrawal_rate/12
         balances = balances.multiply(1-withdrawal_rate/12)
+
 
     #4. add cashflows to new balances
     balances = balances.add(flows, fill_value=0)
@@ -85,6 +88,7 @@ for m in months:
     
     #6 sum net worth  
     row["Net_Worth"] = balances.sum() 
+    row["Withdrawal"] = withdrawal
 
     #7 append record row
     rows.append(row)
