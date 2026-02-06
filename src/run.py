@@ -12,7 +12,7 @@ def load_scenario(path: Path) -> dict:
 
 def main():
     #Choose scenario file from command line, default to base.json
-    scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("src/base.json")
+    scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("Config/base.json")
 
     cfg = load_scenario(scenario_path)
 
@@ -29,5 +29,5 @@ def main():
     print(f"Months:   {cfg['months']}")
     print(f"Last 5 balances: {[round(x,2) for x in balances[-5:]]}")
 
-    if __name__ == "__main__":
-        main()
+if __name__ == "__main__":
+     main()
