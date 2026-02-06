@@ -1,7 +1,10 @@
 import json
 import sys
 from pathlib import Path
+
 from engine import project_balance
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 def load_scenario(path: Path) -> dict:
     with path.open("r", encoding= "utf-8") as f:
