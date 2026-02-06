@@ -12,7 +12,7 @@ def load_scenario(path: Path) -> dict:
 
 def main():
     #Choose scenario file from command line, default to base.json
-    scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("config/base.json")
+    scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("Config/base.json")
 
     cfg = load_scenario(scenario_path)
 
