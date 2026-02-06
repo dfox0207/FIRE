@@ -1,6 +1,6 @@
 import json
 import sys
-from pathlib import pathlib
+from pathlib import Path
 from engine import project_balance
 
 def load_scenario(path: Path) -> dict:
