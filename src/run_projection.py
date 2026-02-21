@@ -101,14 +101,14 @@ def plot_proj_nom(df):
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
     plt.plot(df['Date'],df['Net_Worth'], label='projected', linestyle='dotted', color='r')
-    # plt.title('Net Worth')
-    # plt.xlabel('Date')
-    # plt.ylabel('Net Worth ($)')
-    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    # plt.xticks(rotation=45)
-    # plt.grid(True)
-    # plt.tight_layout()
-    #plt.show()
+    plt.title('Net Worth')
+    plt.xlabel('Date')
+    plt.ylabel('Net Worth ($)')
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    plt.xticks(rotation=45)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 # def plot_proj_real():
 #     #read projection_nominal.csv
