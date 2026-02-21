@@ -68,9 +68,9 @@ end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_dat
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
-def plot_balances(df_bal):
+def plot_balances():
     #read BALANCES.CSV
-    df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            #changed csv_path to BALANCES_CSV
+    df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            
 
     #identify balance columns (everything except date)
     balance_cols = [c for c in df.columns if c != "Date"]
@@ -152,12 +152,10 @@ def plot_withdrawals_real():
 
 def main():
 
-    cfg = 
-
-    projection = projection_engine(
-        start_bal= , 
-        cf= , 
-        months= , 
+    projection_engine(
+        start_bal, 
+        cf, 
+        months, 
         assumptions
     )
     
