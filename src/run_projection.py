@@ -152,10 +152,13 @@ def main():
         months= , 
         assumptions
     )
-
+    print("projection done.")
     plot_balances()
+    print("plot balance done")
     plot_proj_nom()
+    print("plot project nominal done")
     plot_proj_real()
+    print("plot project real done")
     plot_withdrawals_real()
     print("done")
 
