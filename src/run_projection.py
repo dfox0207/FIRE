@@ -152,7 +152,7 @@ def plot_proj_nom(df):
 
 def main():
 
-    projection_engine(
+    projection = projection_engine(
         start_bal, 
         cf, 
         months, 
@@ -161,7 +161,7 @@ def main():
     
     plot_balances()
     
-    plot_proj_nom(proj)
+    plot_proj_nom(projection)
     
     #plot_proj_real()
     
