@@ -24,7 +24,7 @@ cfg = json.load(scenario_path)
 assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
     "annual_return" : cfg["annual_return"],
     "inflation": cfg["inflation"],
-    "horizon": pd.Timestamp(cfg["horizon"],
+    "horizon": pd.Timestamp(cfg["horizon"]),
     "basis": pd.Timestamp(cfg["basis"]),
     "withdrawal_start_date": pd.Timestamp(cfg["withdrawal_start_date"]),
     "withdrawal_rate": cfg["withdrawal_rate"],
