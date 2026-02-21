@@ -3,8 +3,17 @@ import sys
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import os
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib.ticker as ticker
+
+from dataclasses import dataclass
+from typing import Dict, Optional, List
 
 from projection_engine import projection_engine
+
+
 
 #read config file
 #1. load config JSON
@@ -12,8 +21,7 @@ scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("Config/base.jso
 cfg = json.load(scenario_path)
 
 #2. Convert config values to proper Python types
-assumptions = {
-    "birthday": pd.Timestamp(cfg["birthday"]),
+assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
     "annual_return" : cfg["annual_return"],
     "inflation": cfg["inflation"],
     "horizon": pd.Timestamp(cfg["horizon"],
@@ -60,19 +68,19 @@ end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_dat
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
-def plot_balances():
+def plot_balances(df_bal):
     #read BALANCES.CSV
-    df = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            #changed csv_path to BALANCES_CSV
+    df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            #changed csv_path to BALANCES_CSV
 
     #identify balance columns (everything except date)
     balance_cols = [c for c in df.columns if c != "Date"]
 
     #compute net worth per row
-    df["net_worth"] = df[balance_cols].sum(axis=1)
+    df_bal["net_worth"] = df_bal[balance_cols].sum(axis=1)
 
     #plot Net Worth Actuals
-    df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['net_worth'], label='actual', linestyle='-', color='b')
+    df_bal['Date'] = pd.to_datetime(df_bal['Date'])
+    plt.plot(df_bal['Date'],df_bal['net_worth'], label='actual', linestyle='-', color='b')
     plt.title('Net Worth- Nominal')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
@@ -152,15 +160,15 @@ def main():
         months= , 
         assumptions
     )
-    print("projection done.")
+    
     plot_balances()
-    print("plot balance done")
+    
     plot_proj_nom()
-    print("plot project nominal done")
+    
     plot_proj_real()
-    print("plot project real done")
+    
     plot_withdrawals_real()
-    print("done")
+    
 
 
 if __name__ == "__main__":
