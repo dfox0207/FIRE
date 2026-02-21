@@ -1,6 +1,10 @@
 {
-    "start_balance": 1000,
-    "monthly_contribution": 200,
-    "annual_return": 0.06,
-    "months": 24
+    "birthday": "1978-02-07",
+    "annual_return": 0.10,
+    "inflation": 0.025,
+    "horizon": "2060-02-07",
+    "basis": "2025-01-01",
+    "withdrawal_start_date": "2035-11-01",
+    "withdrawal_rate": 0.04
+
 }
