@@ -18,7 +18,7 @@ from projection_engine import projection_engine
 #read config file
 #1. load config JSON
 scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("Config/base.json")
-cfg = json.load(scenario_path.read_text(encoding="utf-8"))
+cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 
 #2. Convert config values to proper Python types
 assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
