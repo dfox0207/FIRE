@@ -157,6 +157,7 @@ def main():
     plot_proj_nom()
     plot_proj_real()
     plot_withdrawals_real()
+    print("done")
 
 
 if __name__ == "__main__":
