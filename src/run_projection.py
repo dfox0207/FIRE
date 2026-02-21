@@ -109,7 +109,7 @@ def plot_proj_nom(df):
     plt.tight_layout()
     #plt.show()
 
-# def plot_proj_real():
+def plot_proj_real():
           
 
     #identify balance columns (everything except date)
