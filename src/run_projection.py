@@ -92,8 +92,7 @@ def plot_balances():
     
 
 def plot_proj_nom(df):
-    #read projection_nominal.csv
-    #df = pd.read_csv(PROJ_NOM_CSV, parse_dates=["Date"])            
+           
 
     #identify balance columns (everything except date)
     balance_cols = [c for c in df.columns if c != "Date"]
@@ -108,47 +107,45 @@ def plot_proj_nom(df):
     plt.xticks(rotation=45)
     plt.grid(True)
     plt.tight_layout()
-    plt.show()
+    #plt.show()
 
 # def plot_proj_real():
-#     #read projection_nominal.csv
-#     df = pd.read_csv(PROJ_NOM_CSV, parse_dates=["Date"])            
+          
 
-#     #identify balance columns (everything except date)
-#     balance_cols = [c for c in df.columns if c != "Date"]
+    #identify balance columns (everything except date)
+    balance_cols = [c for c in df.columns if c != "Date"]
 
-#     #plot Prjected Net Worth Nominals
-#     df['Date'] = pd.to_datetime(df['Date'])
-#     plt.plot(df['Date'],df['Net_Worth_Real'], label='projected', linestyle='dotted', color='g')
-#     # plt.title('Net Worth- Real')
-#     # plt.xlabel('Date')
-#     # plt.ylabel('Net Worth ($)')
-#     # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-#     # plt.xticks(rotation=45)
-#     # plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
-#     # plt.grid(True)
-#     # plt.tight_layout()
-#     plt.show()
+    #plot Prjected Net Worth Nominals
+    df['Date'] = pd.to_datetime(df['Date'])
+    plt.plot(df['Date'],df['Net_Worth_Real'], label='projected', linestyle='dotted', color='g')
+    # plt.title('Net Worth- Real')
+    # plt.xlabel('Date')
+    # plt.ylabel('Net Worth ($)')
+    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    # plt.xticks(rotation=45)
+    # plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
+    # plt.grid(True)
+    # plt.tight_layout()
+    plt.show()
 
-# def plot_withdrawals_real():
-#     #read projection_nominal.csv
-#     df = pd.read_csv(PROJ_NOM_CSV, parse_dates=["Date"])            
+def plot_withdrawals_real():
+                
 
-#     #identify balance columns (everything except date)
-#     balance_cols = [c for c in df.columns if c != "Date"]
+    #identify balance columns (everything except date)
+    balance_cols = [c for c in df.columns if c != "Date"]
 
-#     #plot Prjected Net Worth Nominals
-#     df['Date'] = pd.to_datetime(df['Date'])
-#     plt.plot(df['Date'],df['Withdrawal_real'], label='projected', linestyle='dotted', color='g')
-#     plt.title('Withdrawl- Real')
-#     plt.xlabel('Date')
-#     plt.ylabel('($)')
-#     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-#     plt.xticks(rotation=45)
-#     plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
-#     plt.grid(True)
-#     plt.tight_layout()
-#     plt.show()
+    #plot Prjected Net Worth Nominals
+    df['Date'] = pd.to_datetime(df['Date'])
+    plt.plot(df['Date'],df['Withdrawal_real'], label='projected', linestyle='dotted', color='g')
+    plt.title('Withdrawl- Real')
+    plt.xlabel('Date')
+    plt.ylabel('($)')
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    plt.xticks(rotation=45)
+    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 def main():
 
@@ -163,9 +160,9 @@ def main():
     
     plot_proj_nom(projection)
     
-    #plot_proj_real()
+    plot_proj_real(projection)
     
-    #plot_withdrawals_real()
+    plot_withdrawals_real(projection)
     
 
 
