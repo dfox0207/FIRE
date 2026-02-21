@@ -22,7 +22,7 @@ assumptions = {
     "withdrawal_rate": cfg["withdrawal_rate"],
 
 }
-
+print(f"{assumptions}")
 
 
 
@@ -32,7 +32,7 @@ bal = pd.read_csv(BALANCES_CSV)
 bal["Date"] = pd.to_datetime(bal["Date"])
 bal = bal.sort_values("Date")              #sort on Date so last month's balances are the last row
 latest = bal.iloc[-1]                       #take the last row (last month)
-
+print(f"{bal}")
 #select last months balances
 start_month = latest["Date"].to_period("M").to_timestamp() + pd.DateOffset(months=1)  #start month is the last month plus 1.
 
