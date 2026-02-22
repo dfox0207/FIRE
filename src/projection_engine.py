@@ -14,6 +14,7 @@ def projection_engine(start_bal, cf, months, assumptions):
     basis = assumptions["basis"]
     retirement = pd.Timestamp("2025-10-01")
     pension_real = 3261
+    pension =0
     
 
     #For each month apply: 
