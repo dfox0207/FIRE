@@ -35,8 +35,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         if m >= retirement:
             pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
         
-        #3c. Sum Income sources
-        income = withdrawal + pension
+        
 
 
         #4. add cashflows to new balances
