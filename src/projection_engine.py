@@ -13,7 +13,7 @@ def projection_engine(start_bal, cf, months, assumptions):
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
     retirement = pd.Timestamp("2025-10-01")
-
+    pension_real = 3261
     
 
     #For each month apply: 
@@ -33,7 +33,7 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #3b. Take Pension
         if m >= retirement:
-            pension= assumptions["pension"]*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
+            pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
         
         #3c. Sum Income sources
         income = withdrawal + pension
@@ -58,8 +58,8 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Age"] = (m-birthday).days / 365.2425
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
-        row["Pension_Real"] = assumptions["pension"]
-        row["Income_Real"] = assumptions["pension"]+ withdrawal_real 
+        row["Pension_Real"] = pension_real
+        row["Income_Real"] = pension_real + withdrawal_real 
 
         #8 append record row
         rows.append(row)
