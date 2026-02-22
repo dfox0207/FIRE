@@ -128,7 +128,7 @@ def plot_proj_real(df):
     # plt.tight_layout()
     plt.show()
 
-def plot_withdrawals_real(df):
+def plot_income_real(df):
                 
 
     #identify balance columns (everything except date)
@@ -136,8 +136,8 @@ def plot_withdrawals_real(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Withdrawal_real'], label='projected', linestyle='dotted', color='g')
-    plt.title('Withdrawl- Real')
+    plt.plot(df['Date'],df['Income_Real'], label='projected', linestyle='dotted', color='g')
+    plt.title('Income- Real')
     plt.xlabel('Date')
     plt.ylabel('($)')
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
@@ -156,13 +156,15 @@ def main():
         assumptions
     )
     
+    print(f"{assumptions}")
+
     plot_balances()
     
     plot_proj_nom(projection)
     
     plot_proj_real(projection)
     
-    plot_withdrawals_real(projection)
+    plot_income_real(projection)
     
 
 

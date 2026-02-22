@@ -12,6 +12,7 @@ def projection_engine(start_bal, cf, months, assumptions):
     birthday = assumptions["birthday"]
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
+    retirement = pd.Timestamp("2025-10-01")
 
     
 
@@ -24,11 +25,18 @@ def projection_engine(start_bal, cf, months, assumptions):
         active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
         flows = active.groupby("account")["monthly_amount"].sum()
 
-        #3. Take Retirement withdrawals
+        #3. Calculate Income
+        #3a. Take Retirement withdrawals
         if m >= withdrawal_start_date:
             withdrawal = balances.sum()*withdrawal_rate/12
             balances = balances.multiply((1-withdrawal_rate)**(1/12))
-            
+
+        #3b. Take Pension
+        if m >= retirement:
+            pension= assumptions["pension"]*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
+        
+        #3c. Sum Income sources
+        income = withdrawal + pension
 
 
         #4. add cashflows to new balances
@@ -45,9 +53,13 @@ def projection_engine(start_bal, cf, months, assumptions):
         #7 sum net worth  
         row["Net_Worth"] = balances.sum() 
         row["Withdrawal"] = withdrawal
+        row["Pension"] = pension
+        row["Income"] = pension + withdrawal
         row["Age"] = (m-birthday).days / 365.2425
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
+        row["Pension_Real"] = assumptions["pension"]
+        row["Income_Real"] = assumptions["pension"]+ withdrawal_real 
 
         #8 append record row
         rows.append(row)
