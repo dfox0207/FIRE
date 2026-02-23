@@ -156,7 +156,7 @@ def main():
         assumptions
     )
     
-    print(f"{assumptions}")
+    print(json.dumps(cfg, indent=2, sort_keys=True))
 
     plot_balances()
     
