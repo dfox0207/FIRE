@@ -28,6 +28,11 @@ assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
     "basis": pd.Timestamp(cfg["basis"]),
     "withdrawal_start_date": pd.Timestamp(cfg["withdrawal_start_date"]),
     "withdrawal_rate": cfg["withdrawal_rate"],
+    "withdrawl_type": cfg["withdrawal_type"],
+    "pension": cfg["pension"],
+    "service_length": cfg["service_length"],
+    "mra": cfg["mra"],
+    "high_3": cfg["high_3"],
 
 }
 
