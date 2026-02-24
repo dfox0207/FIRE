@@ -1,3 +1,5 @@
+from pathlib import Path
+
 scenario_path = Path("Config/test.json")
 cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 
