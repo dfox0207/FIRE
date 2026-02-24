@@ -22,7 +22,7 @@ for m in range(8):
             b403 -= b457_rm
         else:
             b457 -= withdrawal
-        print(b457, b403, tsp, ROTH)
+    print(b457, b403, tsp, ROTH)
     elif b403 > 0:
         if b403 < withdrawal:
             b403 = 0
@@ -31,7 +31,7 @@ for m in range(8):
         else:
             b403 -= (withdrawal)
             
-        print(b457, b403, tsp, ROTH)
+    print(b457, b403, tsp, ROTH)
     elif tsp >0:
         if tsp < withdrawal:
             tsp = 0
@@ -40,9 +40,9 @@ for m in range(8):
         else:
             tsp -= (withdrawal)
             
-        print(b457, b403, tsp, ROTH)
+    print(b457, b403, tsp, ROTH)
     else:
         ROTH -= withdrawal
         b403_rm=0
 
-        print(b457, b403, tsp, ROTH) 
+    print(b457, b403, tsp, ROTH) 
