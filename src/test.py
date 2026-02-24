@@ -14,6 +14,7 @@ b403 = 100
 tsp = 100
 ROTH = 100
 print("b457", "b403", "tsp", "ROTH")
+print(b457, b403, tsp, ROTH)
 for m in range(8):
     if b457 >0:
         if b457 < withdrawal:
