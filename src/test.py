@@ -20,7 +20,7 @@ for m in range(8):
         if b457 < withdrawal:
             b457 = 0
             b457_rm = withdrawal-b457
-            print(b403_rm)
+            print(b457_rm)
             b403 = b403- b457_rm
         else:
             b457 -= withdrawal
