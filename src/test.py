@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 scenario_path = Path("Config/test.json")
 cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
