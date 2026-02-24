@@ -19,29 +19,30 @@ for m in range(8):
         if b457 < withdrawal:
             b457 = 0
             b457_rm = withdrawal-b457
+            b403 -= b457_rm
         else:
             b457 -= withdrawal
         print(b457, b403, tsp, ROTH)
     elif b403 > 0:
-        if b403 < withdrawal+b457_rm:
+        if b403 < withdrawal:
             b403 = 0
-            b403_rm = withdrawal+b457_rm-b403
-            b457_rm=0
+            b403_rm = withdrawal-b403
+            tsp -= b403_rm
         else:
             b403 -= (withdrawal+b403_rm)
-            b457_rm=0
+            
         print(b457, b403, tsp, ROTH)
     elif tsp >0:
-        if tsp < withdrawal+b403_rm:
+        if tsp < withdrawal:
             tsp = 0
-            tsp_rm = withdrawal+b403-tsp
-            b403_rm = 0
+            tsp_rm = withdrawal-tsp
+            ROTH -= tsp_rm
         else:
             tsp -= (withdrawal+b403)
-            b403_rm = 0
+            
         print(b457, b403, tsp, ROTH)
     else:
-        ROTH -= (withdrawal+b403_rm)
+        ROTH -= withdrawal
         b403_rm=0
 
         print(b457, b403, tsp, ROTH)
