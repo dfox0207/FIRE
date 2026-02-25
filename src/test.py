@@ -10,7 +10,7 @@ order= cfg["order"]
 balances = cfg["balances"]
 balances_df = pd.DataFrame.from_records(balances)
 
-rows = []
+rows = ["Date": m]
 
 for m in range(8):
     withdrawal = 60
