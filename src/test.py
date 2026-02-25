@@ -19,13 +19,14 @@ for m in range(8):
     
     for acct in order:
         bal = row[acct]
-        if bal <= remaining_withdrawal:
-            remaining_withdrawal -= bal
-            row[acct] = 0
-        elif bal == 0:
-            row[acct] = 0
+        if bal >= remaining_withdrawal:
+            remaining_withdrawal = 0
+            bal -= remaining_withdrawal
+            break
         else:
-            row[acct] = bal - remaining_withdrawal
+            remaining_withdrawal = remaining_withdrawal-bal
+            bal = 0
+
     rows.append(row)
 
 proj = pd.DataFrame(rows)
