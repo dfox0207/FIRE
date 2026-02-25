@@ -20,8 +20,8 @@ for m in range(8):
     for acct in order:
         bal = row[acct]
         if bal >= remaining_withdrawal:
-            remaining_withdrawal = 0
             bal -= remaining_withdrawal
+            remaining_withdrawal = 0
             break
         else:
             remaining_withdrawal = remaining_withdrawal-bal
