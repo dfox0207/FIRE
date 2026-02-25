@@ -28,6 +28,7 @@ for m in range(8):
             row[acct] = 0
 
     rows.append(row)
+    balances = row
 
 proj = pd.DataFrame(rows)
 print(proj) 
