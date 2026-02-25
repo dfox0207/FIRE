@@ -27,7 +27,7 @@ for m in range(8):
             remaining_withdrawal = remaining_withdrawal-row[acct]
             row[acct] = 0
     print(row)
-    rows.append(row)
+    rows.append(row.copy())
     print(rows)
 
 proj = pd.DataFrame(rows)
