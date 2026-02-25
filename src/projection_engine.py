@@ -10,6 +10,8 @@ def projection_engine(start_bal, cf, months, assumptions):
 
     withdrawal_start_date = assumptions["withdrawal_start_date"]
     withdrawal_rate = assumptions["withdrawal_rate"]
+    withdrawal_type = assumptions["withdrawal_type"]
+    order = assumptions["withdrawl_order"]
     birthday = assumptions["birthday"]
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
@@ -30,9 +32,25 @@ def projection_engine(start_bal, cf, months, assumptions):
         #3. Calculate Income
         #3a. Take Retirement withdrawals
         if m >= withdrawal_start_date:
-            withdrawal = balances.sum()*withdrawal_rate/12
-            balances = balances.multiply((1-withdrawal_rate)**(1/12))
+            if withdrawal_type== "VPW":
+                withdrawal = balances.sum()*withdrawal_rate/12
+                remaining_withdrawal = withdrawal
+                row = balances.copy()
+                for acct in order:
+                    
+                    if row[acct] >= remaining_withdrawal:
+                        row[acct] -= remaining_withdrawal
+                        remaining_withdrawal = 0
+                        break
+                    else:
+                        remaining_withdrawal = remaining_withdrawal-row[acct]
+                        row[acct] = 0
+                
+                rows.append(row.copy())
+                balances = row
 
+       
+         
         
         
         
