@@ -26,7 +26,7 @@ for m in range(8):
         else:
             remaining_withdrawal = remaining_withdrawal-row[acct]
             row[acct] = 0
-
+    print(row)
     rows.append(row)
     
 
