@@ -11,11 +11,11 @@ balances = cfg["balances"]
 
 
 rows = []
-row = balances.copy()
+
 for m in range(8):
     withdrawal = 60
     remaining_withdrawal = withdrawal
-    
+    row = balances.copy()
     for acct in order:
         
         if row[acct] >= remaining_withdrawal:
@@ -27,7 +27,7 @@ for m in range(8):
             row[acct] = 0
     
     rows.append(row.copy())
-    
+    balances = row
 
 proj = pd.DataFrame(rows)
 print(proj) 
