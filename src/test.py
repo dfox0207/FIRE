@@ -12,11 +12,11 @@ print(balances)
 print(type(balances))
 
 rows = []
-
+row = balances.copy()
 for m in range(8):
     withdrawal = 60
     remaining_withdrawal = withdrawal
-    row = balances
+    
     for acct in order:
         bal = row[acct]
         if bal <= remaining_withdrawal:
