@@ -7,6 +7,7 @@
     "withdrawal_start_date": "2035-11-01",
     "withdrawal_rate": 0.04,
     "withdrawal_type": "VPW",
+    "withdrawl_order": ["457b", "403b", "tsp", "roth"],
     "pension": 3261,
     "service_length": 27.68,
     "mra": 57,

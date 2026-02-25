@@ -1,3 +1,5 @@
 {
-    "order": ["457b", "403b", "tsp", "roth" ]
+    "order": ["457b", "403b", "tsp", "roth" ],
+    "balances": {"457b":100, "403b":100, "tsp":100, "roth":100}
+
 }
