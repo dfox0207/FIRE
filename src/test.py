@@ -28,7 +28,7 @@ for m in range(8):
             row[acct] = 0
     print(row)
     rows.append(row)
-    
+    print(rows)
 
 proj = pd.DataFrame(rows)
 print(proj) 
