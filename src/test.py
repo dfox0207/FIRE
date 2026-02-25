@@ -10,11 +10,11 @@ order= cfg["order"]
 balances = cfg["balances"]
 balances_df = pd.DataFrame.from_records(balances)
 
-rows = ["Date": m]
+rows = []
 
 for m in range(8):
     withdrawal = 60
-    row = {}
+    row = {"Date": m}
     for acct in order:
         bal = balances_df.iloc[-1][acct]
         if acct in row:
