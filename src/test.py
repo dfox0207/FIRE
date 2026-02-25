@@ -18,14 +18,14 @@ for m in range(8):
     remaining_withdrawal = withdrawal
     
     for acct in order:
-        bal = row[acct]
-        if bal >= remaining_withdrawal:
-            bal -= remaining_withdrawal
+        
+        if row[acct] >= remaining_withdrawal:
+            row[acct] -= remaining_withdrawal
             remaining_withdrawal = 0
             break
         else:
-            remaining_withdrawal = remaining_withdrawal-bal
-            bal = 0
+            remaining_withdrawal = remaining_withdrawal-row[acct]
+            row[acct] = 0
 
     rows.append(row)
 
