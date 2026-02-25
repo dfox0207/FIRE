@@ -9,7 +9,7 @@ cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 order= cfg["order"]
 balances = cfg["balances"]
 print(balances)
-print(type(blances))
+print(type(balances))
 
 # rows = []
 
