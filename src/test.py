@@ -10,19 +10,24 @@ order= cfg["order"]
 balances = cfg["balances"]
 balances_df = pd.DataFrame.from_records(balances)
 
+rows = []
 
-print("b457", "b403", "tsp", "ROTH")
-print(b457, b403, tsp, ROTH)
 for m in range(8):
     withdrawal = 60
+    row = {}
     for acct in order:
-        bal = df.at[-1, acct]
-        if acct<= withdrawal
+        bal = balances_df.iloc[-1][acct]
+        if acct in row:
+            break
+        elif bal <= withdrawal
             remaining = withdrawal-bal
-            bal = 0
-            bal[?acct+1?] -=  remaining
+            row[acct] = 0
+            row[acct+1] = balances_df.iloc[-1][acct+1] - remaining
+        elif bal = 0
+            row[acct] = 0
         else:
-            bal -= withdrawal
-    
+            row[acct] = balances_df.iloc[-1][acct] - withdrawal
+    rows.append(row)
 
-    print(b457, b403, tsp, ROTH) 
+proj = pd.DataFrame(rows)
+print(proj) 
