@@ -8,8 +8,7 @@ cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 #2. Convert config values to proper Python types
 order= cfg["order"]
 balances = cfg["balances"]
-print(balances)
-print(type(balances))
+
 
 rows = []
 row = balances.copy()
@@ -26,9 +25,9 @@ for m in range(8):
         else:
             remaining_withdrawal = remaining_withdrawal-row[acct]
             row[acct] = 0
-    print(row)
+    
     rows.append(row.copy())
-    print(rows)
+    
 
 proj = pd.DataFrame(rows)
 print(proj) 
