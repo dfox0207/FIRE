@@ -1,3 +1,4 @@
+rows =[]
 row = {}
 
 row["b457"]= 100
@@ -6,3 +7,7 @@ row["tsp"] = 100
 row["roth"]= 100
 
 print(row)
+
+rows.append(row)
+
+print(rows)
