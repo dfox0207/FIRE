@@ -19,11 +19,11 @@ for m in range(8):
         bal = balances_df.iloc[-1][acct]
         if acct in row:
             break
-        elif bal <= withdrawal
+        elif bal <= withdrawal:
             remaining = withdrawal-bal
             row[acct] = 0
             row[acct+1] = balances_df.iloc[-1][acct+1] - remaining
-        elif bal = 0
+        elif bal = 0:
             row[acct] = 0
         else:
             row[acct] = balances_df.iloc[-1][acct] - withdrawal
