@@ -40,6 +40,28 @@ def growth(balances):                                   #done
     balances *= (1+0.10)**(1/12)
     return balances
 
+def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):            #done
+    
+    if m >= withdrawal_start_date:
+        if withdrawal_type== "VPW":
+            withdrawal = balances.sum()*withdrawal_rate/12
+            remaining_withdrawal = withdrawal
+            row = balances.copy()
+            for acct in order:
+                
+                if row[acct] >= remaining_withdrawal:
+                    row[acct] -= remaining_withdrawal
+                    remaining_withdrawal = 0
+                    break
+                else:
+                    remaining_withdrawal = remaining_withdrawal-row[acct]
+                    row[acct] = 0
+            
+            balances = row
+    else:
+        withdrawal = 0
+    return balances, withdrawal
+
 def real_values():
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
     balances_real = balances*(1+inflation)**(delta_months/12)
@@ -88,8 +110,8 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #4. Calculate Income
         #4a. Take Retirement withdrawals
-        withdrawal()
-
+        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
+        row["Withdrawal"] = withdrawal
        
         #4b. Take Pension                                                   #done
         pension = calc_pension(pension_real, retirement, inflation, m)

@@ -12,6 +12,28 @@ def growth(balances):                                   #done
     balances *= (1+0.10)**(1/12)
     return balances
 
+def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
+    
+    if m >= withdrawal_start_date:
+        if withdrawal_type== "VPW":
+            withdrawal = balances.sum()*withdrawal_rate/12
+            remaining_withdrawal = withdrawal
+            row = balances.copy()
+            for acct in order:
+                
+                if row[acct] >= remaining_withdrawal:
+                    row[acct] -= remaining_withdrawal
+                    remaining_withdrawal = 0
+                    break
+                else:
+                    remaining_withdrawal = remaining_withdrawal-row[acct]
+                    row[acct] = 0
+            
+            balances = row
+    else:
+        withdrawal = 0
+    return balances, withdrawal
+
 def apply_flows(balances, cf, m):
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
@@ -48,28 +70,15 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #3. Calculate Income
         #3a. Take Retirement withdrawals
-        if m >= withdrawal_start_date:
-            if withdrawal_type== "VPW":
-                withdrawal = balances.sum()*withdrawal_rate/12
-                remaining_withdrawal = withdrawal
-                row = balances.copy()
-                for acct in order:
-                    
-                    if row[acct] >= remaining_withdrawal:
-                        row[acct] -= remaining_withdrawal
-                        remaining_withdrawal = 0
-                        break
-                    else:
-                        remaining_withdrawal = remaining_withdrawal-row[acct]
-                        row[acct] = 0
-                
-                rows.append(row.copy())
-                balances = row
-
+        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
+        row["Withdrawal"] = withdrawal
        
         #3b. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
+
+        #3c. Sum Total Income
+        row["Income"] = pension + withdrawal
         
         #4. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
@@ -85,9 +94,9 @@ def projection_engine(start_bal, cf, months, assumptions):
         
         #7 sum net worth  
         row["Net_Worth"] = balances.sum() 
-        row["Withdrawal"] = withdrawal
         
-        row["Income"] = pension + withdrawal
+        
+        
         
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
