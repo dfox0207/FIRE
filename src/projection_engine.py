@@ -2,6 +2,12 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
+def apply_flows(balances, cf, m):
+    active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
+    flows = active.groupby("account")["monthly_amount"].sum()
+    return balances.add(flows, fill_value=0) 
+
+
 def projection_engine(start_bal, cf, months, assumptions):
     
     balances = start_bal.copy()
@@ -63,7 +69,7 @@ def projection_engine(start_bal, cf, months, assumptions):
 
 
         #4. add cashflows to new balances
-        balances = balances.add(flows, fill_value=0)
+        balances = apply_flows(balances, cf, m)
         
         #5 Calculate Real values
         delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
