@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
+def growth(balances):                                   #done
+    balances *= (1+0.10)**(1/12)
+    return balances
+
 def apply_flows(balances, cf, m):
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
@@ -29,11 +33,9 @@ def projection_engine(start_bal, cf, months, assumptions):
     #For each month apply: 
     for m in months:
         #1.apply growth to balances
-        balances *= (1+0.10)**(1/12)
+        balances = growth(balances)
 
-        #2.select active cashflows
-        active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
-        flows = active.groupby("account")["monthly_amount"].sum()
+        #2.
 
         #3. Calculate Income
         #3a. Take Retirement withdrawals
@@ -56,11 +58,6 @@ def projection_engine(start_bal, cf, months, assumptions):
                 balances = row
 
        
-         
-        
-        
-        
-        
         #3b. Take Pension
         if m >= retirement:
             pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)

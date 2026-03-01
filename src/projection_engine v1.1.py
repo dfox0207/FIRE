@@ -34,7 +34,7 @@ def taxes():
 def inflation():
 
 
-def growth(balances):
+def growth(balances):                                   #done
     balances *= (1+0.10)**(1/12)
     return balances
 
