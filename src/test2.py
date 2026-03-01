@@ -93,7 +93,6 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
                     remaining_withdrawal = remaining_withdrawal-row[acct]
                     row[acct] = 0
             
-            rows.append(row.copy())
             balances = row
     else:
         withdrawal = 0
