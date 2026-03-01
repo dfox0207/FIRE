@@ -76,7 +76,10 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 #test function
-
+def apply_flows(balances, cf):
+    active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
+    flows = active.groupby("account")["monthly_amount"].sum()
+    balances = balances.add(flows, fill_value=0) 
 
 
 def projection_engine(start_bal, cf, months, assumptions):
@@ -103,7 +106,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Age"] = (m-birthday).days / 365.2425
 
         #test function
-
+        apply_flows(balances, cf)
         
 
         #6 create record row
