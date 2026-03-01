@@ -11,7 +11,7 @@ import matplotlib.ticker as ticker
 from dataclasses import dataclass
 from typing import Dict, Optional, List
 
-from projection_engine import projection_engine
+
 
 
 
@@ -76,6 +76,29 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 #test function
+def cal_withdrawal(withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
+    
+    if m >= withdrawal_start_date:
+        if withdrawal_type== "VPW":
+            withdrawal = balances.sum()*withdrawal_rate/12
+            remaining_withdrawal = withdrawal
+            row = balances.copy()
+            for acct in order:
+                
+                if row[acct] >= remaining_withdrawal:
+                    row[acct] -= remaining_withdrawal
+                    remaining_withdrawal = 0
+                    break
+                else:
+                    remaining_withdrawal = remaining_withdrawal-row[acct]
+                    row[acct] = 0
+            
+            rows.append(row.copy())
+            balances = row
+    else:
+        withdrawal = 0
+    return balances, withdrawal
+
 def calc_pension(pension_real, retirement, inflation, m):
     pension = 0
     if m >= retirement:
@@ -117,12 +140,14 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #test function
         balances = growth(balances)
+        balances, withdrawal = cal_withdrawal(withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
-        
+
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
 
+        row["Income"] = pension + withdrawal
         
         
         

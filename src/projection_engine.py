@@ -71,9 +71,6 @@ def projection_engine(start_bal, cf, months, assumptions):
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         
-        
-
-
         #4. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
