@@ -76,6 +76,11 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 #test function
+def pension(pension_real):
+    if m >= retirement:
+        pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
+    return pension
+
 def growth(balances):
     balances *= (1+0.10)**(1/12)
     return balances
@@ -113,8 +118,10 @@ def projection_engine(start_bal, cf, months, assumptions):
         balances = growth(balances)
         balances = apply_flows(balances, cf, m)
         
+        pension = pension(pension_real)
+        row["Pension"] = pension
 
-        #6 create record row
+        
         
         
         #7 sum net worth  

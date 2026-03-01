@@ -2,6 +2,11 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
+def pension(pension_real):
+    if m >= retirement:
+        pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
+    return pension
+
 def growth(balances):                                   #done
     balances *= (1+0.10)**(1/12)
     return balances
