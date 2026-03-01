@@ -38,6 +38,9 @@ def projection_engine(start_bal, cf, months, assumptions):
 
     #For each month apply: 
     for m in months:
+        row = {"Date": m}
+        row["Age"] = (m-birthday).days / 365.2425
+
         #1.apply growth to balances
         balances = growth(balances)
 
@@ -73,6 +76,7 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #4. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
+        row.update(balances.to_dict())
         
         #5 Calculate Real values
         delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
@@ -80,14 +84,14 @@ def projection_engine(start_bal, cf, months, assumptions):
         withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
 
         #6 create record row
-        row = {"Date": m, **balances.to_dict()}
+        
         
         #7 sum net worth  
         row["Net_Worth"] = balances.sum() 
         row["Withdrawal"] = withdrawal
-        row["Pension"] = pension
+        
         row["Income"] = pension + withdrawal
-        row["Age"] = (m-birthday).days / 365.2425
+        
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real

@@ -118,6 +118,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         #test function
         balances = growth(balances)
         balances = apply_flows(balances, cf, m)
+        row.update(balances.to_dict())
         
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
@@ -126,7 +127,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         
         
         #7 sum net worth  
-        row.update(balances.to_dict())
+        
         row["Net_Worth"] = balances.sum()
 
         #8 append record row
