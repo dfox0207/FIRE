@@ -76,7 +76,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 #test function
-def pension(pension_real, inflation, m):
+def pension(pension_real, retirement, inflation, m):
     pension = 0
     if m >= retirement:
         pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
@@ -119,7 +119,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         balances = growth(balances)
         balances = apply_flows(balances, cf, m)
         
-        pension = pension(pension_real, inflation, m)
+        pension = pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
 
         
