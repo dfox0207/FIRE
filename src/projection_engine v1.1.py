@@ -23,7 +23,8 @@ def withdrawal():
             balances = row
     row["Withdrawal"] = withdrawal
 
-def pension(pension_real):
+def calc_pension(pension_real, retirement, inflation, m):
+    pension = 0
     if m >= retirement:
         pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
     return pension
@@ -90,8 +91,8 @@ def projection_engine(start_bal, cf, months, assumptions):
         withdrawal()
 
        
-        #4b. Take Pension
-        pension = pension(pension_real)
+        #4b. Take Pension                                                   #done
+        pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         
         #4c. Calculate Social Security/Special Supplement

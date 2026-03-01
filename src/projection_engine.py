@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
-def pension(pension_real):
+def calc_pension(pension_real, retirement, inflation, m):
+    pension = 0.0
     if m >= retirement:
         pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
     return pension
@@ -21,7 +22,7 @@ def projection_engine(start_bal, cf, months, assumptions):
     
     balances = start_bal.copy()
     rows =[]
-    withdrawal = 0
+    withdrawal = 0.0
 
     withdrawal_start_date = assumptions["withdrawal_start_date"]
     withdrawal_rate = assumptions["withdrawal_rate"]
@@ -64,8 +65,8 @@ def projection_engine(start_bal, cf, months, assumptions):
 
        
         #3b. Take Pension
-        if m >= retirement:
-            pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
+        pension = calc_pension(pension_real, retirement, inflation, m)
+        row["Pension"] = pension
         
         
 
