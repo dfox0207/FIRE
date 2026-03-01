@@ -76,7 +76,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 #test function
-def cal_withdrawal(withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
+def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
     
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
@@ -140,7 +140,7 @@ def projection_engine(start_bal, cf, months, assumptions):
 
         #test function
         balances = growth(balances)
-        balances, withdrawal = cal_withdrawal(withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
+        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
 
