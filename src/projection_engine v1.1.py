@@ -34,9 +34,9 @@ def taxes():
 def inflation():
 
 
-def growth():
+def growth(balances):
     balances *= (1+0.10)**(1/12)
-
+    return balances
 
 def real_values():
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
@@ -48,10 +48,10 @@ def real_values():
     row["Pension_Real"] = pension_real
     row["Income_Real"] = pension_real + withdrawal_real 
 
-def apply_flows():
+def apply_flows(balances, cf, m):                                                                              #done
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
     flows = active.groupby("account")["monthly_amount"].sum()
-    balances = balances.add(flows, fill_value=0)    
+    return balances.add(flows, fill_value=0)    
 
 
 def projection_engine(start_bal, cf, months, assumptions):
@@ -79,10 +79,10 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Age"] = (m-birthday).days / 365.2425
 
         #2. apply growth to balances
-        growth()
+        balances = growth(balances)
 
         #3.select active cashflows
-        apply_flows(cf)
+        balances = apply_flows(balances, cf, m)
 
         #4. Calculate Income
         #4a. Take Retirement withdrawals
