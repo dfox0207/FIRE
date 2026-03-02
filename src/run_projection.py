@@ -95,6 +95,7 @@ def plot_balances():
     plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
     plt.grid(True)
     plt.tight_layout()
+    plt.legend()
     
 
 def plot_proj_nom(df):
@@ -113,6 +114,7 @@ def plot_proj_nom(df):
     plt.xticks(rotation=45)
     plt.grid(True)
     plt.tight_layout()
+    plt.legend()
     #plt.show()
 
 def plot_proj_real(df):
@@ -132,6 +134,7 @@ def plot_proj_real(df):
     # plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
     # plt.grid(True)
     # plt.tight_layout()
+    plt.legend()
     plt.show()
 
 def plot_income_real(df):
@@ -151,6 +154,7 @@ def plot_income_real(df):
     plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
     plt.grid(True)
     plt.tight_layout()
+    plt.legend()
     plt.show()
 
 def main():
