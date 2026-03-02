@@ -74,30 +74,9 @@ end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_dat
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
-def plot_balances(ax):
-    #read BALANCES.CSV
-    df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            
 
-    #identify balance columns (everything except date)
-    balance_cols = [c for c in df_bal.columns if c != "Date"]
 
-    #compute net worth per row
-    df_bal["net_worth"] = df_bal[balance_cols].sum(axis=1)
-
-    #plot Net Worth Actuals
-    df_bal['Date'] = pd.to_datetime(df_bal['Date'])
-    ax.plot(df_bal['Date'],df_bal['net_worth'], label='Actual Balances', linestyle='-', color='b')
-    ax.set_title('Net Worth- Nominal')
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Net Worth ($)')
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
-    ax.tick_params(axis="x", rotation=45)
-    ax.grid(True)
-    ax.legend()
-    
-
-def plot_proj_nom(df, ax):
+def plot_networth(df, ax):
     #read BALANCES.CSV
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
 
@@ -127,19 +106,7 @@ def plot_proj_nom(df, ax):
     ax.tick_params(axis="x", rotation=45)
     ax.grid(True)
     ax.legend()
-    
 
-def plot_proj_real(df, ax):
-          
-
-    #identify balance columns (everything except date)
-    balance_cols = [c for c in df.columns if c != "Date"]
-
-    #plot Prjected Net Worth Nominals
-    df['Date'] = pd.to_datetime(df['Date'])
-    ax.plot(df['Date'],df['Net_Worth_Real'], label='Projected Real Balances', linestyle='dotted', color='g')
-    ax.legend()
-    
 
 def plot_income_real(df, ax):
                 
@@ -175,9 +142,7 @@ def main():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharex=True)
 
     # Left Plot: Networth
-    plot_balances(ax1)
-    plot_proj_nom(projection, ax1)
-    plot_proj_real(projection, ax2)
+    plot_networth(projection, ax1)
 
     # Right Plot: Income
     plot_income_real(projection, ax2)
