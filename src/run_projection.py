@@ -98,14 +98,28 @@ def plot_balances(ax):
     
 
 def plot_proj_nom(df, ax):
-           
+    #read BALANCES.CSV
+    df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
 
     #identify balance columns (everything except date)
     balance_cols = [c for c in df.columns if c != "Date"]
 
+    #compute net worth per row
+    df_bal["net_worth"] = df_bal[balance_cols].sum(axis=1)
+
+    #plot Net Worth Actuals
+    df_bal['Date'] = pd.to_datetime(df_bal['Date'])
+    ax.plot(df_bal['Date'],df_bal['net_worth'], label='Actual Balances', linestyle='-', color='b')
+
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
     ax.plot(df['Date'],df['Net_Worth'], label='Projected Nominal Balances', linestyle='dotted', color='r')
+
+    #plot Prjected Net Worth Nominals
+    df['Date'] = pd.to_datetime(df['Date'])
+    ax.plot(df['Date'],df['Net_Worth_Real'], label='Projected Real Balances', linestyle='dotted', color='g')
+
+    # Format Chart Title and Axises
     ax.set_title('Net Worth')
     ax.set_xlabel('Date')
     ax.set_ylabel('Net Worth ($)')
