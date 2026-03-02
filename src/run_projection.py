@@ -104,6 +104,7 @@ def plot_networth(df, ax):
     ax.set_xlabel('Date')
     ax.set_ylabel('Net Worth ($)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
     ax.tick_params(axis="x", rotation=45)
     ax.grid(True)
     ax.legend()
