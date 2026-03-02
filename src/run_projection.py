@@ -77,7 +77,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 def plot_networth(df, ax):
-    print(df)
+    
     #read BALANCES.CSV
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
 
@@ -110,14 +110,12 @@ def plot_networth(df, ax):
 
 
 def plot_income_real(df, ax):
-                
 
-    #identify balance columns (everything except date)
-    balance_cols = [c for c in df.columns if c != "Date"]
-
-    #plot Prjected Net Worth Nominals
+    #plot Projected Income
     df['Date'] = pd.to_datetime(df['Date'])
     ax.plot(df['Date'],df['Income_Real'], label='Real Income', linestyle='dotted', color='g')
+    
+    # Format Chart Title and Axises
     ax.set_title('Income- Real')
     ax.set_xlabel('Date')
     ax.set_ylabel('($)')
