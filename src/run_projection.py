@@ -74,7 +74,7 @@ end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_dat
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
-def plot_balances():
+def plot_balances(ax):
     #read BALANCES.CSV
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])            
 
@@ -86,19 +86,18 @@ def plot_balances():
 
     #plot Net Worth Actuals
     df_bal['Date'] = pd.to_datetime(df_bal['Date'])
-    plt.plot(df_bal['Date'],df_bal['net_worth'], label='Actual Balances', linestyle='-', color='b')
-    plt.title('Net Worth- Nominal')
-    plt.xlabel('Date')
-    plt.ylabel('Net Worth ($)')
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    plt.xticks(rotation=45)
-    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
-    plt.grid(True)
-    plt.tight_layout()
-    plt.legend()
+    ax.plot(df_bal['Date'],df_bal['net_worth'], label='Actual Balances', linestyle='-', color='b')
+    ax.set.title('Net Worth- Nominal')
+    ax.set.xlabel('Date')
+    ax.set.ylabel('Net Worth ($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
     
 
-def plot_proj_nom(df):
+def plot_proj_nom(df, ax):
            
 
     #identify balance columns (everything except date)
@@ -106,18 +105,17 @@ def plot_proj_nom(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth'], label='Projected Nominal Balances', linestyle='dotted', color='r')
-    plt.title('Net Worth')
-    plt.xlabel('Date')
-    plt.ylabel('Net Worth ($)')
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    plt.xticks(rotation=45)
-    plt.grid(True)
-    plt.tight_layout()
-    plt.legend()
-    #plt.show()
+    ax.plot(df['Date'],df['Net_Worth'], label='Projected Nominal Balances', linestyle='dotted', color='r')
+    ax.set.title('Net Worth')
+    ax.set.xlabel('Date')
+    ax.set.ylabel('Net Worth ($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
+    
 
-def plot_proj_real(df):
+def plot_proj_real(df, ax):
           
 
     #identify balance columns (everything except date)
@@ -125,19 +123,11 @@ def plot_proj_real(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth_Real'], label='Projected Real Balances', linestyle='dotted', color='g')
-    # plt.title('Net Worth- Real')
-    # plt.xlabel('Date')
-    # plt.ylabel('Net Worth ($)')
-    # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    # plt.xticks(rotation=45)
-    # plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
-    # plt.grid(True)
-    # plt.tight_layout()
-    plt.legend()
-    plt.show()
+    ax.plot(df['Date'],df['Net_Worth_Real'], label='Projected Real Balances', linestyle='dotted', color='g')
+    ax.legend()
+    
 
-def plot_income_real(df):
+def plot_income_real(df, ax):
                 
 
     #identify balance columns (everything except date)
@@ -145,17 +135,16 @@ def plot_income_real(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Income_Real'], label='Real Income', linestyle='dotted', color='g')
-    plt.title('Income- Real')
-    plt.xlabel('Date')
-    plt.ylabel('($)')
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
-    plt.xticks(rotation=45)
-    plt.gca().yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
-    plt.grid(True)
-    plt.tight_layout()
-    plt.legend()
-    plt.show()
+    ax.plot(df['Date'],df['Income_Real'], label='Real Income', linestyle='dotted', color='g')
+    ax.set.title('Income- Real')
+    ax.set.xlabel('Date')
+    ax.set.ylabel('($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
+    
 
 def main():
 
@@ -168,14 +157,19 @@ def main():
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
-    plot_balances()
-    
-    plot_proj_nom(projection)
-    
-    plot_proj_real(projection)
-    
-    plot_income_real(projection)
-    
+    # Create two side-by-side subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharex=True)
+
+    # Left Plot: Networth
+    plot_balances(ax1)
+    plot_proj_nom(projection, ax1)
+    plot_proj_real(projection, ax2)
+
+    # Right Plot: Income
+    plot_income_real(projection, ax2)
+
+    plt.tight_layout()
+    plt.show
 
 
 if __name__ == "__main__":
