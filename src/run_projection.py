@@ -86,7 +86,7 @@ def plot_balances():
 
     #plot Net Worth Actuals
     df_bal['Date'] = pd.to_datetime(df_bal['Date'])
-    plt.plot(df_bal['Date'],df_bal['net_worth'], label='actual', linestyle='-', color='b')
+    plt.plot(df_bal['Date'],df_bal['net_worth'], label='Actual Balances', linestyle='-', color='b')
     plt.title('Net Worth- Nominal')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
@@ -106,7 +106,7 @@ def plot_proj_nom(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth'], label='projected', linestyle='dotted', color='r')
+    plt.plot(df['Date'],df['Net_Worth'], label='Projected Nominal Balances', linestyle='dotted', color='r')
     plt.title('Net Worth')
     plt.xlabel('Date')
     plt.ylabel('Net Worth ($)')
@@ -125,7 +125,7 @@ def plot_proj_real(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Net_Worth_Real'], label='projected', linestyle='dotted', color='g')
+    plt.plot(df['Date'],df['Net_Worth_Real'], label='Projected Real Balances', linestyle='dotted', color='g')
     # plt.title('Net Worth- Real')
     # plt.xlabel('Date')
     # plt.ylabel('Net Worth ($)')
@@ -145,7 +145,7 @@ def plot_income_real(df):
 
     #plot Prjected Net Worth Nominals
     df['Date'] = pd.to_datetime(df['Date'])
-    plt.plot(df['Date'],df['Income_Real'], label='projected', linestyle='dotted', color='g')
+    plt.plot(df['Date'],df['Income_Real'], label='Real Income', linestyle='dotted', color='g')
     plt.title('Income- Real')
     plt.xlabel('Date')
     plt.ylabel('($)')
