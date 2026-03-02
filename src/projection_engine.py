@@ -40,7 +40,7 @@ def apply_flows(balances, cf, m):
     return balances.add(flows, fill_value=0) 
 
 def calc_real(m, basis, balances, inflation, withdrawal):
-    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
+    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis 
     balances_real = balances*(1+inflation)**(delta_months/12)
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real
