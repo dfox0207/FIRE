@@ -77,6 +77,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 
 def plot_networth(df, ax):
+    print(df)
     #read BALANCES.CSV
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
 
