@@ -71,7 +71,7 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Age"] = (m-birthday).days / 365.2425
 
         #1.apply growth to balances
-        balances = growth(balances)
+        balances = growth(balances, annual_return)
 
         #2. Calculate Income
         #2a. Take Retirement withdrawals
