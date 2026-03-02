@@ -169,7 +169,7 @@ def main():
     plot_income_real(projection, ax2)
 
     plt.tight_layout()
-    plt.show
+    plt.show()
 
 
 if __name__ == "__main__":
