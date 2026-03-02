@@ -109,8 +109,19 @@ def plot_networth(df, ax):
     ax.grid(True)
     ax.legend()
 
+def plot_accounts(df, ax):              #need to finish adding account balances to plot
 
-def plot_income_real(df, ax):
+    # Format Chart Title and Axises
+    ax.set_title('Account Balances')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Balance ($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e6:.2f}M"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
+
+def plot_income(df, ax):
 
     #plot Projected Income
     df['Date'] = pd.to_datetime(df['Date'])
@@ -139,13 +150,14 @@ def main():
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
     # Create two side-by-side subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 2, figsize=(14, 5), sharex=True)
 
     # Left Plot: Networth
     plot_networth(projection, ax1)
+    plot_accounts(projection, ax1)
 
     # Right Plot: Income
-    plot_income_real(projection, ax2)
+    plot_income(projection, ax2)
 
     plt.tight_layout()
     plt.show()
