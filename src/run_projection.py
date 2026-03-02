@@ -82,7 +82,7 @@ def plot_networth(df, ax):
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
 
     #identify balance columns (everything except date)
-    balance_cols = [c for c in df.columns if c != "Date"]
+    balance_cols = [c for c in df_bal.columns if c != "Date"]
 
     #compute net worth per row
     df_bal["net_worth"] = df_bal[balance_cols].sum(axis=1)
