@@ -8,8 +8,8 @@ def calc_pension(pension_real, retirement, inflation, m):
         pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
     return pension
 
-def growth(balances):                                   #done
-    balances *= (1+0.10)**(1/12)
+def growth(balances, annual_return):                                   #done
+    balances *= (1+annual_return)**(1/12)
     return balances
 
 def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
@@ -55,12 +55,13 @@ def projection_engine(start_bal, cf, months, assumptions):
     withdrawal_start_date = assumptions["withdrawal_start_date"]
     withdrawal_rate = assumptions["withdrawal_rate"]
     withdrawal_type = assumptions["withdrawal_type"]
-    order = assumptions["withdrawl_order"]
+    order = assumptions["withdrawal_order"]
     birthday = assumptions["birthday"]
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
     retirement = pd.Timestamp("2025-10-01")
     pension_real = assumptions["pension"]
+    annual_return = assumptions["annual_return"]
     
     
 
@@ -72,23 +73,24 @@ def projection_engine(start_bal, cf, months, assumptions):
         #1.apply growth to balances
         balances = growth(balances)
 
-        #2.
-
-        #3. Calculate Income
-        #3a. Take Retirement withdrawals
+        #2. Calculate Income
+        #2a. Take Retirement withdrawals
         balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
         row["Withdrawal"] = withdrawal
        
-        #3b. Take Pension
+        #2b. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
 
-        #3c. Sum Total Income
+        #2c. Sum Total Income
         row["Income"] = pension + withdrawal
         
-        #4. add cashflows to new balances
+        #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
+
+        #4 sum net worth  
+        row["Net_Worth"] = balances.sum() 
         
         #5 Calculate Real values
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
@@ -97,21 +99,8 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Pension_Real"] = pension_real
         row["Income_Real"] = pension_real + withdrawal_real 
 
-        #6 create record row
-        
-        
-        #7 sum net worth  
-        row["Net_Worth"] = balances.sum() 
-        
-        
-        
-        
-        row["Net_Worth_Real"] = balances_real.sum()
-        row["Withdrawal_real"] = withdrawal_real
-        row["Pension_Real"] = pension_real
-        row["Income_Real"] = pension_real + withdrawal_real 
 
-        #8 append record row
+        #7 append record row
         rows.append(row)
 
     proj = pd.DataFrame(rows)
