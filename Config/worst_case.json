@@ -1,0 +1,17 @@
+{
+    "birthday": "1978-02-07",
+    "annual_return": 0.06,
+    "inflation": 0.04,
+    "horizon": "2060-02-07",
+    "basis": "2025-01-01",
+    "withdrawal_start_date": "2035-11-01",
+    "withdrawal_rate": 0.04,
+    "withdrawal_type": "VPW",
+    "withdrawal_order": ["457(b)","Brokerage", "403(b)", "SERS","TSP", "ROTH IRA"],
+    "pension": 3261,
+    "service_length": 27.68,
+    "mra": 57,
+    "high_3": 141470
+
+
+}
