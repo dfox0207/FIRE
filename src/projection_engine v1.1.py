@@ -62,15 +62,11 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
         withdrawal = 0
     return balances, withdrawal
 
-def real_values():
+def calc_real(m, basis, balances, inflation, withdrawal):
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
     balances_real = balances*(1+inflation)**(delta_months/12)
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
-
-    row["Net_Worth_Real"] = balances_real.sum()
-    row["Withdrawal_real"] = withdrawal_real
-    row["Pension_Real"] = pension_real
-    row["Income_Real"] = pension_real + withdrawal_real 
+    return balances_real, withdrawal_real
 
 def apply_flows(balances, cf, m):                                                                              #done
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
@@ -123,7 +119,11 @@ def projection_engine(start_bal, cf, months, assumptions):
         row["Income"] = pension + withdrawal
 
         #5 Calculate Real values
-        real_values()
+        balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
+        row["Net_Worth_Real"] = balances_real.sum()
+        row["Withdrawal_real"] = withdrawal_real
+        row["Pension_Real"] = pension_real
+        row["Income_Real"] = pension_real + withdrawal_real 
 
                 
         

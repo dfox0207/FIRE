@@ -39,6 +39,12 @@ def apply_flows(balances, cf, m):
     flows = active.groupby("account")["monthly_amount"].sum()
     return balances.add(flows, fill_value=0) 
 
+def calc_real(m, basis, balances, inflation, withdrawal):
+    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
+    balances_real = balances*(1+inflation)**(delta_months/12)
+    withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
+    return balances_real, withdrawal_real
+
 
 def projection_engine(start_bal, cf, months, assumptions):
     
@@ -85,9 +91,11 @@ def projection_engine(start_bal, cf, months, assumptions):
         row.update(balances.to_dict())
         
         #5 Calculate Real values
-        delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis
-        balances_real = balances*(1+inflation)**(delta_months/12)
-        withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
+        balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
+        row["Net_Worth_Real"] = balances_real.sum()
+        row["Withdrawal_real"] = withdrawal_real
+        row["Pension_Real"] = pension_real
+        row["Income_Real"] = pension_real + withdrawal_real 
 
         #6 create record row
         
