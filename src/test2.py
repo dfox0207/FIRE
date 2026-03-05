@@ -188,7 +188,7 @@ def projection_engine(start_bal, cf, months, assumptions):
     withdrawal_start_date = assumptions["withdrawal_start_date"]
     withdrawal_rate = assumptions["withdrawal_rate"]
     withdrawal_type = assumptions["withdrawal_type"]
-    order = assumptions["withdrawl_order"]
+    order = assumptions["withdrawal_order"]
     birthday = assumptions["birthday"]
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
