@@ -8,15 +8,15 @@ def calc_pension(pension_real, retirement, inflation, m):
         pension= pension_real*(1+inflation)**((m.to_period("M")-retirement.to_period("M")).n/12)
     return pension
 
-def growth(balances, annual_return):                                   #done
+def growth(balances, annual_return):                                   
     balances *= (1+annual_return)**(1/12)
     return balances
 
 def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
-    
+    withdrawal = 0
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
-            withdrawal = balances.sum()*withdrawal_rate/12
+            withdrawal = balances.sum()*withdrawal_rate/12              
             remaining_withdrawal = withdrawal
             row = balances.copy()
             for acct in order:
@@ -30,8 +30,28 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
                     row[acct] = 0
             
             balances = row
-    else:
-        withdrawal = 0
+        elif withdrawal_type == "4pct"
+            #get balances at start start date
+
+            #Calculate 4% of balances
+            withdrawal = balances.sum()*withdrawal_rate/12
+
+            #Add inflation to withdrawal
+            
+            #Take withdrawal from accounts in order
+                        
+            remaining_withdrawal = withdrawal
+            row = balances.copy()
+            for acct in order:
+                
+                if row[acct] >= remaining_withdrawal:
+                    row[acct] -= remaining_withdrawal
+                    remaining_withdrawal = 0
+                    break
+                else:
+                    remaining_withdrawal = remaining_withdrawal-row[acct]
+                    row[acct] = 0
+        
     return balances, withdrawal
 
 def apply_flows(balances, cf, m):
