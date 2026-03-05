@@ -251,7 +251,7 @@ def main():
 
     # Top Left Plot: Networth
     plot_networth(projection, ax[0,0])
-    plot_accounts(projection, ax[0,0])
+    
 
     # Top Right Plot: Income
     plot_income(projection, ax[0,1])
