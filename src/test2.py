@@ -113,7 +113,6 @@ def plot_accounts(df, accounts, ax):
     df = df.copy()
     df['Date'] = pd.to_datetime(df['Date'])
     for acct in accounts:
-        
         ax.plot(df['Date'],df[acct], label=f"{acct} Balances")
 
     # Format Chart Title and Axises

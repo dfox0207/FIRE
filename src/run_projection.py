@@ -109,7 +109,13 @@ def plot_networth(df, ax):
     ax.grid(True)
     ax.legend()
 
-def plot_accounts(df, ax):              #need to finish adding account balances to plot
+def plot_accounts(df, accounts, ax):              
+
+    #plot Account Nominal Balances
+    df = df.copy()
+    df['Date'] = pd.to_datetime(df['Date'])
+    for acct in accounts:
+        ax.plot(df['Date'],df[acct], label=f"{acct} Balances")
 
     # Format Chart Title and Axises
     ax.set_title('Account Balances')
@@ -150,14 +156,19 @@ def main():
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
     # Create two side-by-side subplots
-    fig, (ax1, ax2) = plt.subplots(2, 2, figsize=(14, 5), sharex=True)
+    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
 
-    # Left Plot: Networth
-    plot_networth(projection, ax1)
-    plot_accounts(projection, ax1)
+    # Top Left Plot: Networth
+    plot_networth(projection, ax[0,0])
+    
 
-    # Right Plot: Income
-    plot_income(projection, ax2)
+    # Top Right Plot: Income
+    plot_income(projection, ax[0,1])
+
+    # Bottom Left Plot: Account Balances
+    plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
+
+    #Bottom Right Plot: Taxes
 
     plt.tight_layout()
     plt.show()
