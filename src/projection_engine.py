@@ -12,45 +12,42 @@ def growth(balances, annual_return):
     balances *= (1+annual_return)**(1/12)
     return balances
 
+def withdrawal_waterfall(balances, withdrawal, order):
+    remaining_withdrawal = withdrawal
+    row = balances.copy()
+    for acct in order:
+        
+        if row[acct] >= remaining_withdrawal:
+            row[acct] -= remaining_withdrawal
+            remaining_withdrawal = 0
+            break
+        else:
+            remaining_withdrawal = remaining_withdrawal-row[acct]
+            row[acct] = 0
+    
+    balances = row
+    return balances
+
 def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
     withdrawal = 0
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
             withdrawal = balances.sum()*withdrawal_rate/12              
-            remaining_withdrawal = withdrawal
-            row = balances.copy()
-            for acct in order:
-                
-                if row[acct] >= remaining_withdrawal:
-                    row[acct] -= remaining_withdrawal
-                    remaining_withdrawal = 0
-                    break
-                else:
-                    remaining_withdrawal = remaining_withdrawal-row[acct]
-                    row[acct] = 0
-            
-            balances = row
-        elif withdrawal_type == "4pct"
-            #get balances at start start date
 
+
+        elif withdrawal_type == "4pct":
+            
+            #get balances at start start date
+            if 
             #Calculate 4% of balances
             withdrawal = balances.sum()*withdrawal_rate/12
 
             #Add inflation to withdrawal
-            
-            #Take withdrawal from accounts in order
-                        
-            remaining_withdrawal = withdrawal
-            row = balances.copy()
-            for acct in order:
-                
-                if row[acct] >= remaining_withdrawal:
-                    row[acct] -= remaining_withdrawal
-                    remaining_withdrawal = 0
-                    break
-                else:
-                    remaining_withdrawal = remaining_withdrawal-row[acct]
-                    row[acct] = 0
+            delta_months = (m.to_period("M") - withdrawal_start_date.to_period("M")).n
+            withdrawal = withdrawal*(1+inflation)**(delta_months/12)
+
+        #Take withdrawal from accounts in order
+        balances = withdrawal_waterfall(balances, withdrawal, order)
         
     return balances, withdrawal
 
@@ -66,7 +63,7 @@ def calc_real(m, basis, balances, inflation, withdrawal):
     return balances_real, withdrawal_real
 
 
-def projection_engine(start_bal, cf, months, assumptions):
+def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
     
     balances = start_bal.copy()
     rows =[]
