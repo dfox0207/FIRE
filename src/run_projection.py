@@ -151,7 +151,8 @@ def main():
         start_bal, 
         cf, 
         months, 
-        assumptions
+        assumptions,
+        balances_actuals = bal
     )
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
