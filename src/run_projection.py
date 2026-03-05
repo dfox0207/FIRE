@@ -45,6 +45,7 @@ BALANCES_CSV = Path("/content/drive/MyDrive/Finances/FIRE/Balances.csv")
 bal = pd.read_csv(BALANCES_CSV)
 bal["Date"] = pd.to_datetime(bal["Date"])
 bal = bal.sort_values("Date")              #sort on Date so last month's balances are the last row
+bal = bal.set_index("Date")
 latest = bal.iloc[-1]                       #take the last row (last month)
 
 #select last months balances
