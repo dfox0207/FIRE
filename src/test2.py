@@ -110,7 +110,7 @@ def plot_networth(df, ax):
 def plot_accounts(df, ax):              #need to finish adding account balances to plot
 
     #plot Account Nominal Balances
-    for acct in assumptions["withdrawal_order"}:
+    for acct in assumptions["withdrawal_order"]:
         df['Date'] = pd.to_datetime(df['Date'])
         ax.plot(df['Date'],df[acct], label='{acct} Balances', linestyle='dotted', color='g')
 
