@@ -107,12 +107,14 @@ def plot_networth(df, ax):
     ax.grid(True)
     ax.legend()
 
-def plot_accounts(df, ax):              #need to finish adding account balances to plot
+def plot_accounts(df, accounts, ax):              
 
     #plot Account Nominal Balances
-    for acct in assumptions["withdrawal_order"]:
-        df['Date'] = pd.to_datetime(df['Date'])
-        ax.plot(df['Date'],df[acct], label='{acct} Balances', linestyle='dotted', color='g')
+    df = df.copy()
+    df['Date'] = pd.to_datetime(df['Date'])
+    for acct in accounts:
+        
+        ax.plot(df['Date'],df[acct], label=f"{acct} Balances", linestyle='dotted')
 
     # Format Chart Title and Axises
     ax.set_title('Account Balances')
@@ -255,7 +257,7 @@ def main():
     plot_income(projection, ax[0,1])
 
     # Bottom Left Plot: Account Balances
-    plot_accounts(projection, ax[1,0])
+    plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
 
     plt.tight_layout()
     plt.show()
