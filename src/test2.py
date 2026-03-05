@@ -114,7 +114,7 @@ def plot_accounts(df, accounts, ax):
     df['Date'] = pd.to_datetime(df['Date'])
     for acct in accounts:
         
-        ax.plot(df['Date'],df[acct], label=f"{acct} Balances", linestyle='dotted')
+        ax.plot(df['Date'],df[acct], label=f"{acct} Balances")
 
     # Format Chart Title and Axises
     ax.set_title('Account Balances')
@@ -247,7 +247,7 @@ def main():
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
         # Create two side-by-side subplots
-    fig, ax = plt.subplots(2, 2, figsize=(14, 5), sharex=True)
+    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
 
     # Top Left Plot: Networth
     plot_networth(projection, ax[0,0])
@@ -258,6 +258,8 @@ def main():
 
     # Bottom Left Plot: Account Balances
     plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
+
+    #Bottom Right Plot: Taxes
 
     plt.tight_layout()
     plt.show()
