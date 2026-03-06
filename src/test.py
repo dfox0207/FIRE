@@ -4,6 +4,7 @@ import pandas as pd
 
 #def compute_taxes(annual_income):
 annual_income = 10000
+income_real = 5000
 
 std_deduct = 15000
 brackets = {
