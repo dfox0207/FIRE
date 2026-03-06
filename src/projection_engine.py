@@ -184,14 +184,16 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         #4 sum net worth  
         row["Net_Worth"] = balances.sum() 
+
+
+        
+        #5 Calculate Real values
+        balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
         income_real = pension_real + withdrawal_real
         ytd_income += income_real
         tax = calc_taxes(ytd_income, income_real)
         income_real -= tax
 
-        
-        #5 Calculate Real values
-        balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real
