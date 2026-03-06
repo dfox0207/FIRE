@@ -35,29 +35,48 @@ def withdrawal_waterfall(balances, withdrawal, order):
     balances = row
     return balances
 
-def cal_withdrawal(*, m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, annual_w0=None, t0=None, balances_actuals=None):
+def cal_withdrawal(
+    *, 
+    m, 
+    withdrawal_start_date, 
+    withdrawal_type, 
+    balances, 
+    withdrawal_rate, 
+    order, 
+    inflation, 
+    annual_w0=None, 
+    t0=None, 
+    balances_actuals=None
+    ):
+    
     withdrawal = 0.0
-    if m >= withdrawal_start_date:
-        if withdrawal_type== "VPW":
-            withdrawal = balances.sum()*withdrawal_rate/12              
+    if m < withdrawal_start_date:
+        return balances, withdrawal, annual_w0, t0 
 
+    if withdrawal_type== "VPW":
+        withdrawal = float(balances.sum())*float(withdrawal_rate)/12.0
+                
 
-        elif withdrawal_type == "4pct":
-            if annual_w0 is None:
-                if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
-                    b0 = balances_actuals.loc[withdrawal_start_date, balances.index].astype(float)
-                else:
-                    b0 = balances.copy()
+    elif withdrawal_type == "4pct":
+        if annual_w0 is None:
+            if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
+                b0 = balances_actuals.loc[withdrawal_start_date, balances.index].astype(float)
+            else:
+                b0 = balances.copy()
 
-                annual_w0 = withdrawal_rate * float(b0.sum())
-                t0 = withdrawal_start_date
-            #Add inflation to withdrawal basis
-            delta_months = (m.to_period("M") - t0.to_period("M")).n
-            annual_withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)                  #delta_months is negative
-            withdrawal = annual_withdrawal/12
+            annual_w0 = withdrawal_rate * float(b0.sum())
+            t0 = withdrawal_start_date
 
-        #Take withdrawal from accounts in order
-        balances = withdrawal_waterfall(balances, withdrawal, order)
+        #Add inflation to withdrawal basis
+        delta_months = (m.to_period("M") - t0.to_period("M")).n
+        annual_withdrawal = annual_w0*(1+inflation)**(delta_months/12)                  #delta_months is negative
+        withdrawal = annual_withdrawal/12.0
+
+    else:
+        raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
+
+    #Take withdrawal from accounts in order
+    balances = withdrawal_waterfall(balances, withdrawal, order)
         
     return balances, withdrawal, annual_w0, t0
 
@@ -107,13 +126,19 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         #2. Calculate Income
         #2a. Take Retirement withdrawals
 
-        if (withdrawal_type == "4pct"
-        and m >= withdrawal_start_date
-        and withdrawal_basis is None
-        ):
-            withdrawal_basis = balances.sum()
+        balances, withdrawal  annual_w0, t0 = cal_withdrawal(
+            m=m, 
+            withdrawal_start_date= withdrawal_start_date, 
+            withdrawal_type= withdrawal_type, 
+            balances=balances, 
+            withdrawal_rate=withdrawal_rate, 
+            order=order, 
+            inflation=inflation, 
+            annual_w0=annual_w0,
+            t0=t0,
+            balances_actuals=balances_actuals
+            )
 
-        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, withdrawal_basis)
         row["Withdrawal"] = withdrawal
        
         #2b. Take Pension
