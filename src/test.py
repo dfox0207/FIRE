@@ -23,4 +23,5 @@ for i in range(len(brackets)):
     if income_real>brackets[i][0] and income_real<=brackets[i+1][0]:
         tax = income_real*brackets[i][1]
         print(f"{brackets[i][0]}= {tax}")
+    break
     

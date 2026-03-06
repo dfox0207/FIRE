@@ -91,23 +91,34 @@ def calc_real(m, basis, balances, inflation, withdrawal):
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real
 
-def calc_taxes(annual_income, income_real):
+def calc_taxes(ytd_income, income_real):
+
+
     std_deduct = 15000
-    brackets = {
-        11925:0.10, 
-        48475:0.12, 
-        103350:0.22,
-        197300:0.24,
-        250525:0.32,
-        626350:0.35,
-        626351:0.37
-    }
+    brackets = [
+        (0,0.10), 
+        (11925,0.12), 
+        (48475,0.22),
+        (103350,0.24),
+        (197300,0.32),
+        (250525,0.35),
+        (626350,0.37),
+        (626351,0.37)
+    ]
 
-    for key in brackets.keys():
-        if annual_income<= b:
-            monthly_tax = income_real*brackets[b]-std_deduct/12
 
-    return monthly_tax
+    for i in range(len(brackets)):
+        lower, rate = brackets[i]
+        if i+1 < len(brackets):
+            upper = brackets[i][0]
+        else:
+            upper = float("inf")
+
+        if income_real>lower and income_real<=upper:
+            tax = income_real*brackets[i][1]
+            
+        break
+    return tax
 
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
@@ -130,7 +141,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     
     annual_w0 = None
     t0 = None
-
+    ytd_income=0
 
 
     #For each month apply: 
@@ -174,8 +185,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         #4 sum net worth  
         row["Net_Worth"] = balances.sum() 
         income_real = pension_real + withdrawal_real
-        tax = calc_taxes
-        income_real -=
+        ytd_income += income_real
+        tax = calc_taxes(ytd_income, income_real)
+        income_real -= tax
 
         
         #5 Calculate Real values
