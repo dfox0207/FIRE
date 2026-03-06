@@ -106,16 +106,17 @@ def calc_taxes(ytd_income, income_real):
         (626351,0.37)
     ]
 
+    taxable_income = income_real-std_deduct/12
 
     for i in range(len(brackets)):
         lower, rate = brackets[i]
         if i+1 < len(brackets):
-            upper = brackets[i][0]
+            upper = brackets[i+1][0]
         else:
             upper = float("inf")
 
-        if income_real>lower and income_real<=upper:
-            tax = income_real*brackets[i][1]
+        if ytd_income>lower and ytd_income<=upper:
+            tax = taxable_income*brackets[i][1]
             
         
     return tax
@@ -148,6 +149,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     for m in months:
         row = {"Date": m}
         row["Age"] = (m-birthday).days / 365.2425
+
+        if m.month == 1:
+            ytd_income = 0.0
 
         #1.apply growth to balances
         balances = growth(balances, annual_return)
