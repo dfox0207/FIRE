@@ -1,7 +1,7 @@
 {
     "birthday": "1978-02-07",
-    "annual_return": 0.10,
-    "inflation": 0.02,
+    "annual_return": 0.075,
+    "inflation": 0.025,
     "horizon": "2060-02-07",
     "basis": "2025-01-01",
     "withdrawal_start_date": "2035-11-01",
