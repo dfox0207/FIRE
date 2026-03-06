@@ -198,6 +198,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real
         row["Income_Real"] =  income_real
+        row["Tax"] = tax    
 
 
         #7 append record row
