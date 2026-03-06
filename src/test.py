@@ -2,32 +2,18 @@ from pathlib import Path
 import json
 import pandas as pd
 
-scenario_path = Path("Config/test.json")
-cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
+#def compute_taxes(annual_income):
+std_deduct = 15000
+brackets = {
+    11925:0.10, 
+    48475:0.12, 
+    103350:0.22,
+    197300:0.24,
+    250525:0.32,
+    626350:0.35,
+    626351:0.37
+}
 
-#2. Convert config values to proper Python types
-order= cfg["order"]
-balances = cfg["balances"]
 
-
-rows = []
-
-for m in range(8):
-    withdrawal = 60
-    remaining_withdrawal = withdrawal
-    row = balances.copy()
-    for acct in order:
-        
-        if row[acct] >= remaining_withdrawal:
-            row[acct] -= remaining_withdrawal
-            remaining_withdrawal = 0
-            break
-        else:
-            remaining_withdrawal = remaining_withdrawal-row[acct]
-            row[acct] = 0
-    
-    rows.append(row.copy())
-    balances = row
-
-proj = pd.DataFrame(rows)
-print(proj) 
+for b in brackets.keys():
+    print(f"{b}={brackets[b]}")
