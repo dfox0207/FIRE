@@ -139,6 +139,14 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
             balances_actuals=balances_actuals
             )
 
+        if m>= withdrawal_start_date:
+            print(
+                m.strftime("%Y-%m"),
+                "annual_w0 =" , annual_w0,
+                "withdrawal =", withdrawal,
+                "withdrawal real =", withdrawal_real if "withdrawal_real" in locals() else "n/a"
+            )
+
         row["Withdrawal"] = withdrawal
        
         #2b. Take Pension
@@ -154,6 +162,15 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         #4 sum net worth  
         row["Net_Worth"] = balances.sum() 
+        
+        if m>= withdrawal_start_date:
+            delta_months = (m.to_period("M")-t0.to_period("M")).n
+            print(
+                m.strftime("%Y-%m"),
+                "annual_w0 =", annual_w0,
+                "delta_months =", delta_months,
+                "nominal monthly =", withdrawal
+            )
         
         #5 Calculate Real values
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
