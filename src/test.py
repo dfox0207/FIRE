@@ -21,5 +21,4 @@ brackets = {
 
 for b in brackets.keys():
     tax = income_real*brackets[b]
-
-print(f"{b}= {tax}")
+    print(f"{b}= {tax}")
