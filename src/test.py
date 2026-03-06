@@ -19,7 +19,7 @@ brackets = [
 ]
 
 
-for i in brackets:
+for i in range(len(brackets)):
     
     tax = income_real*brackets[i][1]
     print(f"{brackets[i][0]}= {tax}")
