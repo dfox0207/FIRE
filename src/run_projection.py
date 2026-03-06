@@ -148,6 +148,22 @@ def plot_income(df, ax):
     ax.grid(True)
     ax.legend()
     
+def plot_tax(df, ax):
+
+    #plot Projected Income
+    df['Date'] = pd.to_datetime(df['Date'])
+    ax.plot(df['Date'],df['Tax'], label='Taxes')
+    
+    
+    # Format Chart Title and Axises
+    ax.set_title('Taxes- Real (2025)')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
 
 def main():
 
@@ -175,6 +191,7 @@ def main():
     plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
 
     #Bottom Right Plot: Taxes
+    plot_tax(projection, ax[1,1])
 
     plt.tight_layout()
     plt.show()
