@@ -35,7 +35,7 @@ def withdrawal_waterfall(balances, withdrawal, order):
     balances = row
     return balances
 
-def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, balances_actuals=None):
+def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, withdrawal_basis=None):
     withdrawal = 0
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
@@ -44,14 +44,7 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
 
         elif withdrawal_type == "4pct":
             
-            #get balances at start start date
-            b0 = balances_at_date(withdrawal_start_date, balances, balances_actuals)
-            networth_basis = b0.sum()
-
-            #Calculate 4% of balances
-            withdrawal_basis = networth_basis*withdrawal_rate/12
-
-            #Add inflation to withdrawal
+            #Add inflation to withdrawal basis
             delta_months = (m.to_period("M") - withdrawal_start_date.to_period("M")).n
             withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)                  #delta_months is negative
 
@@ -90,6 +83,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     annual_return = assumptions["annual_return"]
     
     
+    withdrawal_basis = 0
+
+
 
     #For each month apply: 
     for m in months:
@@ -101,7 +97,14 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         #2. Calculate Income
         #2a. Take Retirement withdrawals
-        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, balances_actuals)
+
+        if (withdrawal_type == "4pct"
+        and m >= withdrawal_start_date
+        and withdrawal_basis is None
+        ):
+            withdrawal_basis = balances.sum()
+
+        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, withdrawal_basis)
         row["Withdrawal"] = withdrawal
        
         #2b. Take Pension
