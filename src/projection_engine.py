@@ -117,7 +117,7 @@ def calc_taxes(ytd_income, income_real):
         if income_real>lower and income_real<=upper:
             tax = income_real*brackets[i][1]
             
-        break
+        
     return tax
 
 
