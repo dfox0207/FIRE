@@ -12,6 +12,13 @@ def growth(balances, annual_return):
     balances *= (1+annual_return)**(1/12)
     return balances
 
+def balances_at_date(m, balances, balances_actuals=None):
+    # balances_actuals: DataFrame indexed by month (Timestamp), columns = accounts
+    if balances_actuals is not None and m in balances_actuals.index:
+        # align columns to balances index (account names)
+        return balances_actuals.loc[m, balances.index].astype(float)
+    return balances.copy()
+
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
     row = balances.copy()
@@ -28,7 +35,7 @@ def withdrawal_waterfall(balances, withdrawal, order):
     balances = row
     return balances
 
-def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order):
+def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, balances_actuals=None):
     withdrawal = 0
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
@@ -38,13 +45,15 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
         elif withdrawal_type == "4pct":
             
             #get balances at start start date
-            if 
+            b0 = balances_at_date(withdrawal_start_date, balances, balances_actuals)
+            networth_basis = b0.sum()
+
             #Calculate 4% of balances
-            withdrawal = balances.sum()*withdrawal_rate/12
+            withdrawal_basis = networth_basis*withdrawal_rate/12
 
             #Add inflation to withdrawal
             delta_months = (m.to_period("M") - withdrawal_start_date.to_period("M")).n
-            withdrawal = withdrawal*(1+inflation)**(delta_months/12)
+            withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)
 
         #Take withdrawal from accounts in order
         balances = withdrawal_waterfall(balances, withdrawal, order)
