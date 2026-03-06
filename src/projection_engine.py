@@ -35,18 +35,26 @@ def withdrawal_waterfall(balances, withdrawal, order):
     balances = row
     return balances
 
-def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, withdrawal_basis=None):
-    withdrawal = 0
+def cal_withdrawal(*, m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, annual_w0=None, t0=None, balances_actuals=None):
+    withdrawal = 0.0
     if m >= withdrawal_start_date:
         if withdrawal_type== "VPW":
             withdrawal = balances.sum()*withdrawal_rate/12              
 
 
         elif withdrawal_type == "4pct":
-            
+            if annual_w0 is None:
+                if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
+                    b0 = balances_actuals.loc[withdrawal_start_date, balances.index].astype(float)
+                else:
+                    b0 = balances.copy()
+
+                annual_w0 = withdrawal_rate * float(b0.sum())
+                t0 = withdrawal_start_date
             #Add inflation to withdrawal basis
-            delta_months = (m.to_period("M") - withdrawal_start_date.to_period("M")).n
-            withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)                  #delta_months is negative
+            delta_months = (m.to_period("M") - t0.to_period("M")).n
+            annual_withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)                  #delta_months is negative
+            withdrawal = annual_withdrawal/12
 
         #Take withdrawal from accounts in order
         balances = withdrawal_waterfall(balances, withdrawal, order)
@@ -83,7 +91,8 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     annual_return = assumptions["annual_return"]
     
     
-    withdrawal_basis = 0
+    annual_w0 = None
+    t0 = None
 
 
 
