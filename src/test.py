@@ -20,4 +20,8 @@ brackets = {
 
 for b in brackets.keys():
     if annual_income <= b:
-        tax = income_real * brackets[b]-std_deduct/12
+        taxable_income = income_real -std_deduct/12
+        tax = taxable_income*brackets[b]
+
+print(f"taxable income= {taxable_income}")
+print(f"tax= {tax}")
