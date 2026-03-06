@@ -3,6 +3,8 @@ import json
 import pandas as pd
 
 #def compute_taxes(annual_income):
+annual_income = 10000
+
 std_deduct = 15000
 brackets = {
     11925:0.10, 
@@ -16,4 +18,5 @@ brackets = {
 
 
 for b in brackets.keys():
-    print(f"{b}={brackets[b]}")
+    if annual_income <= b:
+        tax = income_real * brackets[b]-std_deduct/12
