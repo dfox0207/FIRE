@@ -53,7 +53,7 @@ def cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdraw
 
             #Add inflation to withdrawal
             delta_months = (m.to_period("M") - withdrawal_start_date.to_period("M")).n
-            withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)
+            withdrawal = withdrawal_basis*(1+inflation)**(delta_months/12)                  #delta_months is negative
 
         #Take withdrawal from accounts in order
         balances = withdrawal_waterfall(balances, withdrawal, order)
@@ -66,7 +66,7 @@ def apply_flows(balances, cf, m):
     return balances.add(flows, fill_value=0) 
 
 def calc_real(m, basis, balances, inflation, withdrawal):
-    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis 
+    delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
     balances_real = balances*(1+inflation)**(delta_months/12)
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real

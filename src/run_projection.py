@@ -139,7 +139,7 @@ def plot_income(df, ax):
     ax.plot(df['Date'],df['Pension_Real'], label='Pension Real')
     
     # Format Chart Title and Axises
-    ax.set_title('Income- Real')
+    ax.set_title('Income- Real (2025)')
     ax.set_xlabel('Date')
     ax.set_ylabel('($)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
