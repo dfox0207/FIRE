@@ -59,7 +59,7 @@ def cal_withdrawal(*, m, withdrawal_start_date, withdrawal_type, balances, withd
         #Take withdrawal from accounts in order
         balances = withdrawal_waterfall(balances, withdrawal, order)
         
-    return balances, withdrawal
+    return balances, withdrawal, annual_w0, t0
 
 def apply_flows(balances, cf, m):
     active = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
