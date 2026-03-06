@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 #def compute_taxes(annual_income):
-annual_income = 10000
+annual_income = 12000
 income_real = 5000
 
 std_deduct = 15000
