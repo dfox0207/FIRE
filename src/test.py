@@ -20,14 +20,6 @@ brackets = {
 
 
 for b in brackets.keys():
-    if annual_income > b and annual_income<=b+1:
-        taxable_income = income_real -std_deduct/12
-        tax = taxable_income*brackets[b]
-        print(f"bracket= {b}")
-        print(f"bracket= {brackets[b]}")
-        print(f"taxable income= {taxable_income}")
-        print(f"tax= {tax}")
-    else:
-        break
-        
+    tax = income_real*brackets[b]
 
+print(f"{b}= {tax}")
