@@ -24,6 +24,6 @@ for b in brackets.keys():
         tax = taxable_income*brackets[b]
 
 print(f"taxable income= {taxable_income}")
-print(f"bracket= {brackets.keys(b)}")
+print(f"bracket= {b}")
 print(f"bracket= {brackets[b]}")
 print(f"tax= {tax}")
