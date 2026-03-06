@@ -101,7 +101,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         #2. Calculate Income
         #2a. Take Retirement withdrawals
-        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order)
+        balances, withdrawal = cal_withdrawal(m, withdrawal_start_date, withdrawal_type, balances, withdrawal_rate, order, inflation, balances_actuals=None)
         row["Withdrawal"] = withdrawal
        
         #2b. Take Pension
