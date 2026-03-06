@@ -27,6 +27,7 @@ for b in brackets.keys():
         print(f"bracket= {brackets[b]}")
         print(f"taxable income= {taxable_income}")
         print(f"tax= {tax}")
-
+    else:
         break
+        
 
