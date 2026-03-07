@@ -35,7 +35,7 @@ assumptions = {
     "service_length": cfg["service_length"],
     "mra": cfg["mra"],
     "high_3": cfg["high_3"],
-
+    "ssa_benefit": cfg["ssa_benefit"]
 }
 
 

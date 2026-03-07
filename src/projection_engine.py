@@ -152,8 +152,8 @@ def calc_taxes(ytd_income, income_real):
 
     return tax, va_tax
 
-def spec_annuity ():
-    
+
+     
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
     
@@ -171,12 +171,14 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     retirement = pd.Timestamp("2025-10-01")
     pension_real = assumptions["pension"]
     annual_return = assumptions["annual_return"]
-    
+    service_length = assumptions["service_length"]
+    ssa_benefit = assumptions["ssa_benefit"]
     
     annual_w0 = None
     t0 = None
     ytd_income=0
     roth_conv= 0
+    
 
     #For each month apply: 
     for m in months:
@@ -225,8 +227,13 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
 
-        #2d. Sum Total Income
-        row["Income"] = pension + withdrawal
+        #2d. Take Special Supplemental Annuity
+        spec_annuity = 0
+        if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
+            spec_annuity = ssa_benefit * service_length/40
+        
+        #2e. Sum Total Income
+        row["Income"] = pension + withdrawal + spec_annuity
         
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
