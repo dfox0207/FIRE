@@ -91,6 +91,9 @@ def calc_real(m, basis, balances, inflation, withdrawal):
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real
 
+def calc_roth_conv():
+    
+
 def calc_taxes(ytd_income, income_real):
 
 
