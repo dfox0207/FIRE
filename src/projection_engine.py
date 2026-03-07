@@ -196,13 +196,14 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         income_real = pension_real + withdrawal_real
         ytd_income += income_real
         tax = calc_taxes(ytd_income, income_real)
-        income_real -= tax
+        net_income_real = income_real - tax
 
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real
         row["Income_Real"] =  income_real
-        row["Tax"] = tax    
+        row["Tax"] = tax   
+        row["Net_Income_Real"] = net_income_real
 
 
         #7 append record row

@@ -132,11 +132,11 @@ def plot_income(df, ax):
     #plot Projected Income
     df['Date'] = pd.to_datetime(df['Date'])
     ax.plot(df['Date'],df['Income_Real'], label='Real Income')
-    ax.plot(df['Date'],df['Withdrawal_real'], label='Withdrawl Real')
-    ax.plot(df['Date'],df['Pension_Real'], label='Pension Real')
+    ax.plot(df['Date'],df['Income'], label='Nominal Income')
+    ax.plot(df['Date'],df['Net_Income_Real'], label='Net Real Income')
     
     # Format Chart Title and Axises
-    ax.set_title('Income- Real (2025)')
+    ax.set_title('Income')
     ax.set_xlabel('Date')
     ax.set_ylabel('($)')
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
