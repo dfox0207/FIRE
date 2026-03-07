@@ -24,7 +24,7 @@ cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
     "annual_return" : cfg["annual_return"],
     "inflation": cfg["inflation"],
-    "horizon": pd.Timestamp(cfg["horizon"]),
+    "horizon": pd.Timestamp(cfg["horizon"]).to_period("M").to_timestamp(),
     "basis": pd.Timestamp(cfg["basis"]),
     "withdrawal_start_date": pd.Timestamp(cfg["withdrawal_start_date"]),
     "withdrawal_rate": cfg["withdrawal_rate"],
@@ -70,10 +70,7 @@ if cf["end_date"].notna().any():
 else:
     last_sched_end = pd.NaT 
 
-end_month= ((start_month + pd.DateOffset(years = 30))       #if cashflow end_date is blank, applies rule for 30 years.
-    if cf["end_date"].isna().any()
-    else last_sched_end
-)
+end_month= horizon
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
