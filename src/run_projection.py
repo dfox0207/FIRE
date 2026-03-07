@@ -70,7 +70,7 @@ if cf["end_date"].notna().any():
 else:
     last_sched_end = pd.NaT 
 
-end_month= horizon
+end_month= assumptions["horizon"]
 
 months = pd.date_range(start_month, end_month, freq="MS")
 
