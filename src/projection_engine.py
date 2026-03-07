@@ -228,12 +228,20 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Pension"] = pension
 
         #2d. Take Special Supplemental Annuity
-        spec_annuity = 0
+        
         if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
             spec_annuity = ssa_benefit * service_length/40
+
+        elif m > birthday + pd.DateOffset(years=62):
+            ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
+            ssa_annuity_real = ssa_benefit*0.8
+        else:
+            spec_annuity = 0
+            ssa_annuity = 0
+            ssa_annuity_real = 0
         
         #2e. Sum Total Income
-        row["Income"] = pension + withdrawal + spec_annuity
+        row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
         
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
@@ -246,7 +254,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         
         #5 Calculate Real values
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
-        income_real = pension_real + withdrawal_real
+        income_real = pension_real + withdrawal_real + ssa_annuity_real
         ytd_income += income_real
         fed_tax, va_tax = calc_taxes(ytd_income, income_real)
         total_tax = fed_tax + va_tax
