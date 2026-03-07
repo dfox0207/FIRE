@@ -150,7 +150,7 @@ def plot_tax(df, ax):
 
     #plot Projected Income
     df['Date'] = pd.to_datetime(df['Date'])
-    ax.plot(df['Date'],df['Tax'], label='Taxes')
+    ax.plot(df['Date'],df['Total Tax'], label='Taxes')
     
     
     # Format Chart Title and Axises

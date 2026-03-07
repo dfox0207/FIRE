@@ -103,7 +103,7 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
 
 def calc_taxes(ytd_income, income_real):
 
-
+    #1. Federal Taxes
     std_deduct = 15000
     brackets = [
         (0,0.10), 
@@ -128,8 +128,28 @@ def calc_taxes(ytd_income, income_real):
         if ytd_income>lower and ytd_income<=upper:
             tax = taxable_income*brackets[i][1]
             
-        
-    return tax
+
+    #2. VA Taxes
+    va_std_deduct = 8750
+    va_brackets = [
+        (0, 0.02, 0),
+        (3001, 0.03, 60),
+        (5001, 0.05, 120),
+        (17000, 0.0575, 720)
+    ]
+
+
+    for i in range(len(va_brackets)):
+        lower, rate, amount = va_brackets[i]
+        if i+1 < len(va_brackets):
+            upper = va_brackets[i+1][0]
+        else:
+            upper = float("inf")
+
+        if ytd_income>lower and ytd_income<=upper:
+            va_tax = taxable_income*brackets[i][1] + amount  
+
+return tax, va_tax
 
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
@@ -218,14 +238,18 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
         income_real = pension_real + withdrawal_real
         ytd_income += income_real
-        tax = calc_taxes(ytd_income, income_real)
-        net_income_real = income_real - tax
+        fed_tax, va_tax = calc_taxes(ytd_income, income_real)
+        total_tax = fed_tax + va_tax
+        net_income_real = income_real - total_tax
+        
 
         row["Net_Worth_Real"] = balances_real.sum()
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real
         row["Income_Real"] =  income_real
-        row["Tax"] = tax   
+        row["Fed Tax"] = fed_tax 
+        row["VA Tax"] = va_tax  
+        row["Total Tax"] = total_tax
         row["Net_Income_Real"] = net_income_real
 
 
