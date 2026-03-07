@@ -152,6 +152,8 @@ def calc_taxes(ytd_income, income_real):
 
     return tax, va_tax
 
+def spec_annuity ():
+    
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
     
