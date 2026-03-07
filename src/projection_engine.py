@@ -149,7 +149,7 @@ def calc_taxes(ytd_income, income_real):
         if ytd_income>lower and ytd_income<=upper:
             va_tax = taxable_income*brackets[i][1] + amount  
 
-return tax, va_tax
+    return tax, va_tax
 
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
