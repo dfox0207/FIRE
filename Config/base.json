@@ -5,7 +5,7 @@
     "horizon": "2078-02-07",
     "basis": "2025-01-01",
     "withdrawal_start_date": "2035-11-01",
-    "withdrawal_rate": 0.05,
+    "withdrawal_rate": 0.04,
     "withdrawal_type": "VPW",
     "withdrawal_order": ["457(b)","Brokerage", "403(b)", "SERS","TSP", "ROTH IRA"],
     "pension": 3261,
