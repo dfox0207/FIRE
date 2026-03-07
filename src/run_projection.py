@@ -21,7 +21,8 @@ scenario_path = Path(sys.argv[1]) if len(sys.argv) >1 else Path("Config/base.jso
 cfg = json.loads(scenario_path.read_text(encoding="utf-8"))
 
 #2. Convert config values to proper Python types
-assumptions = {"birthday": pd.Timestamp(cfg["birthday"]),
+assumptions = {
+    "birthday": pd.Timestamp(cfg["birthday"]),
     "annual_return" : cfg["annual_return"],
     "inflation": cfg["inflation"],
     "horizon": pd.Timestamp(cfg["horizon"]).to_period("M").to_timestamp(),

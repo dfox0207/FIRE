@@ -91,8 +91,15 @@ def calc_real(m, basis, balances, inflation, withdrawal):
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real
 
-def calc_roth_conv():
-    
+def calc_roth_conv(balance, annual_return, retirement, birthday):
+    start_date = retirement
+    end_date = birthday + pd.DateOffset(years=75)
+    conv_window = end_date - start_date
+    r = annual_return/12
+    roth_conv = balance *r/(1-(1+r)**(-conv_window))
+
+    return roth_conv
+
 
 def calc_taxes(ytd_income, income_real):
 
@@ -146,7 +153,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     annual_w0 = None
     t0 = None
     ytd_income=0
-
+    roth_conv= 0
 
     #For each month apply: 
     for m in months:
@@ -177,12 +184,25 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         
         row["Withdrawal"] = withdrawal
+
+        #2b. Take Roth Conversion
+        if m == retirement:
+            roth_conv = calc_roth_conv(
+                balances["TSP"],
+                annual_return,
+                retirement,
+                birthday
+            )
+
+        if retirement <= m <= birthday + pd.DateOffset(years=75):
+            balances["TSP"] -= roth_conv
+            
        
-        #2b. Take Pension
+        #2c. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
 
-        #2c. Sum Total Income
+        #2d. Sum Total Income
         row["Income"] = pension + withdrawal
         
         #3. add cashflows to new balances
