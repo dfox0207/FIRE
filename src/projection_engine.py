@@ -138,6 +138,7 @@ def calc_taxes(ytd_income, income_real):
         (17000, 0.0575, 720)
     ]
 
+    va_taxable_income = income_real-va_std_deduct/12
 
     for i in range(len(va_brackets)):
         lower, rate, amount = va_brackets[i]
@@ -147,7 +148,7 @@ def calc_taxes(ytd_income, income_real):
             upper = float("inf")
 
         if ytd_income>lower and ytd_income<=upper:
-            va_tax = taxable_income*brackets[i][1] + amount  
+            va_tax = va_taxable_income*va_brackets[i][1] + amount  
 
     return tax, va_tax
 
