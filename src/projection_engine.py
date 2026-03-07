@@ -95,7 +95,7 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
     start_date = retirement
     end_date = birthday + pd.DateOffset(years=75)
     conv_window = end_date - start_date
-    r = annual_return/12
+    r = (1 + annual_return)**(1/12) - 1
     roth_conv = balance *r/(1-(1+r)**(-conv_window))
 
     return roth_conv
