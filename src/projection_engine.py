@@ -102,7 +102,9 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
 
 
 def calc_taxes(m, ytd_income, income_real):
-
+    if m.month == 1:
+        ytd_income = 0.0
+        
     #1. Federal Taxes
     std_deduct = 15000
     brackets = [
@@ -118,8 +120,7 @@ def calc_taxes(m, ytd_income, income_real):
 
     taxable_income = income_real-std_deduct/12
 
-    if m.month == 1:
-        ytd_income = 0.0
+    
 
     for i in range(len(brackets)):
         lower, rate = brackets[i]
