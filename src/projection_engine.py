@@ -162,7 +162,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
         else:
             va_upper = float("inf")
 
-        if va_lower <= ytd_income < upper:
+        if va_lower <= va_ytd_income < va_upper:
             if va_upper - va_ytd_taxable_income < new_va_taxable_income:
                 va_lower = (va_upper- va_ytd_taxable_income) * va_lower_rate
                 va_upper = (new_va_taxable_income - (va_upper - va_ytd_taxable_income)) * va_upper
