@@ -134,7 +134,7 @@ def calc_taxes(m, ytd_income, income_real):
 
         if lower <= ytd_income < upper:
             tax = taxable_income*rate
-        break
+            break
 
     #2. VA Taxes
     va_std_deduct = 8750
