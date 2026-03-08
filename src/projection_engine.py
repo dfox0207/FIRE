@@ -200,9 +200,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     
     annual_w0 = None
     t0 = None
-    ytd_income=0
     roth_conv= 0
-    
+    ytd_taxable_income = 0
+    va_ytd_taxable_income = 0
 
     #For each month apply: 
     for m in months:
