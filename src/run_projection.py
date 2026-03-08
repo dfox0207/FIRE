@@ -204,7 +204,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     charts_dir.mkdir(parents=True, exist_ok=True)
 
-    df.to_csv(output_dir / "projection.csv", index=False)
+    projection.to_csv(output_dir / "projection.csv", index=False)
 
     networth_path = charts_dir / "net_worth.png"
     fig.savefig(networth_path, dpi=300, bbox_inches="tight")
