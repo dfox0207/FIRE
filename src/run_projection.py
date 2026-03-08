@@ -194,6 +194,20 @@ def main():
     plt.tight_layout()
     plt.show()
 
+    scenario_path = Path(sys.argv[1]).resolve()
+
+    # assuming config is in ClientFolder/Config/base.json
+    client_root = scenario_path.parent.parent
+    output_dir = client_root / "Output"
+    charts_dir = output_dir / "charts"
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    charts_dir.mkdir(parents=True, exist_ok=True)
+
+    df.to_csv(output_dir / "projection.csv", index=False)
+
+    networth_path = charts_dir / "net_worth.png"
+    fig.savefig(networth_path, dpi=300, bbox_inches="tight")
 
 if __name__ == "__main__":
      main()
