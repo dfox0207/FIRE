@@ -133,7 +133,7 @@ def calc_taxes(m, ytd_income, income_real):
             upper = float("inf")
 
         if lower <= ytd_income < upper:
-            tax = taxable_income*brackets[i][1]
+            tax = taxable_income*rate
             break
 
     #2. VA Taxes
@@ -158,9 +158,8 @@ def calc_taxes(m, ytd_income, income_real):
             va_tax = va_taxable_income*rate  
         
             if m.month == 12:
-                if lower <= ytd_income < upper:
-                    va_tax += amount   
-                break 
+                va_tax += amount   
+            break 
 
     return tax, va_tax
 
