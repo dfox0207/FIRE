@@ -104,7 +104,10 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
 def calc_taxes(m, ytd_income, income_real):
     if m.month == 1:
         ytd_income = 0.0
-        
+
+    tax = 0.0
+    va_tax = 0.0
+
     #1. Federal Taxes
     std_deduct = 15000
     brackets = [
@@ -129,9 +132,9 @@ def calc_taxes(m, ytd_income, income_real):
         else:
             upper = float("inf")
 
-        if ytd_income>lower and ytd_income<=upper:
+        if lower <= ytd_income < upper:
             tax = taxable_income*brackets[i][1]
-            
+            break
 
     #2. VA Taxes
     va_std_deduct = 8750
@@ -151,12 +154,13 @@ def calc_taxes(m, ytd_income, income_real):
         else:
             upper = float("inf")
 
-        if ytd_income>lower and ytd_income<=upper:
+        if lower <= ytd_income < upper:
             va_tax = va_taxable_income*va_brackets[i][1]  
         
-        if m.month == 12:
-            if lower <= ytd_income < upper:
-                va_tax += amount    
+            if m.month == 12:
+                if lower <= ytd_income < upper:
+                    va_tax += amount   
+                break 
 
     return tax, va_tax
 
