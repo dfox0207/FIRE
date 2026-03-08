@@ -101,7 +101,7 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
     return roth_conv
 
 
-def calc_taxes(ytd_income, income_real):
+def calc_taxes(m, ytd_income, income_real):
 
     #1. Federal Taxes
     std_deduct = 15000
@@ -117,6 +117,9 @@ def calc_taxes(ytd_income, income_real):
     ]
 
     taxable_income = income_real-std_deduct/12
+
+    if m.month == 1:
+        ytd_income = 0.0
 
     for i in range(len(brackets)):
         lower, rate = brackets[i]
@@ -148,7 +151,11 @@ def calc_taxes(ytd_income, income_real):
             upper = float("inf")
 
         if ytd_income>lower and ytd_income<=upper:
-            va_tax = va_taxable_income*va_brackets[i][1] + amount  
+            va_tax = va_taxable_income*va_brackets[i][1]  
+        
+        if m.month == 12:
+            if lower <= ytd_income < upper:
+                va_tax += amount    
 
     return tax, va_tax
 
@@ -185,8 +192,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row = {"Date": m}
         row["Age"] = (m-birthday).days / 365.2425
 
-        if m.month == 1:
-            ytd_income = 0.0
+
 
         #1.apply growth to balances
         balances = growth(balances, annual_return)
@@ -256,7 +262,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         ytd_income += income_real
-        fed_tax, va_tax = calc_taxes(ytd_income, income_real)
+        fed_tax, va_tax = calc_taxes(m, ytd_income, income_real)
         total_tax = fed_tax + va_tax
         net_income_real = income_real - total_tax
         
