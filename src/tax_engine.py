@@ -17,8 +17,8 @@ def calc_tax(bracket, taxable_income: float) -> float:
     return tax_by_bracket.sum()
 
 
-def calc_ytd_tax(bracket, ytd_income_real: float, ytd_tax: float):
-    std_deduct = 15000
+def calc_ytd_tax(std_deduct, bracket, ytd_income_real: float, ytd_tax: float):
+    
 
     new_ytd_taxable_income = max(0.0, ytd_income_real - std_deduct)
     new_ytd_tax = calc_tax(bracket, new_ytd_taxable_income)
@@ -41,6 +41,7 @@ def tax_engine(
     fed_bracket= [lowers, uppers, rates]
 
     monthly_tax, new_ytd_tax = calc_ytd_tax(
+        std_deduct,
         fed_bracket,
         ytd_income_real,
         ytd_tax
@@ -57,6 +58,7 @@ def tax_engine(
     va_bracket = [va_lowers, va_uppers, va_rates]
 
     va_monthly_tax, va_new_ytd_tax = calc_ytd_tax(
+        va_std_deduct,
         va_bracket,
         ytd_income_real,
         va_ytd_tax
