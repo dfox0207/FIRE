@@ -102,9 +102,7 @@ def calc_roth_conv(balance, annual_return, retirement, birthday):
 
 
 def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
-    if m.month == 1:
-        ytd_taxable_income = 0.0
-        va_ytd_taxable_income = 0.0
+
 
     tax = 0.0
     va_tax = 0.0
@@ -143,6 +141,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
             else:
                 tax = new_taxable_income * lower_rate
 
+    ytd_taxable_income += new_taxable_income
 
     #2. VA Taxes
     va_std_deduct = 8750
@@ -164,15 +163,17 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
 
         if va_lower <= va_ytd_taxable_income < va_upper:
             if va_upper - va_ytd_taxable_income < new_va_taxable_income:
-                va_lower = (va_upper- va_ytd_taxable_income) * va_lower_rate
-                va_upper = (new_va_taxable_income - (va_upper - va_ytd_taxable_income)) * va_upper
-                va_tax = va_lower + va_upper
+                va_lower_tax = (va_upper- va_ytd_taxable_income) * va_lower_rate
+                va_upper_tax = (new_va_taxable_income - (va_upper - va_ytd_taxable_income)) * va_upper_rate
+                va_tax = va_lower_tax + va_upper_tax
             else:
-                va_tax = new_va_taxable_income * va_lower  
+                va_tax = new_va_taxable_income * va_lower_rate  
         
             if m.month == 12:
                 va_tax += amount   
             break 
+
+    va_ytd_taxable_income += new_va_taxable_income
 
     return tax, va_tax, ytd_taxable_income, va_ytd_taxable_income
 
@@ -209,7 +210,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row = {"Date": m}
         row["Age"] = (m-birthday).days / 365.2425
 
-
+        if m.month == 1:
+            ytd_taxable_income = 0.0
+            va_ytd_taxable_income = 0.0
 
         #1.apply growth to balances
         balances = growth(balances, annual_return)
