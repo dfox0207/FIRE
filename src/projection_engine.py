@@ -120,7 +120,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
         (626351,0.37)
     ]
 
-    new_taxable_income = income_real-std_deduct/12
+    new_taxable_income = max(0.0, income_real - std_deduct / 12)
 
     
 
@@ -153,7 +153,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
         (17000, 0.0575, 720)
     ]
 
-    new_va_taxable_income = income_real-va_std_deduct/12
+    new_va_taxable_income = max(0.0, income_real - va_std_deduct / 12)
 
     for i in range(len(va_brackets)):
         va_lower, va_lower_rate, va_lower_amount = va_brackets[i]
@@ -161,6 +161,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
             va_upper, va_upper_rate, va_upper_amount = va_brackets[i+1]
         else:
             va_upper = float("inf")
+            va_upper_rate = va_brackets[-1][1]
 
         if va_lower <= va_ytd_taxable_income < va_upper:
             if va_upper - va_ytd_taxable_income < new_va_taxable_income:
