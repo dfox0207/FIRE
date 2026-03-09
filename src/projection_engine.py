@@ -122,7 +122,7 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
     new_ytd_tax = 0
     
     for i in range(len(brackets)):
-        tax_i = 0
+        
         lower, lower_rate = brackets[i]
         if i+1 < len(brackets):
             upper = brackets[i+1][0]
@@ -136,7 +136,7 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
         elif new_ytd_taxable_income > lower:
             tax_i = (new_ytd_taxable_income - lower) * lower_rate
         
-            new_ytd_tax += tax_i
+            
 
             break
     
@@ -175,9 +175,9 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
         elif va_lower <= new_va_taxable_income < va_upper:
             va_tax_i = (new_va_taxable_income - va_lower) * va_lower_rate + va_lower_amount  
         
-        new_va_ytd_tax += va_tax_i
+            new_va_ytd_tax += va_tax_i
 
-        break 
+            break 
     new_va_tax = new_va_ytd_tax - last_va_ytd_tax
     
 
