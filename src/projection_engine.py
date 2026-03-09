@@ -120,8 +120,9 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
     last_ytd_tax = ytd_tax
     
     new_ytd_tax = 0
-
+    
     for i in range(len(brackets)):
+        tax_i = 0
         lower, lower_rate = brackets[i]
         if i+1 < len(brackets):
             upper = brackets[i+1][0]
@@ -129,7 +130,7 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
         else:
             upper = float("inf")   
 
-        if lower <= new_ytd_taxable_income > upper:
+        if new_ytd_taxable_income >= upper:
             tax_i = (upper - lower) * lower_rate
             
         elif lower <= new_ytd_taxable_income < upper:
@@ -139,7 +140,8 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
 
         break
     new_tax = new_ytd_tax - last_ytd_tax
-    
+        else:
+            tax_i = 0
 
     #2. VA Taxes
     va_std_deduct = 8750
