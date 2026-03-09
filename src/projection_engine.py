@@ -163,10 +163,10 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
             va_upper = float("inf")
             
 
-        if va_lower <= new_va_ytd_taxable_income > va_upper:
+        if va_lower <= new_va_taxable_income > va_upper:
             va_tax_i = (va_upper - va_lower) * va_lower_rate
             
-        elif va_lower <= new_va_ytd_taxable_income < va_upper:
+        elif va_lower <= new_va_taxable_income < va_upper:
             va_tax_i = (new_va_taxable_income - va_lower) * va_lower_rate + va_lower_amount  
         
         new_va_ytd_tax += va_tax_i
