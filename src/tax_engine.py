@@ -7,7 +7,7 @@ import numpy as np
 def calc_tax(taxable_income: float) -> float:
     #Bracket
     lowers = np.array([0, 11925, 48475, 103350, 197300, 250525, 626350], dtype=float)
-    uppers = np.array([11925, 48475, 103350, 197300, 250525, 626350, np.inf], dytpe=float)
+    uppers = np.array([11925, 48475, 103350, 197300, 250525, 626350, np.inf], dtype=float)
     rates = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37], dtype = float)
 
     #Amount of income that lands inside each bracket
