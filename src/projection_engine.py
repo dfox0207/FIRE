@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
+from tax_engine import tax_engine
+
 def calc_pension(pension_real, retirement, inflation, m):
     pension = 0.0
     if m >= retirement:
@@ -207,9 +209,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     
     annual_w0 = None
     t0 = None
-    roth_conv= 0
-    ytd_tax = 0
-    va_ytd_tax = 0
+    roth_conv= 0.0
+    ytd_tax = 0.0
+    va_ytd_tax = 0.0
     ytd_income_real = 0.0
 
     #For each month apply: 
@@ -290,8 +292,14 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         ytd_income_real += income_real
-        new_tax, new_va_tax, ytd_tax, va_ytd_tax = calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax)  
-        total_tax = new_tax + new_va_tax
+
+        tax, ytd_tax = tax_engine(
+            ytd_income_real = ytd_income_real,
+            ytd_tax = ytd_tax,
+            std_deduct=15000.0
+        )
+
+        total_tax = tax 
         net_income_real = income_real - total_tax
         
 
@@ -299,8 +307,8 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Withdrawal_real"] = withdrawal_real
         row["Pension_Real"] = pension_real
         row["Income_Real"] =  income_real
-        row["Fed Tax"] = new_tax 
-        row["VA Tax"] = new_va_tax  
+        row["Fed Tax"] = tax 
+        #row["VA Tax"] = new_va_tax  
         row["Total Tax"] = total_tax
         row["Net_Income_Real"] = net_income_real
 
