@@ -138,10 +138,10 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
         
             
 
-            break
+            
     
         else:
-            tax_i = 0
+            break
     
         new_ytd_tax += tax_i
     
