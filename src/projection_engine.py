@@ -293,12 +293,12 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         ytd_income_real += income_real
 
-        tax, ytd_tax = tax_engine(
+        tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
             ytd_income_real = ytd_income_real,
             ytd_tax = ytd_tax
         )
 
-        total_tax = tax 
+        total_tax = tax + va_tax
         net_income_real = income_real - total_tax
         
 
@@ -307,7 +307,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Pension_Real"] = pension_real
         row["Income_Real"] =  income_real
         row["Fed Tax"] = tax 
-        #row["VA Tax"] = new_va_tax  
+        row["VA Tax"] = va_tax  
         row["Total Tax"] = total_tax
         row["Net_Income_Real"] = net_income_real
 
