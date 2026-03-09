@@ -30,7 +30,6 @@ def calc_ytd_tax(ytd_income_real: float, ytd_tax: float):
     return new_tax, new_ytd_tax
 
 def tax_engine(
-    income_real: float,
     ytd_income_real: float,
     ytd_tax: float,
     std_deduct: float=15000.0,
