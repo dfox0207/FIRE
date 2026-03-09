@@ -295,7 +295,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         tax, ytd_tax = tax_engine(
             ytd_income_real = ytd_income_real,
-            ytd_tax = ytd_tax,
+            ytd_tax = ytd_tax
         )
 
         total_tax = tax 
