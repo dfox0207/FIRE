@@ -157,7 +157,7 @@ def calc_taxes(m, ytd_taxable_income, va_ytd_taxable_income, income_real):
     for i in range(len(va_brackets)):
         va_lower, va_lower_rate, amount = va_brackets[i]
         if i+1 < len(va_brackets):
-            va_upper = va_brackets[i+1][0]
+            va_upper, va_upper_rate = va_brackets[i+1]
         else:
             va_upper = float("inf")
 
