@@ -42,8 +42,8 @@ def tax_engine(
 
     monthly_tax, new_ytd_tax = calc_ytd_tax(
         fed_bracket,
-        ytd_income_real = ytd_income_real,
-        ytd_tax= ytd_tax
+        ytd_income_real,
+        ytd_tax
     )
 
     #Virginia Taxes
@@ -58,8 +58,8 @@ def tax_engine(
 
     va_monthly_tax, va_new_ytd_tax = calc_ytd_tax(
         va_bracket,
-        ytd_income_real = ytd_income_real,
-        va_ytd_tax = va_ytd_tax
+        ytd_income_real,
+        va_ytd_tax
     )
 
     return monthly_tax, new_ytd_tax, va_monthly_tax, va_new_ytd_tax
