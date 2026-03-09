@@ -285,7 +285,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         ytd_income_real += income_real
         new_tax, new_va_tax, ytd_tax, va_ytd_tax = calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax)  
-        total_tax = tax + va_tax
+        total_tax = new_tax + new_va_tax
         net_income_real = income_real - total_tax
         
 
