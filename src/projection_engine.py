@@ -133,15 +133,19 @@ def calc_taxes(ytd_income_real, ytd_tax, va_ytd_tax):
         if new_ytd_taxable_income >= upper:
             tax_i = (upper - lower) * lower_rate
             
-        elif lower <= new_ytd_taxable_income < upper:
+        elif new_ytd_taxable_income > lower:
             tax_i = (new_ytd_taxable_income - lower) * lower_rate
         
-        new_ytd_tax += tax_i
+            new_ytd_tax += tax_i
 
-        break
-    new_tax = new_ytd_tax - last_ytd_tax
+            break
+    
         else:
             tax_i = 0
+    
+        new_ytd_tax += tax_i
+    
+    new_tax = new_ytd_tax - last_ytd_tax
 
     #2. VA Taxes
     va_std_deduct = 8750
