@@ -28,6 +28,22 @@ def apply_flows(balances, cf, m):
     flows = active.groupby("account")["monthly_amount"].sum()
     return balances.add(flows, fill_value=0) 
 
+def calc_spec_annuity(m, birthday, ssa_benefit, service_length):
+    if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
+        spec_annuity = ssa_benefit * service_length/40
+    else:
+        spec_annuity = 0
+    return spec_annuity
+
+def calc_ssa(m, birthday, ssa_benefit, inflation, basis):
+    if m > birthday + pd.DateOffset(years=62):
+        ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
+        ssa_annuity_real = ssa_benefit*0.8
+    else:
+        ssa_annuity = 0
+        ssa_annuity_real = 0
+    return ssa_annuity, ssa_annuity_real
+
 def calc_real(m, basis, amount, inflation):
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
     amount_real = amount*(1+inflation)**(delta_months/12)
@@ -110,17 +126,18 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Pension_Real"] = pension_real
 
         #2d. Take Special Supplemental Annuity
-        
-        if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
-            spec_annuity = ssa_benefit * service_length/40
+        spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
+        ssa_annuity, ssa_annuity_real = calc_ssa(m, birthday, ssa_benefit, inflation, basis)
+        # if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
+        #     spec_annuity = ssa_benefit * service_length/40
 
-        elif m > birthday + pd.DateOffset(years=62):
-            ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
-            ssa_annuity_real = ssa_benefit*0.8
-        else:
-            spec_annuity = 0
-            ssa_annuity = 0
-            ssa_annuity_real = 0
+        # elif m > birthday + pd.DateOffset(years=62):
+        #     ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
+        #     ssa_annuity_real = ssa_benefit*0.8
+        # else:
+        #     spec_annuity = 0
+        #     ssa_annuity = 0
+        #     ssa_annuity_real = 0
         
         #2e. Sum Total Income
         row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
