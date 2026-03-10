@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
-from tax_engine import load_tax_systems, tax_engine
+from tax_engine import tax_engine
 
-tax_systems = load_tax_systems("Config/tax_system.json")
+
 
 def calc_pension(pension_real, retirement, inflation, m):
     pension = 0.0

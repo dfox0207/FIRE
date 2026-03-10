@@ -85,7 +85,11 @@ def tax_engine(
     ytd_tax: float,
     va_ytd_tax: float
 ):
+    tax_systems = load_tax_systems("Config/tax_system.json")
+    
     #Federal Taxes
+    fed_bracket = [load_brackets("Config/federal_tax_2025.csv"]
+    
     monthly_tax, new_ytd_tax = calc_ytd_tax(
         fed_bracket,
         ytd_income_real,
