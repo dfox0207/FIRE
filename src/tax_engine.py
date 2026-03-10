@@ -84,10 +84,6 @@ def tax_engine(
     va_ytd_tax: float
 ):
     #Federal Taxes
-    
-
-    fed_bracket= [lowers, uppers, rates]
-
     monthly_tax, new_ytd_tax = calc_ytd_tax(
         std_deduct,
         fed_bracket,
@@ -96,14 +92,6 @@ def tax_engine(
     )
 
     #Virginia Taxes
-    va_std_deduct = 8750
-    va_lowers = np.array([0,3001, 5001, 17000], dtype=float)
-    va_uppers = np.array([3001, 5001, 17000, np.inf], dtype=float)
-    va_rates = np.array([0.02,0.03,0.05,0.0575], dtype=float)
-    va_fee = np.array([0, 60,120,720], dtype=float) 
-
-    va_bracket = [va_lowers, va_uppers, va_rates, va_fee]
-
     va_monthly_tax, va_new_ytd_tax = calc_va_ytd_tax(
         va_bracket,
         va_std_deduct,

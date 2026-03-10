@@ -2,13 +2,13 @@
   "federal": {
     "method": "marginal",
     "standard_deduction": 15000.0,
-    "brackets_file": "config/federal_tax_2025.csv",
+    "brackets_file": "Config/federal_tax_2025.csv",
     "round_tax": false
   },
   "virginia": {
     "method": "base_plus_top_rate",
     "standard_deduction": 8750.0,
-    "brackets_file": "config/virginia_tax_2025.csv",
+    "brackets_file": "Config/virginia_tax_2025.csv",
     "round_tax": true
   }
 }
