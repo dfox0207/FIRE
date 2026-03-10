@@ -35,7 +35,7 @@ def apply_flows(balances, cf, m):
 #     return balances_real, withdrawal_real
 def calc_real(m, basis, amount, inflation):
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
-    amount_real = balances*(1+inflation)**(delta_months/12)
+    amount_real = amount*(1+inflation)**(delta_months/12)
     return amount_real
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
