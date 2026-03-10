@@ -33,7 +33,7 @@ def convert_to_roth(m, balances, assumptions, roth_state):
         conv = min(roth_state["monthly_conv"], balances["TSP"])
 
         balances["TSP"] -= conv
-        balances["ROTH"] += conv
+        balances["ROTH IRA"] += conv
 
         return conv
 
