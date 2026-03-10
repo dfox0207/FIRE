@@ -174,7 +174,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         if retirement <= m <= birthday + pd.DateOffset(years=75):
             balances["TSP"] -= roth_conv
-            
+        row["ROTH Conversion"] = roth_conv    
        
         #2c. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
