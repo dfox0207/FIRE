@@ -6,13 +6,13 @@ import numpy as np
 
 def calc_tax(bracket, taxable_income: float) -> float:
     #Bracket
-    lowers, uppers, rates, fee = bracket
+    lowers, uppers, rates = bracket
 
     #Amount of income that lands inside each bracket
     taxable_by_bracket = np.maximum(0.0, np.minimum(taxable_income, uppers)-lowers)
 
     #Tax from each bracket
-    tax_by_bracket = taxable_by_bracket * rates + fee
+    tax_by_bracket = taxable_by_bracket * rates 
 
     return tax_by_bracket.sum()
 
@@ -26,6 +26,23 @@ def calc_ytd_tax(std_deduct, bracket, ytd_income_real: float, ytd_tax: float):
     new_tax = new_ytd_tax - ytd_tax
 
     return new_tax, new_ytd_tax
+
+def calc_va_tax(bracket, taxable_income: float) -> float:
+    lowers, uppers, rates, fee = bracket
+
+    idx = np.searchsorted(lowers, taxable_income, side="right")-1
+    idx = max(idx, 0)
+
+    tax = fees[idx] + rates[idx] * (taxable_income - lowers[idx])
+
+    return tax
+
+def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real: float, va_ytd_tax: float):
+    new_va_taxable_income = max(0.0, ytd_income_real- va_std_deduct)
+    va_new_ytd_tax = calc_va_tax(new_va_taxable_income)
+    va_new_tax = va_new_ytd_tax - va_ytd_tax
+
+    return va_new_tax, va_new_ytd_tax
 
 def tax_engine(
     ytd_income_real: float,
@@ -54,13 +71,11 @@ def tax_engine(
     va_rates = np.array([0.02,0.03,0.05,0.0575], dtype=float)
     va_fee = np.array([0, 60,120,720], dtype=float) 
 
-
-
     va_bracket = [va_lowers, va_uppers, va_rates, va_fee]
 
-    va_monthly_tax, va_new_ytd_tax = calc_ytd_tax(
-        va_std_deduct,
+    va_monthly_tax, va_new_ytd_tax = calc_va_ytd_tax(
         va_bracket,
+        va_std_deduct,
         ytd_income_real,
         va_ytd_tax
     )
