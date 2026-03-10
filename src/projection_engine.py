@@ -105,7 +105,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     withdrawal = 0.0
     roth_state = {"monthly_conv": None}
 
-    withdrawal_start_date = assumptions["withdrawal_start_date"]
+    withdrawal_start_date = assumptions["retirement"]
     withdrawal_rate = assumptions["withdrawal_rate"]
     withdrawal_type = assumptions["withdrawal_type"]
     order = assumptions["withdrawal_order"]
