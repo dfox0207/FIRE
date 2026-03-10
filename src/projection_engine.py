@@ -28,11 +28,6 @@ def apply_flows(balances, cf, m):
     flows = active.groupby("account")["monthly_amount"].sum()
     return balances.add(flows, fill_value=0) 
 
-# def calc_real(m, basis, balances, inflation, withdrawal):
-#     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
-#     balances_real = balances*(1+inflation)**(delta_months/12)
-#     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
-#     return balances_real, withdrawal_real
 def calc_real(m, basis, amount, inflation):
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
     amount_real = amount*(1+inflation)**(delta_months/12)
@@ -106,7 +101,9 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         )
 
         row["ROTH Conversion"] = roth_conv    
-       
+        roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+        row["ROTH Conversion Real"] = roth_conv_real
+
         #2c. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
