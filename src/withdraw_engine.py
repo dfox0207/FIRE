@@ -15,7 +15,7 @@ def withdrawal_waterfall(balances, withdrawal, order):
     balances = row
     return balances
 
-def cal_withdrawal(
+def calc_withdrawal(
     *, 
     m, 
     withdrawal_start_date, 
