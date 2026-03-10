@@ -28,7 +28,7 @@ def calc_ytd_tax(std_deduct, bracket, ytd_income_real: float, ytd_tax: float):
     return new_tax, new_ytd_tax
 
 def calc_va_tax(bracket, taxable_income: float) -> float:
-    lowers, uppers, rates, fee = bracket
+    lowers, uppers, rates, fees = bracket
 
     idx = np.searchsorted(lowers, taxable_income, side="right")-1
     idx = max(idx, 0)
