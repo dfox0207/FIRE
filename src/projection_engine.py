@@ -3,7 +3,7 @@ import numpy as np
 from typing import Dict, List, Tuple
 
 from tax_engine import tax_engine
-
+from roth_engine import convert_to_roth
 
 
 def calc_pension(pension_real, retirement, inflation, m):
@@ -95,14 +95,7 @@ def calc_real(m, basis, balances, inflation, withdrawal):
     withdrawal_real = withdrawal*(1+inflation)**(delta_months/12)
     return balances_real, withdrawal_real
 
-def calc_roth_conv(balance, annual_return, retirement, birthday):
-    start_date = retirement
-    end_date = birthday + pd.DateOffset(years=75)
-    conv_window = (end_date.to_period("M") - start_date.to_period("M")).n
-    r = (1 + annual_return)**(1/12) - 1
-    roth_conv = balance *r/(1-(1+r)**(-conv_window))
 
-    return roth_conv
    
 
 def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
@@ -110,6 +103,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     balances = start_bal.copy()
     rows =[]
     withdrawal = 0.0
+    roth_state = {"monthly_conv": None}
 
     withdrawal_start_date = assumptions["withdrawal_start_date"]
     withdrawal_rate = assumptions["withdrawal_rate"]
@@ -164,17 +158,13 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Withdrawal"] = withdrawal
 
         #2b. Take Roth Conversion
-        roth_conv= 0.0
-        if m == retirement:
-            roth_conv = calc_roth_conv(
-                balances["TSP"],
-                annual_return,
-                retirement,
-                birthday
-            )
+        roth_conv = convert_to_roth(
+            m,
+            balances,
+            assumptions,
+            roth_state,
+        )
 
-        if retirement <= m <= birthday + pd.DateOffset(years=75):
-            balances["TSP"] -= roth_conv
         row["ROTH Conversion"] = roth_conv    
        
         #2c. Take Pension
