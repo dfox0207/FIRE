@@ -24,6 +24,7 @@ def load_brackets(csv_path: str | Path) -> tuple[np.ndarray, np.ndarray, np.ndar
 
 
 def load_tax_systems(config_path: str | Path) -> Dict[str, dict]:
+    config_path = Path(config_path)
     cfg = json.loads(Path(config_path).read_text(encoding="utf-8"))
 
     systems = {}
