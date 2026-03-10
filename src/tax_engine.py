@@ -1,6 +1,42 @@
-import numpy as np 
+import json
+from pathlib import Path
+from typing import Dict, Tuple
+
+import numpy as np
+import pandas as pd
+
+def load_brackets(csv_path: str | Path) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    df = pd.read_csv(csv_path)
+
+    # Convert "inf" text in upper column to np.inf
+    df["upper"] = df["upper"].replace("inf", np.inf)
+    df["upper"] = pd.to_numeric(df["upper"], errors="coerce")
+    df["lower"] = pd.to_numeric(df["lower"], errors="raise")
+    df["rate"] = pd.to_numeric(df["rate"], errors="raise")
+    df["fee"] = pd.to_numeric(df["fee"], errors="raise")
+
+    lowers = df["lower"].to_numpy(dtype=float)
+    uppers = df["upper"].to_numpy(dtype=float)
+    rates = df["rate"].to_numpy(dtype=float)
+    fees = df["fee"].to_numpy(dtype=float)
+
+    return lowers, uppers, rates, fees
 
 
+def load_tax_systems(config_path: str | Path) -> Dict[str, dict]:
+    cfg = json.loads(Path(config_path).read_text(encoding="utf-8"))
+
+    systems = {}
+    for name, system in cfg.items():
+        lowers, uppers, rates, fees = load_brackets(system["brackets_file"])
+        systems[name] = {
+            "method": system["method"],
+            "standard_deduction": float(system["standard_deduction"]),
+            "round_tax": bool(system.get("round_tax", False)),
+            "bracket": (lowers, uppers, rates, fees),
+        }
+
+    return systems
 
 
 
@@ -50,10 +86,7 @@ def tax_engine(
     va_ytd_tax: float
 ):
     #Federal Taxes
-    std_deduct = 15000.0
-    lowers = np.array([0, 11925, 48475, 103350, 197300, 250525, 626350], dtype=float)
-    uppers = np.array([11925, 48475, 103350, 197300, 250525, 626350, np.inf], dtype=float)
-    rates = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37], dtype = float)
+    
 
     fed_bracket= [lowers, uppers, rates]
 
