@@ -98,7 +98,7 @@ def calc_real(m, basis, balances, inflation, withdrawal):
 def calc_roth_conv(balance, annual_return, retirement, birthday):
     start_date = retirement
     end_date = birthday + pd.DateOffset(years=75)
-    conv_window = end_date - start_date
+    conv_window = (end_date.to_period("M") - start_date.to_period("M")).n
     r = (1 + annual_return)**(1/12) - 1
     roth_conv = balance *r/(1-(1+r)**(-conv_window))
 
