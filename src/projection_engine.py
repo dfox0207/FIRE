@@ -2,7 +2,9 @@ import pandas as pd
 import numpy as np
 from typing import Dict, List, Tuple
 
-from tax_engine import tax_engine
+from tax_engine import load_tax_systems, tax_engine
+
+tax_systems = load_tax_systems("Config/tax_system.json")
 
 def calc_pension(pension_real, retirement, inflation, m):
     pension = 0.0
@@ -262,6 +264,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         #2c. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
+        row["Pension_Real"] = pension_real
 
         #2d. Take Special Supplemental Annuity
         
@@ -290,29 +293,26 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         
         #5 Calculate Real values
         balances_real, withdrawal_real = calc_real(m, basis, balances, inflation, withdrawal)
+        row["Net_Worth_Real"] = balances_real.sum()
+        row["Withdrawal_real"] = withdrawal_real
         income_real = pension_real + withdrawal_real + ssa_annuity_real
+        row["Income_Real"] =  income_real
         ytd_income_real += income_real
-
+        
+        #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
             ytd_income_real = ytd_income_real,
             ytd_tax = ytd_tax,
             va_ytd_tax = va_ytd_tax
         )
-
-        total_tax = tax + va_tax
-        net_income_real = income_real - total_tax
-        
-
-        row["Net_Worth_Real"] = balances_real.sum()
-        row["Withdrawal_real"] = withdrawal_real
-        row["Pension_Real"] = pension_real
-        row["Income_Real"] =  income_real
         row["Fed Tax"] = tax 
-        row["VA Tax"] = va_tax  
+        row["VA Tax"] = va_tax
+        total_tax = tax + va_tax
         row["Total Tax"] = total_tax
+        net_income_real = income_real - total_tax
         row["Net_Income_Real"] = net_income_real
 
-
+        
         #7 append record row
         rows.append(row)
 
