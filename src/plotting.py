@@ -4,7 +4,7 @@ import matplotlib.dates as mdates
 import matplotlib.ticker as ticker
 
 
-def plot_networth(df, ax):
+def plot_networth(df, ax, BALANCES_CSV):
     
     #read BALANCES.CSV
     df_bal = pd.read_csv(BALANCES_CSV, parse_dates=["Date"])       
@@ -90,12 +90,12 @@ def plot_tax(df, ax):
     ax.grid(True)
     ax.legend()
 
-def plotting(df, order):
+def plotting(df, order, BALANCES_CSV):
     # Create two side-by-side subplots
     fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
 
     # Top Left Plot: Networth
-    plot_networth(df, ax[0,0])
+    plot_networth(df, ax[0,0], BALANCES_CSV)
     
 
     # Top Right Plot: Income

@@ -176,7 +176,7 @@ def main():
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
-    plotting(projection, assumptions["withdrawal_order"])
+    plotting(projection, assumptions["withdrawal_order"], BALANCES_CSV)
 
     # # Create two side-by-side subplots
     # fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
