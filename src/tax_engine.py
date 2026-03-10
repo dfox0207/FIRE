@@ -55,7 +55,7 @@ def tax_engine(
     uppers = np.array([11925, 48475, 103350, 197300, 250525, 626350, np.inf], dtype=float)
     rates = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37], dtype = float)
 
-    fed_bracket= [lowers, uppers, rates, fee = None]
+    fed_bracket= [lowers, uppers, rates]
 
     monthly_tax, new_ytd_tax = calc_ytd_tax(
         std_deduct,
