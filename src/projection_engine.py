@@ -125,19 +125,10 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
 
-        #2d. Take Special Supplemental Annuity
+        #2d. Take Special Supplemental Annuity/SSA Annuity
         spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
         ssa_annuity, ssa_annuity_real = calc_ssa(m, birthday, ssa_benefit, inflation, basis)
-        # if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
-        #     spec_annuity = ssa_benefit * service_length/40
 
-        # elif m > birthday + pd.DateOffset(years=62):
-        #     ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
-        #     ssa_annuity_real = ssa_benefit*0.8
-        # else:
-        #     spec_annuity = 0
-        #     ssa_annuity = 0
-        #     ssa_annuity_real = 0
         
         #2e. Sum Total Income
         row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
