@@ -126,7 +126,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     
     annual_w0 = None
     t0 = None
-    roth_conv= 0.0
+    
     ytd_tax = 0.0
     va_ytd_tax = 0.0
     ytd_income_real = 0.0
@@ -164,6 +164,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Withdrawal"] = withdrawal
 
         #2b. Take Roth Conversion
+        roth_conv= 0.0
         if m == retirement:
             roth_conv = calc_roth_conv(
                 balances["TSP"],
