@@ -42,7 +42,7 @@ def load_tax_systems(config_path: str | Path) -> Dict[str, dict]:
 
 def calc_tax(bracket, taxable_income: float) -> float:
     #Bracket
-    lowers, uppers, rates = bracket
+    lowers, uppers, rates, fees = bracket
 
     #Amount of income that lands inside each bracket
     taxable_by_bracket = np.maximum(0.0, np.minimum(taxable_income, uppers)-lowers)
