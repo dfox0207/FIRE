@@ -28,7 +28,7 @@ assumptions = {
     "inflation": cfg["inflation"],
     "horizon": pd.Timestamp(cfg["horizon"]).to_period("M").to_timestamp(),
     "basis": pd.Timestamp(cfg["basis"]),
-    "withdrawal_start_date": pd.Timestamp(cfg["withdrawal_start_date"]),
+    "retirement": pd.Timestamp(cfg["retirement"]),
     "withdrawal_rate": cfg["withdrawal_rate"],
     "withdrawal_type": cfg["withdrawal_type"],
     "withdrawal_order": cfg["withdrawal_order"],
