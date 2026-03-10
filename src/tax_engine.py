@@ -29,7 +29,8 @@ def load_tax_systems(config_path: str | Path) -> Dict[str, dict]:
 
     systems = {}
     for name, system in cfg.items():
-        lowers, uppers, rates, fees = load_brackets(system["brackets_file"])
+        brackets_path = config_path.parent / system["brackets_file"]
+        lowers, uppers, rates, fees = load_brackets(brackets_path)
         systems[name] = {
             "method": system["method"],
             "standard_deduction": float(system["standard_deduction"]),
