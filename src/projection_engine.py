@@ -107,6 +107,8 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         
         row["Withdrawal"] = withdrawal
+        withdrawal_real = calc_real(m, basis, withdrawal, inflation)
+        row["Withdrawal_real"] = withdrawal_real
 
         #2b. Take Roth Conversion
         roth_conv = convert_to_roth(
@@ -132,25 +134,20 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         
         #2e. Sum Total Income
         row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
-        
-        #3. add cashflows to new balances
-        balances = apply_flows(balances, cf, m)
-        row.update(balances.to_dict())
-
-        #4 sum net worth  
-        row["Net_Worth"] = balances.sum() 
-
-
-        
-        #5 Calculate Real values
-        balances_real = calc_real(m, basis, balances, inflation)
-        row["Net_Worth_Real"] = balances_real.sum()
-        withdrawal_real = calc_real(m, basis, withdrawal, inflation)
-        row["Withdrawal_real"] = withdrawal_real
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         row["Income_Real"] =  income_real
         ytd_income_real += income_real
         
+        #3. add cashflows to new balances
+        balances = apply_flows(balances, cf, m)
+        row.update(balances.to_dict())
+        balances_real = calc_real(m, basis, balances, inflation)
+
+        #4 sum net worth  
+        row["Net_Worth"] = balances.sum() 
+        row["Net_Worth_Real"] = balances_real.sum()   
+        
+       
         #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
             ytd_income_real = ytd_income_real,
