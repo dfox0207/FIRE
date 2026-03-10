@@ -91,7 +91,7 @@ def tax_engine(
     
     
     #Federal Taxes
-    fed_bracket = [load_brackets("Config/federal_tax_2025.csv")]
+    fed_bracket = load_brackets("Config/federal_tax_2025.csv")
 
     std_deduct = tax_systems["federal"]["standard_deduction"]
     
@@ -105,7 +105,7 @@ def tax_engine(
 
 
     #Virginia Taxes
-    va_bracket = [load_brackets("Config/virginia_tax_2025.csv")]
+    va_bracket = load_brackets("Config/virginia_tax_2025.csv")
 
     va_std_deduct = tax_systems["virginia"]["standard_deduction"]
 
