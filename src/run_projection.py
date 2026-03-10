@@ -175,24 +175,26 @@ def main():
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
-    # Create two side-by-side subplots
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
+    plotting(projection, assumptions["withdrawal_order"])
 
-    # Top Left Plot: Networth
-    plot_networth(projection, ax[0,0])
+    # # Create two side-by-side subplots
+    # fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
+
+    # # Top Left Plot: Networth
+    # plot_networth(projection, ax[0,0])
     
 
-    # Top Right Plot: Income
-    plot_income(projection, ax[0,1])
+    # # Top Right Plot: Income
+    # plot_income(projection, ax[0,1])
 
-    # Bottom Left Plot: Account Balances
-    plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
+    # # Bottom Left Plot: Account Balances
+    # plot_accounts(projection, assumptions["withdrawal_order"], ax[1,0])
 
-    #Bottom Right Plot: Taxes
-    plot_tax(projection, ax[1,1])
+    # #Bottom Right Plot: Taxes
+    # plot_tax(projection, ax[1,1])
 
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()
 
     scenario_path = Path(sys.argv[1]).resolve()
 

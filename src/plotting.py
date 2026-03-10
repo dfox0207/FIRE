@@ -88,3 +88,25 @@ def plot_tax(df, ax):
     ax.tick_params(axis="x", rotation=45)
     ax.grid(True)
     ax.legend()
+
+def plotting(df, order):
+    # Create two side-by-side subplots
+    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
+
+    # Top Left Plot: Networth
+    plot_networth(df, ax[0,0])
+    
+
+    # Top Right Plot: Income
+    plot_income(df, ax[0,1])
+
+    # Bottom Left Plot: Account Balances
+    plot_accounts(df, order, ax[1,0])
+
+    #Bottom Right Plot: Taxes
+    plot_tax(df, ax[1,1])
+
+    plt.tight_layout()
+    plt.show()
+
+    
