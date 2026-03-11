@@ -87,7 +87,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
             ytd_tax = 0.0
             va_ytd_tax = 0.0
             ytd_income_real = 0.0
-            ytd_income_real = {}
+            ytd_income_sources = {}
 
         #1.apply growth to balances
         balances = growth(balances, annual_return)
