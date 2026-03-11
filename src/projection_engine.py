@@ -80,6 +80,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     for m in months:
         row = {"Date": m}
         row["Age"] = (m-birthday).days / 365.2425
+        income_sources = []
 
         if m.month == 1:
             ytd_tax = 0.0
