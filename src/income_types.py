@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from typing import Dict, Any
 
-
+@dataclass
 class TaxResult:
     federal_ordinary_income: float = 0.0
     federal_ltcg_income: float = 0.0
@@ -41,6 +41,7 @@ class TaxResult:
     def to_dict(self) -> Dict[str, float]:
         return asdict(self)
     
+    @classmethod
     def zero(cls) -> "TaxResult":
         return cls()
 
