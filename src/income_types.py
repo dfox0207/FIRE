@@ -19,6 +19,31 @@ class TaxResult:
 
     withholding: float = 0.0
 
+    def add(self, other: "TaxResult") -> None:
+        for field_name in self.__dataclass_fields__:
+            setattr(
+                self,
+                field_name,
+                getattr(self, field_name) + getattr(other, field_name)
+            )
+
+    def __add__(self, other: "TaxResult") -> "TaxResult":
+
+        result = TaxResult()
+        for field_name in self.__dataclass_fields__:
+            setattr(
+                result,
+                field_name,
+                getattr(self, field_name) + getattr(other, field_name)
+            )
+        return result
+    
+    def to_dict(self) -> Dict[str, float]:
+        return asdict(self)
+    
+    def zero(cls) -> "TaxResult":
+        return cls()
+
 
 class IncomeType(ABC):
 
