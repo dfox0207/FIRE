@@ -47,8 +47,9 @@ def calc_withdrawal(
     ):
     
     withdrawal = 0.0
+    income_sources = {}
     if m < withdrawal_start_date:
-        return balances, withdrawal, annual_w0, t0 
+        return balances, income_sources, withdrawal, annual_w0, t0 
 
     if withdrawal_type== "VPW":
         withdrawal = float(balances.sum())*float(withdrawal_rate)/12.0
