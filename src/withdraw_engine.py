@@ -12,7 +12,7 @@ def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, ba
     delta_months = (m.to_period("M") - t0.to_period("M")).n
     annual_withdrawal = annual_w0*(1+inflation)**(delta_months/12)                  #delta_months is negative
     withdrawal = annual_withdrawal/12.0
-    return withdrawal
+    return withdrawal, annual_w0, t0
 
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
