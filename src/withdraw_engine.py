@@ -1,4 +1,4 @@
-def classic_withdrawal(annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, b0, t0):
+def classic_withdrawal(annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0):
     if annual_w0 is None:
         if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
             b0 = balances_actuals.loc[withdrawal_start_date, balances.index].astype(float)
