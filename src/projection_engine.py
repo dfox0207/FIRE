@@ -163,7 +163,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
        
         #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
-            ytd_income_real = ytd_income_sources,
+            ytd_income_real = ytd_income_real,                             #ytd_income_sources
             ytd_tax = ytd_tax,
             va_ytd_tax = va_ytd_tax
         )
