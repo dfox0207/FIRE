@@ -17,20 +17,20 @@ def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, ba
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
     row = balances.copy()
-    acct_withdrawal = {}
+    income_sources = {}
     for acct in order:
-        
         if row[acct] >= remaining_withdrawal:
             row[acct] -= remaining_withdrawal
+            income = remaining_withdrawal
             remaining_withdrawal = 0
             break
         else:
             remaining_withdrawal = remaining_withdrawal-row[acct]
+            income = row[acct]
             row[acct] = 0
-    
-    acct_withdrawal[acct] = remaining_withdrawal
+        income_sources[acct] = income      
     balances = row
-    return balances
+    return balances, income_sources
 
 def calc_withdrawal(
     *, 
@@ -60,6 +60,6 @@ def calc_withdrawal(
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
     #Take withdrawal from accounts in order
-    balances = withdrawal_waterfall(balances, withdrawal, order)
+    balances, income_sources = withdrawal_waterfall(balances, withdrawal, order)
         
-    return balances, withdrawal, annual_w0, t0
+    return balances, income_sources, withdrawal, annual_w0, t0
