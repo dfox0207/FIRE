@@ -165,6 +165,49 @@ def projection_engine(
         for key in income_sources:
             income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
         
+        brokerage_balance = balances.get("Brokerage", 0.0)
+        interest_real= brokerage_balance*assumptions["brokerage_interest_yield"]/12
+        qdiv_real=brokerage_balance*assumptions["brokerage_qdiv_yield"]/12
+        if interest_real>0:
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Brokerage Interest",
+                        income_type=InterestIncome(),
+                        account="Brokerage"
+                    ),
+                    gross_amount=income_real
+                )
+            )
+        if qdiv_real>0:
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Brokerage Qualified Dividends",
+                        income_type=QualifiedDividendIncome(),
+                        account="Brokerage"
+                    ),
+                    gross_amount=qdiv_real
+                )
+            )
+        brokerage_withdrawal=income_sources.get("Brokerage", 0.0)
+        if brokerage_withdrawal>0:
+            ltcg_ratio=assumptions["brokerage_ltcg_realization_ratio"]
+            ltcg_amount=brokerage_withdrawal*ltcg_ratio
+            if ltcg_amount>0:
+                monthly_events.append(
+                    IncomeEvent(
+                        date=m,
+                        source=IncomeSource(
+                            name="Brokerage LTCG",
+                            income_type=LongTermCapitalGainIncome(),
+                            account="Brokerage"
+                        ),
+                        gross_amount=ltcg_amount
+                    )
+                )
 
         #2b. Take Roth Conversion
         roth_conv = convert_to_roth(
@@ -195,7 +238,7 @@ def projection_engine(
         
         #2e. Sum Total Income
         row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
-        income_real = pension_real + withdrawal_real + ssa_annuity_real
+        income_real = pension_real + withdrawal_real + ssa_annuity_real + interest_real + qdiv_real
         row["Income_Real"] =  income_real
         
 
