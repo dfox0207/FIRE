@@ -12,6 +12,11 @@ from income_types import (
     IncomeSource,
     EarnedIncome,
     RetirementDistributionIncome,
+    InterestIncome,
+    QualifiedDividendIncome,
+    ShortTermCapitalGainIncome,
+    LongTermCapitalGainIncome,
+    RothDistributionIncome,
 )
 
 def calc_pension(pension_real, retirement, inflation, m):
@@ -57,7 +62,36 @@ def calc_real(m, basis, amount, inflation):
     amount_real = amount*(1+inflation)**(delta_months/12)
     return amount_real
 
-def projection_engine(start_bal, cf, months, assumptions, balances_actuals = None):
+def income_type_from_account(acct: str, account_meta, event_kind:str | None=None):
+    account_type = account_meta.loc[acct, "account_type"]
+
+    if account_type in {"401k", "403b", "457b", "traditional_ira", "pension"}:
+        return RetirementDistributionIncome()
+
+    if account_type in {"roth_ira", "roth_401k", "roth_tsp"}:
+        return RothDistributionIncome()
+    
+    if account_type == "brokerage":
+        if event_kind == "interest":
+            return InterestIncome()
+        elif event_kind == "qualified_dividend":
+            return QualifiedDividendIncome()
+        elif event_kind == "ltcg":
+            return LongTermCapitalGainIncome()
+        else:
+            raise ValueError(f"Brokerage requires event_kind, got {event_kind}")
+    raise ValueError(f"Unknown account_type: {account_type}")
+
+
+
+def projection_engine(
+    account_tax_map, 
+    start_bal, 
+    cf, 
+    months, 
+    assumptions, 
+    balances_actuals = None
+    ):
     
     balances = start_bal.copy()
     rows =[]
@@ -124,6 +158,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
 
         for key in income_sources:
             income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
+        
 
         #2b. Take Roth Conversion
         roth_conv = convert_to_roth(
@@ -161,6 +196,31 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         for key in income_sources:
             ytd_income_sources[key] = ytd_income_sources.get(key, 0) + income_sources[key]
         
+        for acct, amount in income_sources.items():
+            if amount <= 0:
+                continue
+            
+            income_type = income_type_from_account(acct, account_meta)
+
+            source = IncomeSource(
+                name=f"{acct} Withdrawal",
+                income_type=income_type,
+                account=acct
+            )
+
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=source,
+                    gross_amount=amount
+                )
+            )
+        
+        monthly_tax_buckets = TaxResult.zero()
+        for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
+         ytd_tax_buckets.add(monthly_tax_buckets)
+
+        
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
@@ -170,12 +230,10 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Net_Worth"] = balances.sum() 
         row["Net_Worth_Real"] = balances_real.sum()   
         
-        
-        
        
         #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
-            tax_buckets=ytd_income_sources,                             
+            tax_buckets=ytd_tax_buckets,                             
             ytd_tax = ytd_tax,
             va_ytd_tax = va_ytd_tax
         )

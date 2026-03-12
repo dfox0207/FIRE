@@ -1,0 +1,11 @@
+account,account_type
+Penn State Salary,wages
+457(b),457b
+Brokerage,brokerage
+403(b),403b
+SERS,401k
+TSP,tsp
+FERS,pension
+ROTH IRA,roth_ira
+Checking,cash
+Savings,cash

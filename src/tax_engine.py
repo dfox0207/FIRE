@@ -73,7 +73,7 @@ def calc_va_tax(bracket, taxable_income: float) -> float:
 
     return tax
 
-def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real: float, va_ytd_tax: float):
+def calc_va_ytd_tax(bracket, va_std_deduct: float, tax_buckets: dict, va_ytd_tax: float):
     new_va_taxable_income = max(0.0, ytd_income_real- va_std_deduct)
     va_new_ytd_tax = calc_va_tax(bracket, new_va_taxable_income)
     va_new_tax = va_new_ytd_tax - va_ytd_tax
@@ -81,14 +81,13 @@ def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real: float, va_yt
     return va_new_tax, va_new_ytd_tax
 
 def tax_engine(
-    ytd_income_real: float,
+    tax_buckets: dict,
     ytd_tax: float,
     va_ytd_tax: float
 ):
     tax_systems = load_tax_systems("Config/tax_system.json")
 
-    
-    
+        
     
     #Federal Taxes
     fed_bracket = load_brackets("Config/federal_tax_2025.csv")
@@ -99,7 +98,7 @@ def tax_engine(
     monthly_tax, new_ytd_tax = calc_ytd_tax(
         fed_bracket,
         std_deduct,
-        ytd_income_real,
+        tax_buckets.federal_ordinary_income,
         ytd_tax
     )
 
@@ -112,7 +111,7 @@ def tax_engine(
     va_monthly_tax, va_new_ytd_tax = calc_va_ytd_tax(
         va_bracket,
         va_std_deduct,
-        ytd_income_real,
+        tax_buckets.va_ordinary_income,
         va_ytd_tax
     )
 
