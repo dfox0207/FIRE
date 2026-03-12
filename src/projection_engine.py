@@ -205,6 +205,9 @@ def projection_engine(
         for acct, amount in income_sources.items():
             if amount <= 0:
                 continue
+
+            if acct == "Brokerage":
+                continue
             
             income_type = income_type_from_account(acct, account_tax_map)
             if income_type is None:
@@ -236,6 +239,25 @@ def projection_engine(
                 )
             )
         
+        brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
+
+        if brokerage_withdrawal > 0:
+            ltcg_ratio= assumptions.get("brokerage_ltcg_ratio", 0.30)
+            ltcg_amount= brokerage_withdrawal*ltcg_ratio
+            if ltcg_amount>0:
+                brokerage_ltcg_source = IncomeSource(
+                    name="Brokerage LTCG Withdrawal", 
+                    income_type=LongTermCapitalGainIncome(), 
+                    account="Brokerage"
+                )
+                monthly_events.append(
+                    IncomeEvent(
+                        date=m,
+                        source=brokerage_ltcg_source,
+                        gross_amount=ltcg_amount
+                    )
+                )
+
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
         ytd_tax_buckets.add(monthly_tax_buckets)
