@@ -62,8 +62,8 @@ def calc_real(m, basis, amount, inflation):
     amount_real = amount*(1+inflation)**(delta_months/12)
     return amount_real
 
-def income_type_from_account(acct: str, account_meta, event_kind:str | None=None):
-    account_type = account_meta.loc[acct, "account_type"]
+def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=None):
+    account_type = account_tax_map.loc[acct, "account_type"]
 
     if account_type in {"401k", "403b", "457b", "traditional_ira", "pension"}:
         return RetirementDistributionIncome()
@@ -200,7 +200,7 @@ def projection_engine(
             if amount <= 0:
                 continue
             
-            income_type = income_type_from_account(acct, account_meta)
+            income_type = income_type_from_account(acct, account_tax_map)
 
             source = IncomeSource(
                 name=f"{acct} Withdrawal",
