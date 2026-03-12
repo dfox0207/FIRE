@@ -121,6 +121,7 @@ def projection_engine(
     ytd_tax = 0.0
     va_ytd_tax = 0.0
     ytd_income_sources= {}
+    ytd_tax_buckets = TaxResult.zero()
 
     #For each month apply: 
     for m in months:
@@ -134,6 +135,7 @@ def projection_engine(
             ytd_tax = 0.0
             va_ytd_tax = 0.0
             ytd_income_sources = {}
+            ytd_tax_buckets = TaxResult.zero()
             
 
         #1.apply growth to balances
@@ -176,13 +178,13 @@ def projection_engine(
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
 
         row["ROTH Conversion Real"] = roth_conv_real
-        income_sources["TSP"] = roth_conv_real
+        income_sources["TSP"] = income_sources.get("TSP", 0.0) + roth_conv_real
 
         #2c. Take Pension
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
-        
+        income_sources["FERS"] = pension_real
 
         #2d. Take Special Supplemental Annuity/SSA Annuity
         spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
@@ -221,8 +223,19 @@ def projection_engine(
                     gross_amount=amount
                 )
             )
+        if pension_real > 0 :
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Pension",
+                        income_type=RetirementDistributionIncome(),
+                        account="Pension"
+                    ),
+                    gross_amount = pension_real
+                )
+            )
         
-        ytd_tax_buckets = TaxResult.zero()
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
         ytd_tax_buckets.add(monthly_tax_buckets)
