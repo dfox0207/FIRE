@@ -65,7 +65,7 @@ def calc_real(m, basis, amount, inflation):
 def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=None):
     account_type = account_tax_map.loc[acct, "account_type"]
 
-    if account_type in {"401k", "403b", "457b", "traditional_ira", "pension", "annuity"}:
+    if account_type in {"401k", "403b", "457b", "traditional_ira", "pension", "annuity", "tsp"}:
         return RetirementDistributionIncome()
 
     if account_type in {"roth_conv", "salary"}:
