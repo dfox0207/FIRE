@@ -73,7 +73,7 @@ def calc_va_tax(bracket, taxable_income: float) -> float:
 
     return tax
 
-def calc_va_ytd_tax(bracket, va_std_deduct: float, tax_buckets: dict, va_ytd_tax: float):
+def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real, va_ytd_tax: float):
     new_va_taxable_income = max(0.0, ytd_income_real- va_std_deduct)
     va_new_ytd_tax = calc_va_tax(bracket, new_va_taxable_income)
     va_new_tax = va_new_ytd_tax - va_ytd_tax
