@@ -93,7 +93,7 @@ class LongTermCapitalGainIncome(IncomeType):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
         return  TaxResult(
             federal_ltcg_income=amount,
-            va_ordinary_income
+            va_ordinary_income=amount
         )
 
 class RetirementDistributionIncome(IncomeType):
