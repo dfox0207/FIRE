@@ -143,11 +143,11 @@ class IncomeSource:
     account: str | None=None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-
+@dataclass
 class IncomeEvent:
 
     date: Any
-    source: IncomeSource
+    source: "IncomeSource"
     gross_amount: float = 0.0
 
     basis: float = 0.0
