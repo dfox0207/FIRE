@@ -36,7 +36,11 @@ assumptions = {
     "service_length": cfg["service_length"],
     "mra": cfg["mra"],
     "high_3": cfg["high_3"],
-    "ssa_benefit": cfg["ssa_benefit"]
+    "ssa_benefit": cfg["ssa_benefit"],
+    "brokerage_interest_yield": cfg["brokerage_interest_yield"],
+    "brokerage_qdiv_yield": cfg["brokerage_qdiv_yield"],
+    "brokerage_ltcg_realization_ratio": cfg["brokerage_ltcg_realization_ratio"]
+
 }
 
 
