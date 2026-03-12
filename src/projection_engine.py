@@ -82,7 +82,7 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
     
     ytd_tax = 0.0
     va_ytd_tax = 0.0
-    ytd_tax_buckets = TaxResult.zero()
+    ytd_income_sources= {}
 
     #For each month apply: 
     for m in months:
@@ -90,11 +90,13 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Age"] = (m-birthday).days / 365.2425
         monthly_events = []
         
+        
 
         if m.month == 1:
             ytd_tax = 0.0
             va_ytd_tax = 0.0
-            ytd_tax_buckets = TaxResult.zero()
+            ytd_income_sources = {}
+            
 
         #1.apply growth to balances
         balances = growth(balances, annual_return)
@@ -119,18 +121,6 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Withdrawal"] = withdrawal
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
         row["Withdrawal_real"] = withdrawal_real
-        withdrawal_source = IncomeSource(
-            name="Retirement Withdrawal",
-            income_type=RetirementDistributionIncome()
-        )
-
-        monthly_events.append(
-            IncomeEvent(
-                date=m,
-                source=withdrawal_source,
-                gross_amount=withdrawal_real
-            )
-        )
 
         for key in income_sources:
             income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
@@ -145,17 +135,6 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
    
         row["ROTH Conversion"] = roth_conv    
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
-        roth_source = IncomeSource(
-            name="Roth Conversion",
-            income_type=RetirementDistributionIncome()
-        )
-        monthly_events.append(
-            IncomeEvent(
-                date=m,
-                source=roth_source,
-                gross_amount=roth_conv_real
-            )
-        )
 
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["roth_conv"] = roth_conv_real
@@ -164,41 +143,20 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
-        pension_source= IncomeSource(
-            name="Pension",
-            income_type=RetirementDistributionIncome()
-        )
-        monthly_events.append(
-            IncomeEvent(
-                date=m,
-                source=pension_source,
-                gross_amount=pension_real
-            )
-        )
-        income_sources["Pension"] = pension_real
+        
 
         #2d. Take Special Supplemental Annuity/SSA Annuity
         spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
         ssa_annuity, ssa_annuity_real = calc_ssa(m, birthday, ssa_benefit, inflation, basis)
         income_sources["Special Annuity"] = spec_annuity
         income_sources["SSA Annuity"] = ssa_annuity_real
-        ssa_source  = IncomeSource(
-            name="SSA",
-            income_type=RetirementDistributionIncome()
-        )
-        monthly_events.append(
-            IncomeEvent(
-                date=m,
-                source=ssa_source,
-                gross_amount=ssa_annuity_real
-            )
-        )
+        
         
         #2e. Sum Total Income
         row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
         income_real = pension_real + withdrawal_real + ssa_annuity_real
         row["Income_Real"] =  income_real
-        ytd_income_real += income_real
+        
 
         for key in income_sources:
             ytd_income_sources[key] = ytd_income_sources.get(key, 0) + income_sources[key]
@@ -212,16 +170,12 @@ def projection_engine(start_bal, cf, months, assumptions, balances_actuals = Non
         row["Net_Worth"] = balances.sum() 
         row["Net_Worth_Real"] = balances_real.sum()   
         
-        #5. Aggregate Monthly buckets
-        monthly_tax_buckets = TaxResult.zero()
-        for event in monthly_events:
-            monthly_tax_buckets.add(event.tax_result())
-
-        ytd_tax_buckets.add(monthly_tax_buckets)
+        
+        
        
         #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
-            tax_buckets=ytd_tax_buckets,                             
+            tax_buckets=ytd_income_sources,                             
             ytd_tax = ytd_tax,
             va_ytd_tax = va_ytd_tax
         )
