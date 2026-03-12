@@ -135,10 +135,11 @@ class CapitalAssetSaleIncome(IncomeType):
                 va_ordinary_income=gain
             )
 
+@dataclass
 class IncomeSource:
 
     name: str 
-    income_type: IncomeType
+    income_type: "IncomeType"
     account: str | None=None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
