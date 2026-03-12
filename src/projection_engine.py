@@ -82,8 +82,8 @@ def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=N
         #     return QualifiedDividendIncome()
         # elif event_kind == "ltcg":
         #     return LongTermCapitalGainIncome()
-        else:
-            raise ValueError(f"Brokerage requires event_kind, got {event_kind}")
+        # else:
+        #     raise ValueError(f"Brokerage requires event_kind, got {event_kind}")
     raise ValueError(f"Unknown account_type: {account_type}")
 
 
