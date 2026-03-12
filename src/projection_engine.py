@@ -68,6 +68,9 @@ def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=N
     if account_type in {"401k", "403b", "457b", "traditional_ira", "pension", "annuity"}:
         return RetirementDistributionIncome()
 
+    if account_type in {"roth_conv", "salary"}:
+        return EarnedIncome()
+
     if account_type in {"roth_ira", "roth_401k", "roth_tsp"}:
         return RothDistributionIncome()
     

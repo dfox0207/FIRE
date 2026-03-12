@@ -1,5 +1,5 @@
 account,account_type
-Penn State Salary,wages
+Penn State Salary,salary
 457(b),457b
 Brokerage,brokerage
 403(b),403b
@@ -11,3 +11,4 @@ Checking,cash
 Savings,cash
 Special Annuity,annuity
 SSA Annuity,annuity
+Roth Conversion, roth_conv
