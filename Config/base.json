@@ -12,6 +12,7 @@
     "service_length": 27.68,
     "mra": 57,
     "high_3": 141470,
-    "ssa_benefit": 2208
+    "ssa_benefit": 2208,
+    "brokerage_ltcg_ratio": 0.30
 
 }
