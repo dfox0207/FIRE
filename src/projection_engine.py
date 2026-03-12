@@ -218,7 +218,7 @@ def projection_engine(
         
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
-         ytd_tax_buckets.add(monthly_tax_buckets)
+        ytd_tax_buckets.add(monthly_tax_buckets)
 
         
         #3. add cashflows to new balances
