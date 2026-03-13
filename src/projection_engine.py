@@ -228,7 +228,7 @@ def projection_engine(
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
-        income_sources["FERS"] = pension_real
+        income_sources["pension"] = pension_real
 
         #2d. Take Special Supplemental Annuity/SSA Annuity
         spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
