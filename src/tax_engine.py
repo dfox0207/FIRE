@@ -115,10 +115,16 @@ def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brack
     if pref_income <= 0:
         return 0.0
 
+    lowers, uppers, rates, fees = ltcg_brackets
+
     tax = 0.0
     remaining = pref_income
 
-    for lower, upper, rate in ltcg_brackets:
+    for lower, upper, rate in zip(lowers, uppers, rates):
+        lower = float(lower)
+        upper = float(upper)
+        rate = float(rate)
+
         band_start = max(lower, ordinary_taxable_income)
         band_end = max(band_start, upper)
 
@@ -130,7 +136,7 @@ def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brack
 
         if remaining <=0:
             break
-    return tax
+    return float(tax)
     
 
 def calc_va_tax(bracket, taxable_income: float) -> float:
