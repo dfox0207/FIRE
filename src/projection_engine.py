@@ -301,7 +301,7 @@ def projection_engine(
                         gross_amount=ltcg_amount
                     )
                 )
-        row["ltcg amount"] =ltcg_amount.gross_amount
+        #row["ltcg amount"] =ltcg_amount.gross_amount
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
