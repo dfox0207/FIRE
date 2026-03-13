@@ -63,7 +63,7 @@ def calc_tax(bracket, taxable_income: float) -> float:
 
 #     return new_tax, new_ytd_tax
 
-def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket, ltcg_brackets):
+def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket, ltcg_brackets, ytd_tax: float):
     ordinary_income = tax_buckets.federal_ordinary_income
     pref_income=(
         tax_buckets.federal_ltcg_income
@@ -83,7 +83,7 @@ def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket,
     new_tax = new_ytd_tax - ytd_tax
     return new_tax, new_ytd_tax
 
-def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brackets, ytd_tax: float) -> float:
+def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brackets) -> float:
 
     if pref_income <= 0:
         return 0.0
