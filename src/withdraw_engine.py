@@ -19,16 +19,22 @@ def withdrawal_waterfall(balances, withdrawal, order):
     row = balances.copy()
     income_sources = {}
     for acct in order:
-        if row[acct] >= remaining_withdrawal:
-            row[acct] -= remaining_withdrawal
-            income = remaining_withdrawal
-            remaining_withdrawal = 0
+        if remaining_withdrawal <= 0:
             break
+        available = row[acct]
+
+        if available >= remaining_withdrawal:
+            taken = remaining_withdrawal
+            row[acct] -= taken
+            remaining_withdrawal = 0.0
+            
         else:
-            remaining_withdrawal = remaining_withdrawal-row[acct]
-            income = row[acct]
-            row[acct] = 0
-        income_sources[acct] = income      
+            taken = available
+            row[acct] = 0.0
+            remaining_withdrawal -= taken
+        income_sources[acct] = taken
+    actual_withdrawal = withdrawal - remaining_withdrawal
+      
     balances = row
     return balances, income_sources
 
