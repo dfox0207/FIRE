@@ -323,7 +323,11 @@ def projection_engine(
         row["Net_Worth"] = balances.sum() 
         row["Net_Worth_Real"] = balances_real.sum()   
         
-       
+        print("EVENTS:")
+        for e in monthly_events:
+            print(e.source.name, e.gross_amount)
+        
+        
         #6. Calculate Taxes
         tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
             tax_buckets=ytd_tax_buckets,                             
