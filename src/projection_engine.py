@@ -301,6 +301,12 @@ def projection_engine(
                         gross_amount=ltcg_amount
                     )
                 )
+        if m.year== 2036 and m.month ==1:
+            print("Date:",m)
+            print("Brokerage withdrawal:", income_sources.get("Brokerage", 0.0))
+            print("Ordinary Income: ", monthly_tax_buckets.federal_ordinary_income)
+            print("LTCG income:", monthly_tax_buckets.federal_ltcg_income)
+            print("QDIV income", monthly_tax_buckets.federal_qualified_dividends)
         #row["ltcg amount"] =ltcg_amount.gross_amount
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
