@@ -76,14 +76,7 @@ def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=N
     
     if account_type == "brokerage":
         return None
-        # if event_kind == "interest":
-        #     return InterestIncome()
-        # elif event_kind == "qualified_dividend":
-        #     return QualifiedDividendIncome()
-        # elif event_kind == "ltcg":
-        #     return LongTermCapitalGainIncome()
-        # else:
-        #     raise ValueError(f"Brokerage requires event_kind, got {event_kind}")
+ 
     raise ValueError(f"Unknown account_type: {account_type}")
 
 
@@ -250,7 +243,7 @@ def projection_engine(
             if amount <= 0:
                 continue
 
-            if acct == "Brokerage":
+            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA"}:
                 continue
             
             income_type = income_type_from_account(acct, account_tax_map)
