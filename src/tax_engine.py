@@ -20,6 +20,8 @@ def load_brackets(csv_path: str | Path) -> tuple[np.ndarray, np.ndarray, np.ndar
     rates = df["rate"].to_numpy(dtype=float)
     fees = df["fee"].to_numpy(dtype=float)
 
+    uppers = np.where(np.isnan(uppers), np.inf, uppers)
+
     return lowers, uppers, rates, fees
 
 
