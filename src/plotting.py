@@ -78,7 +78,8 @@ def plot_tax(df, ax):
     #plot Projected Income
     df['Date'] = pd.to_datetime(df['Date'])
     ax.plot(df['Date'],df['Total Tax'], label='Taxes')
-    
+    ax.plot(df['Date'],df['Fed Tax'], label='Fed')
+    ax.plot(df['Date'],df['VA Tax'], label='VA')
     
     # Format Chart Title and Axises
     ax.set_title('Taxes- Real (2025)')
