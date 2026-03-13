@@ -168,6 +168,7 @@ def projection_engine(
         brokerage_balance = balances.get("Brokerage", 0.0)
         interest_real= brokerage_balance*assumptions["brokerage_interest_yield"]/12
         qdiv_real=brokerage_balance*assumptions["brokerage_qdiv_yield"]/12
+        row["qdiv real"] = qdiv_real
         if interest_real>0:
             monthly_events.append(
                 IncomeEvent(
@@ -300,7 +301,8 @@ def projection_engine(
                         gross_amount=ltcg_amount
                     )
                 )
-
+        row["ltcg amount"] =ltcg_amount
+        row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
         ytd_tax_buckets.add(monthly_tax_buckets)
