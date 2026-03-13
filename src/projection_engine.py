@@ -171,7 +171,7 @@ def projection_engine(
                         income_type=InterestIncome(),
                         account="Brokerage"
                     ),
-                    gross_amount=income_real
+                    gross_amount=interest_real
                 )
             )
         if qdiv_real>0:
