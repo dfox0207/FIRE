@@ -307,6 +307,9 @@ def projection_engine(
             print("Ordinary Income: ", monthly_tax_buckets.federal_ordinary_income)
             print("LTCG income:", monthly_tax_buckets.federal_ltcg_income)
             print("QDIV income", monthly_tax_buckets.federal_qualified_dividends)
+            print("EVENTS:")
+            for e in monthly_events:
+                print(e.source.name, e.gross_amount)
         #row["ltcg amount"] =ltcg_amount.gross_amount
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
@@ -323,9 +326,7 @@ def projection_engine(
         row["Net_Worth"] = balances.sum() 
         row["Net_Worth_Real"] = balances_real.sum()   
         
-        print("EVENTS:")
-        for e in monthly_events:
-            print(e.source.name, e.gross_amount)
+       
         
         
         #6. Calculate Taxes
