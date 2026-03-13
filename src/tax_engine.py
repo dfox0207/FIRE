@@ -55,13 +55,56 @@ def calc_tax(bracket, taxable_income: float) -> float:
     return tax_by_bracket.sum()
 
 
-def calc_ytd_tax(bracket, std_deduct, ytd_income_real: float, ytd_tax: float):
-    new_ytd_taxable_income = max(0.0, ytd_income_real - std_deduct)
-    new_ytd_tax = calc_tax(bracket, new_ytd_taxable_income)
+# def calc_ytd_tax(bracket, std_deduct, ytd_income_real: float, ytd_tax: float):
+#     new_ytd_taxable_income = max(0.0, ytd_income_real - std_deduct)
+#     new_ytd_tax = calc_tax(bracket, new_ytd_taxable_income)
 
+#     new_tax = new_ytd_tax - ytd_tax
+
+#     return new_tax, new_ytd_tax
+
+def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket, ltcg_brackets):
+    ordinary_income = tax_buckets.federal_ordinary_income
+    pref_income=(
+        tax_buckets.federal_ltcg_income
+        + tax_buckets.federal_qualified_dividends
+    )
+
+    total_income = ordinary_income + pref_income
+    taxable_total = max(0.0, total_income-std_deduct)
+
+    ordinary_taxable_income = max(0.0,ordinary_income-std_deduct)
+    deduction_left_for_pref= max(0.0, std_deduct-ordinary_income)
+    pref_taxable_income = max(0.0, pref_income-deduction_left_for_pref)
+    ordinary_tax = calc_tax(ordinary_bracket, ordinary_taxable_income)
+    pref_tax = calc_ltcg_tax(ordinary_taxable_income, pref_taxable_income, ltcg_brackets)
+
+    new_ytd_tax = ordinary_tax + pref_tax
     new_tax = new_ytd_tax - ytd_tax
-
     return new_tax, new_ytd_tax
+
+def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brackets, ytd_tax: float) -> float:
+
+    if pref_income <= 0:
+        return 0.0
+
+    tax = 0.0
+    remaining = pref_income
+
+    for lower, uper, rate in ltcg_brackets:
+        band_start = max(lower, ordinary_taxable_income)
+        band_end = max(band_start, upper)
+
+        available_room = max(0.0, band_end-band_start)
+        taxed_here = min(remaining, available_room)
+
+        tax += taxed_here * rate
+        remaining -= taxed_here
+
+        if remaining <=0:
+            break
+    return tax
+    
 
 def calc_va_tax(bracket, taxable_income: float) -> float:
     lowers, uppers, rates, fees = bracket
@@ -80,14 +123,17 @@ def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real, va_ytd_tax: 
 
     return va_new_tax, va_new_ytd_tax
 
+
+
 def tax_engine(
-    tax_buckets: dict,
+    tax_buckets,
     ytd_tax: float,
     va_ytd_tax: float
 ):
     tax_systems = load_tax_systems("Config/tax_system.json")
 
-        
+    
+    ltcg_brackets = load_brackets("Config/ltcg_brackets.csv")    
     
     #Federal Taxes
     fed_bracket = load_brackets("Config/federal_tax_2025.csv")
@@ -95,12 +141,13 @@ def tax_engine(
     std_deduct = tax_systems["federal"]["standard_deduction"]
     
     
-    monthly_tax, new_ytd_tax = calc_ytd_tax(
-        fed_bracket,
-        std_deduct,
-        tax_buckets.federal_ordinary_income,
-        ytd_tax
-    )
+    monthly_tax, new_ytd_tax = calc_federal_ytd_tax_from_buckets(
+        tax_buckets, 
+        std_deduct, 
+        fed_bracket, 
+        ltcg_brackets,
+        ytd_tax)
+        
 
 
     #Virginia Taxes
