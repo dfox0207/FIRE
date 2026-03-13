@@ -57,26 +57,28 @@ def calc_tax(bracket, taxable_income: float) -> float:
     return tax_by_bracket.sum()
 
 
-# def calc_ytd_tax(bracket, std_deduct, ytd_income_real: float, ytd_tax: float):
-#     new_ytd_taxable_income = max(0.0, ytd_income_real - std_deduct)
-#     new_ytd_tax = calc_tax(bracket, new_ytd_taxable_income)
-
-#     new_tax = new_ytd_tax - ytd_tax
-
-#     return new_tax, new_ytd_tax
-
 def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket, ltcg_brackets, ytd_tax: float):
     ordinary_income = tax_buckets.federal_ordinary_income
     pref_income=(
         tax_buckets.federal_ltcg_income
         + tax_buckets.federal_qualified_dividends
     )
+    social_security_income = tax_buckets.social_security_income
+    tax_exempt_interest = tax_buckets.tax_exempt_interest
+    taxable_ss = calc_taxable_social_security(
+        ordinary_income=ordinary_income,
+        pref_income=pref_income,
+        tax_exempt_interest=tax_exempt_interest,
+        social_security_income=social_security_income,
+        filing_status="single"
+    )
+    federal_ordinary_income_total = ordinary_income + taxable_ss
 
-    total_income = ordinary_income + pref_income
+    total_income = ordinary_income + pref_income 
     taxable_total = max(0.0, total_income-std_deduct)
 
-    ordinary_taxable_income = max(0.0,ordinary_income-std_deduct)
-    deduction_left_for_pref= max(0.0, std_deduct-ordinary_income)
+    ordinary_taxable_income = max(0.0,federal_ordinary_income_total-std_deduct)
+    deduction_left_for_pref= max(0.0, std_deduct-federal_ordinary_income_total)
     pref_taxable_income = max(0.0, pref_income-deduction_left_for_pref)
     ordinary_tax = calc_tax(ordinary_bracket, ordinary_taxable_income)
     pref_tax = calc_ltcg_tax(ordinary_taxable_income, pref_taxable_income, ltcg_brackets)
@@ -156,7 +158,41 @@ def calc_va_ytd_tax(bracket, va_std_deduct: float, ytd_income_real, va_ytd_tax: 
 
     return va_new_tax, va_new_ytd_tax
 
+def calc_taxable_social_security(
+    ordinary_income: float,
+    pref_income: float,
+    tax_exempt_interest: float,
+    social_security_income: float,
+    filing_status: str = "single"
+)-> float:
+    if social_security_income <= 0:
+        return 0.0
+    
+    if filing_status == "mfj":
+        base1 = 32000.0
+        base2 = 44000.0
+    elif filing_status == "single":
+        base1 = 25000.0
+        base2 = 34000.0
+    else:
+        raise ValueError(f"Unsupported filing status: {filing_status}")
+    
+    provisional_income = (ordinary_income + pref_income + tax_exempt_interest + 0.5 * social_security_income)
 
+    if provisional_income <= base1:
+        taxable_ss = 0.0
+    elif provisional_income <= base2: 
+        taxable_ss = min(
+            0.5 * social_security_income, 
+            0.5 * (provisional_income - base1))
+    else:
+        taxable_ss = min(
+            0.85 * social_security_income,
+            0.85 * (provisional_income - base2) + min(0.5 * social_security_income, 0.5 * (base2 - base1))
+            
+        )
+    return max(0.0, taxable_ss)
+    
 
 def tax_engine(
     tax_buckets,

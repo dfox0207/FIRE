@@ -268,9 +268,9 @@ def projection_engine(
                 IncomeEvent(
                     date=m,
                     source=IncomeSource(
-                        name="Pension",
+                        name="FERS",
                         income_type=RetirementDistributionIncome(),
-                        account="Pension"
+                        account="FERS"
                     ),
                     gross_amount = pension_real
                 )
@@ -294,16 +294,19 @@ def projection_engine(
                         gross_amount=ltcg_amount
                     )
                 )
-        if m.year== 2036 and m.month ==1:
-            print("Date:",m)
-            print("Brokerage withdrawal:", income_sources.get("Brokerage", 0.0))
-            print("Ordinary Income: ", monthly_tax_buckets.federal_ordinary_income)
-            print("LTCG income:", monthly_tax_buckets.federal_ltcg_income)
-            print("QDIV income", monthly_tax_buckets.federal_qualified_dividends)
-            print("EVENTS:")
-            for e in monthly_events:
-                print(e.source.name, e.gross_amount)
-        #row["ltcg amount"] =ltcg_amount.gross_amount
+        if ssa_annuity_real>0:
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Social Security",
+                        income_type=SocialSecurityIncome(),
+                        account="SSA"
+                    ),
+                    gross_amount=ssa_annuity_real
+                )
+            )
+        
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())

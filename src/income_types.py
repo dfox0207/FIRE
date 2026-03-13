@@ -7,7 +7,7 @@ class TaxResult:
     federal_ordinary_income: float = 0.0
     federal_ltcg_income: float = 0.0
     federal_qualified_dividends: float = 0.0
-
+    social_security_income: float=0.0
     payroll_ss_wages: float = 0.0
     payroll_medicare_wages: float = 0.0
     self_employment_income: float = 0.0
@@ -107,6 +107,12 @@ class RothDistributionIncome(IncomeType):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
         return TaxResult(
             excluded_income=amount
+        )
+
+class SocialSecurityIncome(IncomeType):
+    def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
+        return TaxResult(
+            social_security_income=amount
         )
 
 class MunicipalBondInterestIncome(IncomeType):
