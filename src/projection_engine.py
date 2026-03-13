@@ -17,6 +17,7 @@ from income_types import (
     ShortTermCapitalGainIncome,
     LongTermCapitalGainIncome,
     RothDistributionIncome,
+    SocialSecurityIncome
 )
 
 def calc_pension(pension_real, retirement, inflation, m):
