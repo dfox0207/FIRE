@@ -91,7 +91,7 @@ def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brack
     tax = 0.0
     remaining = pref_income
 
-    for lower, uper, rate in ltcg_brackets:
+    for lower, upper, rate in ltcg_brackets:
         band_start = max(lower, ordinary_taxable_income)
         band_end = max(band_start, upper)
 
