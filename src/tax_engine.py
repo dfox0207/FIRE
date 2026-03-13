@@ -82,6 +82,31 @@ def calc_federal_ytd_tax_from_buckets(tax_buckets, std_deduct, ordinary_bracket,
     pref_tax = calc_ltcg_tax(ordinary_taxable_income, pref_taxable_income, ltcg_brackets)
 
     new_ytd_tax = ordinary_tax + pref_tax
+    
+    if np.isnan(ordinary_income):
+        raise ValueError(f"ordinary_income is NaN: {ordinary_income}")
+
+    if np.isnan(pref_income):
+        raise ValueError(f"pref_income is NaN: {pref_income}")
+    
+    if np.isnan(ordinary_taxable_income):
+        raise ValueError(f"ordinary_taxable_income is NaN: {ordinary_taxable_income}")
+
+    if np.isnan(pref_taxable_income):
+        raise ValueError(f"pref_taxable_income is NaN: {pref_taxable_income}")
+    
+    if np.isnan(ordinary_tax):
+        raise ValueError(f"ordinary_tax is NaN: {ordinary_tax}")
+
+    if np.isnan(pref_tax):
+        raise ValueError(f"pref_tax is NaN: {pref_tax}")
+        
+    if np.isnan(new_ytd_tax):
+        raise ValueError(
+            f"new_ytd_tax is NaN: | ordinary={ordinary_income}, pref={pref_income},"
+            f"ordinary_taxable={ordinary_taxable_income}, pref_taxable={pref_taxable_income}"
+            )
+
     new_tax = new_ytd_tax - ytd_tax
     return new_tax, new_ytd_tax
 
