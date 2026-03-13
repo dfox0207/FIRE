@@ -34,9 +34,9 @@ def withdrawal_waterfall(balances, withdrawal, order):
             remaining_withdrawal -= taken
         income_sources[acct] = taken
     actual_withdrawal = withdrawal - remaining_withdrawal
-      
+
     balances = row
-    return balances, income_sources
+    return balances, income_sources, actual_withdrawal
 
 def calc_withdrawal(
     *, 
@@ -67,6 +67,6 @@ def calc_withdrawal(
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
     #Take withdrawal from accounts in order
-    balances, income_sources = withdrawal_waterfall(balances, withdrawal, order)
+    balances, income_sources, actual_withdrawal = withdrawal_waterfall(balances, withdrawal, order)
         
-    return balances, income_sources, withdrawal, annual_w0, t0
+    return balances, income_sources, actual_withdrawal, annual_w0, t0
