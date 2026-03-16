@@ -1,3 +1,50 @@
+RMD_ELIGIGIBLE_ACCOUNT_TYPES = {
+    "tsp", "403b", "traditional_ira", "401k",
+}
+
+def is_rmd_eligible(acct: str, account_tax_map) -> bool:
+    account_type = str(account_tax_map.loc[acct, "account_type"]).strip().lower()
+    return account_type in RMD_ELIGIGIBLE_ACCOUNT_TYPES
+
+def get_rmd_divisor(age: int, rmd_table: dict[float, float]) -> float | None:
+    return rmd_table.get(age)
+
+def calc_annual_rmd(blance: float, divisor: float) -> float:
+    if divisor <= 0:
+        raise ValueError("RMD divisior must be positive")
+    return max(0.0, balance/divisor)
+
+def calc_monthly_rmds(
+    balances,
+    account_tax_map,
+    age: float,
+    rmd_table: dict[float, float],
+    rmd_start_age: int = 73,
+)-> dict[str, float]:
+    age_int = int(age)
+
+    if age_int < rmd_start_age:
+        return {}
+    
+    divisor = get_rmd_divisor(age_int, rmd_table)
+    if divisor is None:
+        return{}
+    rmd_by_account = {}
+    
+    for acct in balances.index:
+        if not is_rmd_eligible(acct, account_tax_map):
+            continue
+        bal = float(balances.get(acct, 0.0))
+        if bal <= 0:
+            continue
+
+        annual_rmd = calc_annual_rmd(bal, divisor)
+        monthly_rmd = annual_rmd / 12.0
+
+        if monthly_rmd > 0:
+            rmd_by_account[acct] = monthly_rmd
+    return rmd_by_account
+
 def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation):
     if annual_w0 is None:
         if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
@@ -37,6 +84,8 @@ def withdrawal_waterfall(balances, withdrawal, order):
 
     balances = row
     return balances, income_sources, actual_withdrawal
+
+
 
 def calc_withdrawal(
     *, 
