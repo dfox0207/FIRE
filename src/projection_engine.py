@@ -339,7 +339,7 @@ def projection_engine(
         tax, ytd_tax, va_tax, va_ytd_tax, medicare_tax, ytd_medicare_tax = tax_engine(
             tax_buckets=ytd_tax_buckets,                             
             ytd_tax = ytd_tax,
-            va_ytd_tax = va_ytd_tax
+            va_ytd_tax = va_ytd_tax,
             ytd_medicare_tax=ytd_medicare_tax,
             filing_status = assumptions.get("filing_status", "mfs"),
         )
