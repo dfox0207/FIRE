@@ -147,9 +147,9 @@ def calc_medicare_ytd_tax(
 ):    
     if filing_status == "mfj":
         addl_threshold = 250000.0
-    elif filing_status = "single":
+    elif filing_status == "single":
         addl_threshold = 200000.0
-    elif filing_status = "mfs":
+    elif filing_status == "mfs":
         addl_threshold = 125000.0
     else:
         raise ValueError(f"Unsupported filing status: {filing_status}")
