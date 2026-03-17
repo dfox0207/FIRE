@@ -39,7 +39,8 @@ assumptions = {
     "ssa_benefit": cfg["ssa_benefit"],
     "brokerage_interest_yield": cfg["brokerage_interest_yield"],
     "brokerage_qdiv_yield": cfg["brokerage_qdiv_yield"],
-    "brokerage_ltcg_realization_ratio": cfg["brokerage_ltcg_realization_ratio"]
+    "brokerage_ltcg_realization_ratio": cfg["brokerage_ltcg_realization_ratio"],
+    "filing_status": cfg["filing_status"]
 
 }
 

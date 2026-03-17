@@ -15,6 +15,7 @@
     "ssa_benefit": 2208,
     "brokerage_interest_yield":0.01,
     "brokerage_qdiv_yield":0.015,
-    "brokerage_ltcg_realization_ratio":0.30
+    "brokerage_ltcg_realization_ratio":0.30,
+    "filing_status":"mfs"
     
 }
