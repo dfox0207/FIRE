@@ -86,12 +86,15 @@ acct_meta = pd.read_csv(ACCOUNT_META_CSV)
 acct_meta["account"] = acct_meta["account"].str.strip()
 account_tax_map = acct_meta.set_index("account")
 
-
+UNIFORM_LIFETIME_TABLE_CSV = Path("/content/FIRE/Config/uniform_lifetime_table.csv")
+rmd_df = pd.read_csv(UNIFORM_LIFETIME_TABLE_CSV)
+rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float)))
 
 def main():
 
     projection = projection_engine(
         account_tax_map,
+        rmd_table,
         start_bal, 
         cf, 
         months, 

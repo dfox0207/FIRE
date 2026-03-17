@@ -1,5 +1,9 @@
 RMD_ELIGIGIBLE_ACCOUNT_TYPES = {
-    "tsp", "403b", "traditional_ira", "401k",
+    "tsp", 
+    "457b"
+    "403b", 
+    "traditional_ira", 
+    "401k",
 }
 
 def is_rmd_eligible(acct: str, account_tax_map) -> bool:
@@ -89,7 +93,10 @@ def withdrawal_waterfall(balances, withdrawal, order):
 
 def calc_withdrawal(
     *, 
-    m, 
+    m,
+    rmd_table, 
+    account_tax_map,
+    age,
     withdrawal_start_date, 
     withdrawal_type, 
     balances, 
@@ -98,7 +105,8 @@ def calc_withdrawal(
     inflation, 
     annual_w0=None, 
     t0=None, 
-    balances_actuals=None
+    balances_actuals=None,
+    rmd_start_age=73,
     ):
     
     withdrawal = 0.0
@@ -117,5 +125,22 @@ def calc_withdrawal(
 
     #Take withdrawal from accounts in order
     balances, income_sources, actual_withdrawal = withdrawal_waterfall(balances, withdrawal, order)
+
+    #Calculate RMD
+    rmd_by_account = calc_monthly_rmds(
+        balances= balances,
+        account_tax_map = account_tax_map,
+        age = age,
+        rmd_table=rmd_table,
+        rmd_start_age=rmd_start_age,
+    )
+
+    for acct, rmd_amt in rmd_by_account.items():
+        already = income_sources.get(acct, 0.0)
+        if already >= rmd_amt:
+            continue
+
+        extra = rmd_amt - already
+        
         
     return balances, income_sources, actual_withdrawal, annual_w0, t0
