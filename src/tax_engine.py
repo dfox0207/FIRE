@@ -244,7 +244,7 @@ def tax_engine(
      #Medicare Taxes
     medicare_tax, new_ytd_medicare_tax = calc_medicare_ytd_tax(
         medicare_wages_ytd=tax_buckets.payroll_medicare_wages,
-        ytd_medicare_tax = ytd_medicare_tax,
+        prior_ytd_medicare_tax = ytd_medicare_tax,
         filing_status=filing_status,
      )   
 
