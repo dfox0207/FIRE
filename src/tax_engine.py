@@ -144,7 +144,7 @@ def calc_medicare_ytd_tax(
     medicare_wages_ytd: float,
     prior_ytd_medicare_tax: float,
     filing_status: str = "mfs"
-)    
+):    
     if filing_status == "mfj":
         addl_threshold = 250000.0
     elif filing_status = "single":
