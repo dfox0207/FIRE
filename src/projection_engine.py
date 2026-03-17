@@ -109,6 +109,7 @@ def projection_engine(
     annual_return = assumptions["annual_return"]
     service_length = assumptions["service_length"]
     ssa_benefit = assumptions["ssa_benefit"]
+    filing_status = assumptions["filing_status"]
     
     annual_w0 = None
     t0 = None
@@ -117,6 +118,7 @@ def projection_engine(
     va_ytd_tax = 0.0
     ytd_income_sources= {}
     ytd_tax_buckets = TaxResult.zero()
+    ytd_medicare_tax = 0.0
 
     #For each month apply: 
     for m in months:
@@ -131,7 +133,9 @@ def projection_engine(
             ytd_tax = 0.0
             va_ytd_tax = 0.0
             ytd_income_sources = {}
+            ytd_medicare_tax = 0.0
             ytd_tax_buckets = TaxResult.zero()
+
             
 
         #1.apply growth to balances
@@ -332,14 +336,17 @@ def projection_engine(
         
         
         #6. Calculate Taxes
-        tax, ytd_tax, va_tax, va_ytd_tax = tax_engine(
+        tax, ytd_tax, va_tax, va_ytd_tax, medicare_tax, ytd_medicare_tax = tax_engine(
             tax_buckets=ytd_tax_buckets,                             
             ytd_tax = ytd_tax,
             va_ytd_tax = va_ytd_tax
+            ytd_medicare_tax=ytd_medicare_tax,
+            filing_status = assumptions.get("filing_status", "mfs"),
         )
         row["Fed Tax"] = tax 
+        row["Medicare Tax"] = medicare_tax
         row["VA Tax"] = va_tax
-        total_tax = tax + va_tax
+        total_tax = tax + va_tax + medicare_tax
         row["Total Tax"] = total_tax
         net_income_real = income_real - total_tax
         row["Net_Income_Real"] = net_income_real

@@ -139,7 +139,27 @@ def calc_ltcg_tax(ordinary_taxable_income: float, pref_income: float, ltcg_brack
         if remaining <=0:
             break
     return float(tax)
+
+def calc_medicare_ytd_tax(
+    medicare_wages_ytd: float,
+    prior_ytd_medicare_tax: float,
+    filing_status: str = "mfs"
+)    
+    if filing_status == "mfj":
+        addl_threshold = 250000.0
+    elif filing_status = "single":
+        addl_threshold = 200000.0
+    elif filing_status = "mfs":
+        addl_threshold = 125000.0
+    else:
+        raise ValueError(f"Unsupported filing status: {filing_status}")
     
+    base_tax = 0.0145 * medicare_wages_ytd
+    addl_tax = 0.009 * max(0.0, medicare_wages_ytd-addl_threshold)
+    new_ytd_medicare_tax = base_tax + addl_tax
+    medicare_tax = new_ytd_medicare_tax - prior_ytd_medicare_tax
+
+    return medicare_tax, new_ytd_medicare_tax
 
 def calc_va_tax(bracket, taxable_income: float) -> float:
     lowers, uppers, rates, fees = bracket
@@ -174,6 +194,9 @@ def calc_taxable_social_security(
     elif filing_status == "single":
         base1 = 25000.0
         base2 = 34000.0
+    elif filing_status == "mfs":
+        base1 = 0.0
+        base2 = 0.0
     else:
         raise ValueError(f"Unsupported filing status: {filing_status}")
     
@@ -197,7 +220,9 @@ def calc_taxable_social_security(
 def tax_engine(
     tax_buckets,
     ytd_tax: float,
-    va_ytd_tax: float
+    va_ytd_tax: float,
+    new_ytd_medicare_tax: float,
+    filing_status: str = "mfs",
 ):
     tax_systems = load_tax_systems("Config/tax_system.json")
 
@@ -209,14 +234,19 @@ def tax_engine(
 
     std_deduct = tax_systems["federal"]["standard_deduction"]
     
-    
     monthly_tax, new_ytd_tax = calc_federal_ytd_tax_from_buckets(
         tax_buckets, 
         std_deduct, 
         fed_bracket, 
         ltcg_brackets,
         ytd_tax)
-        
+
+     #Medicare Taxes
+     medicare_tax, new_ytd_medicare_tax = calc_medicare_ytd_tax(
+        medicare_wages_ytd=tax_buckets.payroll_medical_wages,
+        ytd_medicare_tax = ytd_medicare_tax,
+        filing_status=filing_status,
+     )   
 
 
     #Virginia Taxes
@@ -231,6 +261,6 @@ def tax_engine(
         va_ytd_tax
     )
 
-    return monthly_tax, new_ytd_tax, va_monthly_tax, va_new_ytd_tax
+    return monthly_tax, new_ytd_tax, va_monthly_tax, va_new_ytd_tax, medicare_tax, new_ytd_medicare_tax
     
     
