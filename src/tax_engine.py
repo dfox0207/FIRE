@@ -221,7 +221,7 @@ def tax_engine(
     tax_buckets,
     ytd_tax: float,
     va_ytd_tax: float,
-    new_ytd_medicare_tax: float,
+    ytd_medicare_tax: float,
     filing_status: str = "mfs",
 ):
     tax_systems = load_tax_systems("Config/tax_system.json")
