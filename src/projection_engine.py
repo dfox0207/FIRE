@@ -141,7 +141,7 @@ def projection_engine(
 
         balances, income_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
-            rmd_table=rmd_table
+            rmd_table=rmd_table,
             withdrawal_start_date= withdrawal_start_date, 
             withdrawal_type= withdrawal_type, 
             balances=balances, 
