@@ -121,7 +121,8 @@ def projection_engine(
     #For each month apply: 
     for m in months:
         row = {"Date": m}
-        row["Age"] = (m-birthday).days / 365.2425
+        age = (m-birthday).days / 365.2425
+        row["Age"] = age
         monthly_events = []
         
         
@@ -142,6 +143,8 @@ def projection_engine(
         balances, income_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
+            account_tax_map=account_tax_map,
+            age=age,
             withdrawal_start_date= withdrawal_start_date, 
             withdrawal_type= withdrawal_type, 
             balances=balances, 
