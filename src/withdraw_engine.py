@@ -167,7 +167,7 @@ def calc_withdrawal(
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
 
     elif withdrawal_type == "Optimizer":
-        withdrawal = calc_withdrawal_optimizer(**kwargs)
+        withdrawal = calc_withdrawal_optimizer(m, balances, income_sources, inflation, policy, ytd_tax_buckets, order)
 
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
