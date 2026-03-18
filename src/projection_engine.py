@@ -120,6 +120,10 @@ def projection_engine(
     ytd_tax_buckets = TaxResult.zero()
     ytd_medicare_tax = 0.0
 
+    year_policy = assumptions.get("optimizer_policy", {}).get(m.year, {})
+    target_net_income_real = year_policy.get("target_net_income_real", 10000.0)
+    roth_target_ordinary_income = year_policy.get("roth_target_ordinary_income", 0.0)
+
     #For each month apply: 
     for m in months:
         row = {"Date": m}

@@ -65,8 +65,51 @@ def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, ba
     withdrawal = annual_withdrawal/12.0
     return withdrawal, annual_w0, t0
 
-def calc_withdrawal_optimizer():
-    pass
+def calc_withdrawal_optimizer(
+    *,
+    m,
+    balances,
+    income_sources,
+    inflation,
+    policy,
+    ytd_tax_buckets,
+    order,
+):
+
+    year = m.year
+    year_policy = policy.get(year, {})
+
+    target_income = year_policy.get("target_net_income_real", 0.0)
+    roth_target = year_policy.get("roth_target_ordinary_income", 0.0)
+
+    current_income_real = sum(income_sources.values())
+
+    required_withdrawal = max(0.0, target_income - current_income_real)
+
+    current_ordinary_income = ytd_tax_buckets.get("federal_ordinary_income", 0.0)
+    roth_conversion = max(0.0, roth_target - current_ordinary_income)
+
+    balances, withdrawal_dict = withdrawal_waterfall(
+        balances,
+        required_withdrawal + roth_conversion,
+        order
+    )
+    
+    remaining_roth = roth_conversion
+
+    for acct, amt in withdrawal_dict.items():
+        roth_amt = min(amt, remaining_roth)
+        remaining_roth -= roth_amt
+        spend_amt = amt - roth_amt
+
+        if spend_amt > 0:
+            income_sources[acct] = income_sources.get(acct, 0.0) + spend_amt
+        if roth_amt > 0:
+            income_sources["roth conversion"] = (
+                income_sources.get("roth_conversion", 0.0) + roth_amt
+            )
+            balances["ROTH IRA"] += roth_amt
+    return balances, income_sources
 
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal

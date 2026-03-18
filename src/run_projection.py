@@ -13,6 +13,7 @@ from typing import Dict, Optional, List
 
 from projection_engine import projection_engine
 from plotting import plotting
+from optimer import random_search_optimize, pretty_print_policy
 
 
 
@@ -91,6 +92,8 @@ UNIFORM_LIFETIME_TABLE_CSV = Path("/content/FIRE/Config/uniform_lifetime_table.c
 rmd_df = pd.read_csv(UNIFORM_LIFETIME_TABLE_CSV)
 rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float)))
 
+
+
 def main():
 
     projection = projection_engine(
@@ -102,10 +105,31 @@ def main():
         assumptions,
         balances_actuals = bal
     )
+
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
     fig = plotting(projection, assumptions["withdrawal_order"], BALANCES_CSV)
+
+    result = random_search_optimize(
+        start_bal=start_bal,
+        cf=cf,
+        months=months,
+        assumptions=assumptions,
+        balances_actuals=balances_actuals,
+        account_tax_map=account_tax_map,
+        rmd_table=rmd_table,
+        n_iter=200,
+        objective="terminal_wealth",
+        min_monthly_income_real=10000.0,
+        income_bounds=(10000.0, 18000.0),
+        roth_bounds=(0.0, 120000.0),
+    )
+
+    print("Best score:", result.best_score)
+    pretty_print_policy(result.best_policy)
+
+    best_df = result.best_projection
 
     scenario_path = Path(sys.argv[1]).resolve()
 
