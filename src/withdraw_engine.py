@@ -153,6 +153,8 @@ def calc_withdrawal(
     t0=None, 
     balances_actuals=None,
     rmd_start_age=73,
+    policy=None,
+    ytd_tax_buckets=None
     ):
     
     withdrawal = 0.0
@@ -167,7 +169,15 @@ def calc_withdrawal(
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
 
     elif withdrawal_type == "Optimizer":
-        withdrawal = calc_withdrawal_optimizer(m, balances, income_sources, inflation, policy, ytd_tax_buckets, order)
+        balances, income_sources = calc_withdrawal_optimizer(
+            m=m, 
+            balances=balances, 
+            income_sources=income_sources, 
+            inflation=inflation, 
+            policy=policy, 
+            ytd_tax_buckets=ytd_tax_buckets or {}, 
+            order=order
+        )
 
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")

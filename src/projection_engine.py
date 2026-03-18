@@ -129,9 +129,11 @@ def projection_engine(
         age = (m-birthday).days / 365.2425
         row["Age"] = age
         monthly_events = []
+        policy = assumptions.get("optimizer_policy", {})
         year_policy = assumptions.get("optimizer_policy", {}).get(m.year, {})
         target_net_income_real = year_policy.get("target_net_income_real", 10000.0)
         roth_target_ordinary_income = year_policy.get("roth_target_ordinary_income", 0.0)
+        
 
         if m.month == 1:
             ytd_tax = 0.0
@@ -159,6 +161,9 @@ def projection_engine(
             withdrawal_rate=withdrawal_rate, 
             order=order, 
             inflation=inflation, 
+            rmd_start_age=rmd_start_age,
+            policy = policy,
+            ytd_tax_buckets = ytd_tax_buckets,
             annual_w0=annual_w0,
             t0=t0,
             balances_actuals=balances_actuals
