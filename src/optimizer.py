@@ -167,8 +167,7 @@ def random_search_optimizer(
             if verbose:
                 print(
                     f"New best at iter {i + 1}/{n_iter}: "
-                    f"Score={best_score:,.2f},
-                    params={best_params}"
+                    f"Score={best_score:,.2f}, params={best_params}"
                 )
         
     if best_params is None or best_policy is None or best_projection is None:
@@ -189,5 +188,5 @@ def pretty_print_policy(policy: Dict[int, Dict[str, float]]) -> None:
             f"{y}: "
             f"target_net_income_real={p['target_net_income_real']:,.0f}"
         )
-        
+
     
