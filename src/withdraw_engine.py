@@ -65,7 +65,8 @@ def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, ba
     withdrawal = annual_withdrawal/12.0
     return withdrawal, annual_w0, t0
 
-def calc_withdrawal_optimizer()
+def calc_withdrawal_optimizer():
+    continue
 
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
