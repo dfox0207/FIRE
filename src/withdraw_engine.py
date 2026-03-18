@@ -117,7 +117,7 @@ def calc_withdrawal(
     if withdrawal_type== "VPW":
         withdrawal = float(balances.sum())*float(withdrawal_rate)/12.0
                 
-    elif withdrawal_type == "4pct":
+    elif withdrawal_type == "Classic":
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
 
     else:
