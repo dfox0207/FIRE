@@ -13,7 +13,7 @@ def is_rmd_eligible(acct: str, account_tax_map) -> bool:
 def get_rmd_divisor(age: int, rmd_table: dict[float, float]) -> float | None:
     return rmd_table.get(age)
 
-def calc_annual_rmd(blance: float, divisor: float) -> float:
+def calc_annual_rmd(balance: float, divisor: float) -> float:
     if divisor <= 0:
         raise ValueError("RMD divisior must be positive")
     return max(0.0, balance/divisor)
