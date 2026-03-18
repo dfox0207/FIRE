@@ -65,6 +65,8 @@ def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, ba
     withdrawal = annual_withdrawal/12.0
     return withdrawal, annual_w0, t0
 
+def calc_withdrawal_optimizer()
+
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
     row = balances.copy()
@@ -119,6 +121,9 @@ def calc_withdrawal(
                 
     elif withdrawal_type == "Classic":
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
+
+    elif withdrawal_type == "Optimizer":
+        withdrawal = calc_withdrawal_optimizer(**kwargs)
 
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
