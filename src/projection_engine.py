@@ -237,6 +237,12 @@ def projection_engine(
         income_sources["TSP"] = income_sources.get("TSP", 0.0) + roth_conv_real
 
         #2c. Take Pension
+        active_salary = cf[(cf["start_date"]<=m) & (cf["end_date"].isna() | (cf["end_date"] >= m))]
+        salary_income = active_salary.get("Penn State Salary", 0.0)
+        row["Penn State Salary"] = salary_income
+        salary_income_real = calc_real(m, basis, salary_income, inflation)
+        row["Penn State Salary Real"] = salary_income_real
+        
         pension = calc_pension(pension_real, retirement, inflation, m)
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
@@ -250,8 +256,8 @@ def projection_engine(
         
         
         #2e. Sum Total Income
-        row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity
-        income_real = pension_real + withdrawal_real + ssa_annuity_real + interest_real + qdiv_real
+        row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity + salary_income
+        income_real = pension_real + withdrawal_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real
         row["Income_Real"] =  income_real
         
 
