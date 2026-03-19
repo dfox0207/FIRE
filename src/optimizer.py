@@ -82,7 +82,7 @@ def evaluate_policy(
 ) -> Tuple[float, pd.DataFrame]:
 
     assumptions_mod = deepcopy(assumptions)
-    assumptions_mod["withdrawal_type"] = "optimizer"
+    assumptions_mod["withdrawal_type"] = "Optimizer"
 
     proj = projection_engine(
         start_bal=start_bal,
