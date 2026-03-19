@@ -131,7 +131,7 @@ def main():
         "Net_Income_Real": "sum",
         "Fed Tax": "sum",
         "VA Tax": "sum",
-        "Medicare Tax": "sum", if "Medicare Tax" in annual.columns else "sum",
+        "Medicare Tax": "sum" if "Medicare Tax" in annual.columns else "sum",
         "Total Tax": "sum",
         "Net_Worth": "last",
         "Net_Worth_Real": "last",
