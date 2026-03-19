@@ -49,7 +49,7 @@ def get_active_income_streams(income_streams: pd.DataFrame, m: pd.Timestamp) -> 
     ]
 
 def get_monthly_income_amount(active_streams: pd.DataFrame, source_name: str) -> float:
-    rows = active_streams[active_streams["source"]] == source_name
+    rows = active_streams[active_streams["source"] == source_name]
 
     if rows.empty:
         return 0.0
