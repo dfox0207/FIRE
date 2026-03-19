@@ -116,7 +116,7 @@ def main():
         cf=cf,
         months=months,
         assumptions=assumptions,
-        balances_actuals=balances_actuals,
+        balances_actuals=bal,
         account_tax_map=account_tax_map,
         rmd_table=rmd_table,
         n_iter=200,
