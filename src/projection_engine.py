@@ -42,21 +42,21 @@ def apply_flows(balances, cf, m):
     flows = active.groupby("account")["monthly_amount"].sum()
     return balances.add(flows, fill_value=0) 
 
-def calc_spec_annuity(m, birthday, ssa_benefit, service_length):
-    if birthday + pd.DateOffset(years=57) <= m <= birthday + pd.DateOffset(years=62):
-        spec_annuity = ssa_benefit * service_length/40
-    else:
-        spec_annuity = 0
-    return spec_annuity
+def get_active_income_streams(income_streams: pd.DataFrame, m: pd.Timestamp) -> pd.DataFrame:
+    return income_streams[
+        (income_streams["start_date"]<=m) &
+        (income_streams["end_date"].isna() | (income_streams["end_date"]>=m))
+    ]
 
-def calc_ssa(m, birthday, ssa_benefit, inflation, basis):
-    if m > birthday + pd.DateOffset(years=62):
-        ssa_annuity = ssa_benefit*0.8*(1+inflation)**(((m.to_period("M") - basis.to_period("M")).n)/12)
-        ssa_annuity_real = ssa_benefit*0.8
-    else:
-        ssa_annuity = 0
-        ssa_annuity_real = 0
-    return ssa_annuity, ssa_annuity_real
+def get_monthly_income_amount(active_streams: pd.DataFrame, source_name: str) -> float:
+    rows = active_streams[active_streams["source"]] == source_name
+
+    if rows.empty:
+        return 0.0
+    if len(rows) == 1:
+        return float(rows["monthly_amount"].iloc[0])
+    raise ValueError(f"Expected one active row for {source_name}, found {len(rows)}")
+
 
 def calc_real(m, basis, amount, inflation):
     delta_months = (basis.to_period("M") - m.to_period("M")).n          #months since basis is negative
@@ -87,6 +87,7 @@ def projection_engine(
     rmd_table,
     start_bal, 
     cf, 
+    income_streams,
     months, 
     assumptions, 
     balances_actuals = None
@@ -105,10 +106,9 @@ def projection_engine(
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
     retirement = pd.Timestamp("2025-10-01")
-    pension_real = assumptions["pension"]
     annual_return = assumptions["annual_return"]
     service_length = assumptions["service_length"]
-    ssa_benefit = assumptions["ssa_benefit"]
+    
     filing_status = assumptions["filing_status"]
     
     annual_w0 = None
@@ -133,7 +133,7 @@ def projection_engine(
         year_policy = assumptions.get("optimizer_policy", {}).get(m.year, {})
         target_net_income_real = year_policy.get("target_net_income_real", 10000.0)
         roth_target_ordinary_income = year_policy.get("roth_target_ordinary_income", 0.0)
-        
+        active_streams = get_active_income_streams(income_streams, m)
 
         if m.month == 1:
             ytd_tax = 0.0
@@ -236,32 +236,41 @@ def projection_engine(
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["TSP"] = income_sources.get("TSP", 0.0) + roth_conv_real
 
-        #2c. Take Pension
-        active_salary = cf[
-            (cf["start_date"]<=m) & 
-            (cf["end_date"].isna() | (cf["end_date"] >= m))]
-        salary_rows = active_salary[active_salary["account"] == "Penn State Salary"]
-        salary_income = salary_rows["monthly_amount"].iloc[0] if not salary_rows.empty else 0.0
-        
+        #2c. Add Salary
+        salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
         row["Penn State Salary Income"] = salary_income
         salary_income_real = calc_real(m, basis, salary_income, inflation)
         row["Penn State Salary Real"] = salary_income_real
-        
-        pension = calc_pension(pension_real, retirement, inflation, m)
-        row["Pension"] = pension
-        row["Pension_Real"] = pension_real
-        income_sources["pension"] = pension_real
+        if salary_income_real > 0:
+            income_sources["Penn State Salary"] = salary_income_real
 
-        #2d. Take Special Supplemental Annuity/SSA Annuity
-        spec_annuity = calc_spec_annuity(m, birthday, ssa_benefit, service_length)
-        ssa_annuity, ssa_annuity_real = calc_ssa(m, birthday, ssa_benefit, inflation, basis)
-        income_sources["Special Annuity"] = spec_annuity
-        income_sources["SSA Annuity"] = ssa_annuity_real
+        # Add Pension
+        pension = get_monthly_income_amount(active_streams, "Pension")
+        row["Pension"] = pension
+        pension_real = calc_real(m, basis, pension, inflation)
+        row["Pension_Real"] = pension_real
+        if pension_real > 0:
+            income_sources["pension"] = pension_real
+
+        #2d. Take Special Supplemental Annuity
+        spec_annuity = get_monthly_income_amount(active_streams, "Special Annuity")
+        row["Special Annuity"] = spec_annuity
+        spec_annuity_real = calc_real(m, basis, spec_annuity, inflation)
+        if spec_annuity_real > 0:
+            income_sources["Special Annuity"] = spec_annuity_real
+
+        # Take SSA Annuity
+        ssa_annuity = get_monthly_income_amount(active_streams, "SSA")
+        row["SSA"] = ssa_annuity
+        ssa_annuity_real = calc_real(m, basis, ssa_annuity, inflation)
+        row["SSA_Real"] = ssa_annuity_real
+        if ssa_annuity_real > 0:
+            income_sources["SSA"] = ssa_annuity_real
         
         
         #2e. Sum Total Income
-        row["Income"] = pension + withdrawal + spec_annuity + ssa_annuity + salary_income
-        income_real = pension_real + withdrawal_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real
+        row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
+        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
         row["Income_Real"] =  income_real
         
 
@@ -294,6 +303,20 @@ def projection_engine(
                     gross_amount=amount
                 )
             )
+        
+        if salary_income_real > 0:
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Penn State Salary",
+                        income_type=EarnedIncome(),
+                        account="Penn State Salary"
+                    ),
+                    gross_amount=salary_income_real
+                )
+            )
+
         if pension_real > 0 :
             monthly_events.append(
                 IncomeEvent(
@@ -325,6 +348,20 @@ def projection_engine(
                         gross_amount=ltcg_amount
                     )
                 )
+        
+        if spec_annuity_real>0:
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Special Annuity",
+                        income_type=RetirementDistributionIncome(),
+                        account="Special Annuity"
+                    ),
+                    gross_amount=spec_annuity_real
+                )
+            )
+        
         if ssa_annuity_real>0:
             monthly_events.append(
                 IncomeEvent(
