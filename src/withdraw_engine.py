@@ -89,7 +89,7 @@ def calc_withdrawal_optimizer(
     current_ordinary_income = 0.0 if ytd_tax_buckets is None else getattr(ytd_tax_buckets, "federal_ordinary_income", 0.0)
     roth_conversion = max(0.0, roth_target - current_ordinary_income)
 
-    balances, withdrawal_dict = withdrawal_waterfall(
+    balances, withdrawal_dict, actual_withdrawal = withdrawal_waterfall(
         balances,
         required_withdrawal + roth_conversion,
         order
