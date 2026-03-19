@@ -111,7 +111,7 @@ def main():
 
     fig = plotting(projection, assumptions["withdrawal_order"], BALANCES_CSV)
 
-    result = random_search_optimize(
+    result = random_search_optimizer(
         start_bal=start_bal,
         cf=cf,
         months=months,
