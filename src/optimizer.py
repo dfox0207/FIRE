@@ -158,7 +158,7 @@ def random_search_optimizer(
             min_monthly_income_real=min_monthly_income_real,
             objective=objective,
         )
-        print(f"iter{i}: score={score},min_income= {min_income},final_networth={nw}")
+        
         if score > best_score:
             best_score = score
             best_params = params
@@ -170,7 +170,9 @@ def random_search_optimizer(
                     f"New best at iter {i + 1}/{n_iter}: "
                     f"Score={best_score:,.2f}, params={best_params}"
                 )
-        
+        min_income= proj["min_income"]
+        nw = proj["final_networth"]
+        print(f"iter{i}: score={score},min_income= {min_income},final_networth={nw}")
     if best_params is None or best_policy is None or best_projection is None:
         raise RunTimeError("Optimizer failed to produce any candidate result.")
 
