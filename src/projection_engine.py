@@ -243,7 +243,7 @@ def projection_engine(
         salary_rows = active_salary[active_salary["account"] == "Penn State Salary"]
         salary_income = salary_rows["monthly_amount"].iloc[0] if not salary_rows.empty else 0.0
         
-        row["Penn State Salary"] = salary_income
+        row["Penn State Salary Income"] = salary_income
         salary_income_real = calc_real(m, basis, salary_income, inflation)
         row["Penn State Salary Real"] = salary_income_real
         
