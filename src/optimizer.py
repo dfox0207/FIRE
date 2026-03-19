@@ -119,6 +119,7 @@ def random_search_optimizer(
     min_monthly_income_real: float = 10000.0,
     objective: str = "terminal_wealth",
     income_bounds: Tuple[float, float]=(0.0, 150000.0),
+    roth_bounds: Tuple[float, float]=(0.0, 120000.0),
     seed: int = 42,
     verbose: bool = True,
 ) -> OptimizationResult:
