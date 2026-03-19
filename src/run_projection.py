@@ -111,25 +111,25 @@ def main():
 
     fig = plotting(projection, assumptions["withdrawal_order"], BALANCES_CSV)
 
-    result = random_search_optimizer(
-        start_bal=start_bal,
-        cf=cf,
-        months=months,
-        assumptions=assumptions,
-        balances_actuals=bal,
-        account_tax_map=account_tax_map,
-        rmd_table=rmd_table,
-        n_iter=200,
-        objective="terminal_wealth",
-        min_monthly_income_real=10000.0,
-        income_bounds=(10000.0, 18000.0),
-        roth_bounds=(0.0, 120000.0),
-    )
+    # result = random_search_optimizer(
+    #     start_bal=start_bal,
+    #     cf=cf,
+    #     months=months,
+    #     assumptions=assumptions,
+    #     balances_actuals=bal,
+    #     account_tax_map=account_tax_map,
+    #     rmd_table=rmd_table,
+    #     n_iter=200,
+    #     objective="terminal_wealth",
+    #     min_monthly_income_real=10000.0,
+    #     income_bounds=(10000.0, 18000.0),
+    #     roth_bounds=(0.0, 120000.0),
+    # )
 
-    print("Best score:", result.best_score)
-    pretty_print_policy(result.best_policy)
+    # print("Best score:", result.best_score)
+    # pretty_print_policy(result.best_policy)
 
-    best_df = result.best_projection
+    # best_df = result.best_projection
 
     scenario_path = Path(sys.argv[1]).resolve()
 
