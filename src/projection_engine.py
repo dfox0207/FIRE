@@ -262,6 +262,9 @@ def projection_engine(
             if amount <= 0:
                 continue
 
+            if cf["Penn State Salary"] > 0:
+                income_sources["Penn State Salary"] = cf["Penn State Salary"]
+            
             if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA"}:
                 continue
             

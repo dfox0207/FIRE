@@ -54,7 +54,7 @@ def score_projection(
         return -1e18
     
     min_income = float(proj["Net_Income_Real"].min())
-
+    
     if min_income < min_monthly_income_real:
         shortfall = min_monthly_income_real - min_income
         return -1e12 - 1e6 * shortfall
@@ -66,6 +66,7 @@ def score_projection(
         return float(proj["Net_Income_Real"].sum())
     
     raise ValueError(f"Unsupported objective: {objective}")
+
 
 def evaluate_policy(
     policy: Dict[int, Dict[str, float]],
