@@ -111,7 +111,7 @@ def calc_withdrawal_optimizer(
         if spend_amt > 0:
             income_sources[acct] = income_sources.get(acct, 0.0) + spend_amt
         if roth_amt > 0:
-            income_sources["roth conversion"] = (
+            income_sources["roth_conversion"] = (
                 income_sources.get("roth_conversion", 0.0) + roth_amt
             )
             balances["ROTH IRA"] += roth_amt
@@ -190,6 +190,7 @@ def calc_withdrawal(
         )
         print("withdrawal variable:", withdrawal)
         print("income_sources:", income_sources)
+        return blances, income_sources, 0.0, annual_w0, t0
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 

@@ -129,7 +129,7 @@ def projection_engine(
         age = (m-birthday).days / 365.2425
         row["Age"] = age
         monthly_events = []
-        policy = assumptions.get("optimizer_policy", {})
+        policy = assumptions.get("optimizer_policy", None)
         year_policy = assumptions.get("optimizer_policy", {}).get(m.year, {})
         target_net_income_real = year_policy.get("target_net_income_real", 10000.0)
         roth_target_ordinary_income = year_policy.get("roth_target_ordinary_income", 0.0)
@@ -148,7 +148,61 @@ def projection_engine(
         balances = growth(balances, annual_return)
 
         #2. Calculate Income
+        income_sources = {}
+
+        # Take Roth Conversion
+        roth_conv = convert_to_roth(
+            m,
+            balances,
+            assumptions,
+            roth_state,
+        )
+   
+        row["ROTH Conversion"] = roth_conv    
+        roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+
+        row["ROTH Conversion Real"] = roth_conv_real
+        income_sources["Roth Conversion"] = roth_conv_real
+
+        # Add Salary
+        salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
+        row["Penn State Salary Income"] = salary_income
+        salary_income_real = calc_real(m, basis, salary_income, inflation)
+        row["Penn State Salary Real"] = salary_income_real
+        if salary_income_real > 0:
+            income_sources["Penn State Salary"] = salary_income_real
+
+        # Add Pension
+        pension = get_monthly_income_amount(active_streams, "Pension")
+        row["Pension"] = pension
+        pension_real = calc_real(m, basis, pension, inflation)
+        row["Pension_Real"] = pension_real
+        if pension_real > 0:
+            income_sources["pension"] = pension_real
+
+        # Take Special Supplemental Annuity
+        spec_annuity = get_monthly_income_amount(active_streams, "Special Annuity")
+        row["Special Annuity"] = spec_annuity
+        spec_annuity_real = calc_real(m, basis, spec_annuity, inflation)
+        if spec_annuity_real > 0:
+            income_sources["Special Annuity"] = spec_annuity_real
+
+        # Take SSA Annuity
+        ssa_annuity = get_monthly_income_amount(active_streams, "SSA")
+        row["SSA"] = ssa_annuity
+        ssa_annuity_real = calc_real(m, basis, ssa_annuity, inflation)
+        row["SSA_Real"] = ssa_annuity_real
+        if ssa_annuity_real > 0:
+            income_sources["SSA"] = ssa_annuity_real
+        
+        
+        # Sum Total Income
+        row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
+        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
+        row["Income_Real"] =  income_real
         #2a. Take Retirement withdrawals
+        
+        
 
         balances, income_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
@@ -162,7 +216,7 @@ def projection_engine(
             order=order, 
             inflation=inflation, 
             rmd_start_age=73,
-            policy = assumptions.get("optimizer_policy"),
+            policy = policy,
             ytd_tax_buckets = ytd_tax_buckets,
             annual_w0=annual_w0,
             t0=t0,
@@ -222,56 +276,7 @@ def projection_engine(
                     )
                 )
 
-        #2b. Take Roth Conversion
-        roth_conv = convert_to_roth(
-            m,
-            balances,
-            assumptions,
-            roth_state,
-        )
-   
-        row["ROTH Conversion"] = roth_conv    
-        roth_conv_real = calc_real(m, basis, roth_conv, inflation)
 
-        row["ROTH Conversion Real"] = roth_conv_real
-        income_sources["Roth Conversion"] = roth_conv_real
-
-        #2c. Add Salary
-        salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
-        row["Penn State Salary Income"] = salary_income
-        salary_income_real = calc_real(m, basis, salary_income, inflation)
-        row["Penn State Salary Real"] = salary_income_real
-        if salary_income_real > 0:
-            income_sources["Penn State Salary"] = salary_income_real
-
-        # Add Pension
-        pension = get_monthly_income_amount(active_streams, "Pension")
-        row["Pension"] = pension
-        pension_real = calc_real(m, basis, pension, inflation)
-        row["Pension_Real"] = pension_real
-        if pension_real > 0:
-            income_sources["pension"] = pension_real
-
-        #2d. Take Special Supplemental Annuity
-        spec_annuity = get_monthly_income_amount(active_streams, "Special Annuity")
-        row["Special Annuity"] = spec_annuity
-        spec_annuity_real = calc_real(m, basis, spec_annuity, inflation)
-        if spec_annuity_real > 0:
-            income_sources["Special Annuity"] = spec_annuity_real
-
-        # Take SSA Annuity
-        ssa_annuity = get_monthly_income_amount(active_streams, "SSA")
-        row["SSA"] = ssa_annuity
-        ssa_annuity_real = calc_real(m, basis, ssa_annuity, inflation)
-        row["SSA_Real"] = ssa_annuity_real
-        if ssa_annuity_real > 0:
-            income_sources["SSA"] = ssa_annuity_real
-        
-        
-        #2e. Sum Total Income
-        row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
-        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
-        row["Income_Real"] =  income_real
         
 
         for key in income_sources:
