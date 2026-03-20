@@ -234,7 +234,7 @@ def projection_engine(
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
 
         row["ROTH Conversion Real"] = roth_conv_real
-        income_sources["TSP"] = income_sources.get("TSP", 0.0) + roth_conv_real
+        income_sources["Roth Conversion"] = roth_conv_real
 
         #2c. Add Salary
         salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
@@ -282,8 +282,7 @@ def projection_engine(
                 continue
 
             
-            
-            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA"}:
+            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA", "Roth Conversion"}:
                 continue
             
             income_type = income_type_from_account(acct, account_tax_map)
@@ -330,6 +329,19 @@ def projection_engine(
                 )
             )
         
+        if roth_conv_real > 0 :
+            monthly_events.append(
+                IncomeEvent(
+                    date=m,
+                    source=IncomeSource(
+                        name="Roth Conversion",
+                        income_type=RetirementDistributionIncome(),
+                        account="Roth Conversion"
+                    ),
+                    gross_amount = roth_conv_real
+                )
+            )
+
         brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
 
         if brokerage_withdrawal > 0:
