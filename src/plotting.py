@@ -91,22 +91,39 @@ def plot_tax(df, ax):
     ax.grid(True)
     ax.legend()
 
-def plotting(df, order, BALANCES_CSV):
+def plot_annual_income(annual_summary, ax):
+    ax.plot(annual_summary["Year"], annual_summary["Income_Real"], label="Annual Real Income")
+    ax.plot(annual_summary["Year"], annual_summary["Income"], label="Annual Nominal Income")
+    ax.plot(annual_summary["Year"], annual_summary["Net_Income_Real"], label="Annual Net Real Income")
+
+def plot_annual_taxes(annual_summary, ax):
+    ax.plot(annual_summary["Year"], annual_summary["Fed Tax"], label="Fed")
+    ax.plot(annual_summary["Year"], annual_summary["VA Tax"], label="VA")
+    ax.plot(annual_summary["Year"], annual_summary["Total Tax"], label="Total Tax")
+
+
+def plotting(df, annual_summary, order, BALANCES_CSV):
     # Create two side-by-side subplots
-    fig, ax = plt.subplots(2, 2, figsize=(14, 8), sharex=True)
+    fig, ax = plt.subplots(2, 3, figsize=(14, 8), sharex=True)
 
     # Top Left Plot: Networth
     plot_networth(df, ax[0,0], BALANCES_CSV)
     
 
-    # Top Right Plot: Income
-    plot_income(df, ax[0,1])
+    # Top Right Plot: Account Balances
+    plot_accounts(df, order, ax[0,1])
 
-    # Bottom Left Plot: Account Balances
-    plot_accounts(df, order, ax[1,0])
+    # Middle Left Plot: Monthly Income
+    plot_income(df, ax[1,0])
 
-    #Bottom Right Plot: Taxes
-    plot_tax(df, ax[1,1])
+    # Middle Right Plot: Annual Income
+    plot_annual_income(annual_summary, ax[1,1])
+
+    #Bottom Left Plot: Taxes
+    plot_tax(df, ax[2,0])
+
+    # Bottom Right Plot: Annual Taxes
+    plot_annual_taxes(annual_summary, ax[2,1])
 
     plt.tight_layout()
     plt.show()

@@ -140,7 +140,7 @@ def main():
     
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
-    fig = plotting(projection, assumptions["withdrawal_order"], BALANCES_CSV)
+    fig = plotting(projection, annual_summary, assumptions["withdrawal_order"], BALANCES_CSV)
 
     # result = random_search_optimizer(
     #     start_bal=start_bal,
