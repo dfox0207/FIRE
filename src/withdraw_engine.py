@@ -118,8 +118,7 @@ def calc_withdrawal_optimizer(
             )
             balances["ROTH IRA"] += roth_amt
     
-    print("year", m.year)
-    print("policy", policy.get(m.year, {}) if policy else None)
+    
 
     return balances, income_sources, actual_withdrawal
 
