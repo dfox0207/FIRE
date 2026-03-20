@@ -96,10 +96,30 @@ def plot_annual_income(annual_summary, ax):
     ax.plot(annual_summary["Year"], annual_summary["Income"], label="Annual Nominal Income")
     ax.plot(annual_summary["Year"], annual_summary["Net_Income_Real"], label="Annual Net Real Income")
 
+    ax.set_title('Annual Income')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
+
+
 def plot_annual_taxes(annual_summary, ax):
     ax.plot(annual_summary["Year"], annual_summary["Fed Tax"], label="Fed")
     ax.plot(annual_summary["Year"], annual_summary["VA Tax"], label="VA")
     ax.plot(annual_summary["Year"], annual_summary["Total Tax"], label="Total Tax")
+
+    ax.set_title('Annual Taxes')
+    ax.set_xlabel('Date')
+    ax.set_ylabel('($)')
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))
+    ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
+    ax.tick_params(axis="x", rotation=45)
+    ax.grid(True)
+    ax.legend()
+
 
 
 def plotting(df, annual_summary, order, BALANCES_CSV):
