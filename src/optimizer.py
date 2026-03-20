@@ -42,7 +42,7 @@ def make_year_blocks(years: List[int], block_size: int =5) -> List[Tuple[int, in
     years = sorted(years)
     blocks= []
     i = 0
-    while i < 0 len(years):
+    while i < len(years):
         start_year = years[i]
         end_year = years[min(i + block_size -1, len(years) - 1)]
         blocks.append((start_year, end_year))
