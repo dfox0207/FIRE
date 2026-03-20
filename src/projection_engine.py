@@ -196,10 +196,7 @@ def projection_engine(
             income_sources["SSA"] = ssa_annuity_real
         
         
-        # Sum Total Income
-        row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
-        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
-        row["Income_Real"] =  income_real
+       
         #2a. Take Retirement withdrawals
         
         
@@ -397,7 +394,10 @@ def projection_engine(
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
         ytd_tax_buckets.add(monthly_tax_buckets)
 
-        
+        # Sum Total Income
+        row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
+        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
+        row["Income_Real"] =  income_real
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
