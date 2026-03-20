@@ -95,18 +95,20 @@ def calc_withdrawal_optimizer(
     roth_ytd_target = annual_roth_target * month_num/12.0
     roth_conversion = max(0.0, roth_ytd_target - current_ordinary_income)
 
-    balances, withdrawal_dict, actual_withdrawal = withdrawal_waterfall(
+    balances, withdrawal_dict, total_withdrawn = withdrawal_waterfall(
         balances,
         required_withdrawal + roth_conversion,
         order
     )
     
+    actual_withdrawal = 0.0
     remaining_roth = roth_conversion
 
     for acct, amt in withdrawal_dict.items():
         roth_amt = min(amt, remaining_roth)
         remaining_roth -= roth_amt
         spend_amt = amt - roth_amt
+        actual_withdrawal += spend_amt
 
         if spend_amt > 0:
             income_sources[acct] = income_sources.get(acct, 0.0) + spend_amt
@@ -119,7 +121,7 @@ def calc_withdrawal_optimizer(
     print("year", m.year)
     print("policy", policy.get(m.year, {}) if policy else None)
 
-    return balances, income_sources
+    return balances, income_sources, actual_withdrawal
 
 def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
@@ -179,7 +181,7 @@ def calc_withdrawal(
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
 
     elif withdrawal_type == "Optimizer":
-        balances, income_sources = calc_withdrawal_optimizer(
+        balances, income_sources, withdrawal = calc_withdrawal_optimizer(
             m=m, 
             balances=balances, 
             income_sources=income_sources, 
@@ -190,7 +192,7 @@ def calc_withdrawal(
         )
         print("withdrawal variable:", withdrawal)
         print("income_sources:", income_sources)
-        return balances, income_sources, 0.0, annual_w0, t0
+        return balances, income_sources, withdrawal, annual_w0, t0
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
