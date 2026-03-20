@@ -189,8 +189,7 @@ def calc_withdrawal(
             ytd_tax_buckets=ytd_tax_buckets or {}, 
             order=order
         )
-        print("withdrawal variable:", withdrawal)
-        print("income_sources:", income_sources)
+        
         return balances, income_sources, withdrawal, annual_w0, t0
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
