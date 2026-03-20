@@ -113,7 +113,7 @@ def random_search_optimizer(
     assumptions,
     balances_actuals,
     target_annual_net_income_real: float=120000.0,
-    block_size= int = 5,
+    block_size: int = 5,
     n_trials: int = 200,
     roth_min: float = 0.0,
     roth_max: float = 150000.0,
