@@ -113,6 +113,10 @@ def calc_withdrawal_optimizer(
                 income_sources.get("roth_conversion", 0.0) + roth_amt
             )
             balances["ROTH IRA"] += roth_amt
+    
+    print("year", m.year)
+    print("policy", policy.get(m.year, {}) if policy else None)
+
     return balances, income_sources
 
 def withdrawal_waterfall(balances, withdrawal, order):
@@ -182,7 +186,8 @@ def calc_withdrawal(
             ytd_tax_buckets=ytd_tax_buckets or {}, 
             order=order
         )
-
+        print("withdrawal variable:", withdrawal)
+        print("income_sources:", income_sources)
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
