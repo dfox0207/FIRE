@@ -112,7 +112,7 @@ rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float))
 
 def main():
 
-    if assumptions["withdrawal_type"].lower() == "Optimizer":
+    if assumptions["withdrawal_type"].lower() == "optimizer":
         result = random_search_optimizer(
             account_tax_map=account_tax_map,
             rmd_table=rmd_table,
