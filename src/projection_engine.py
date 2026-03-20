@@ -162,7 +162,7 @@ def projection_engine(
             order=order, 
             inflation=inflation, 
             rmd_start_age=73,
-            policy = policy,
+            policy = assumptions.get("Optimizer_policy"),
             ytd_tax_buckets = ytd_tax_buckets,
             annual_w0=annual_w0,
             t0=t0,
