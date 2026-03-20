@@ -112,16 +112,53 @@ rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float))
 
 def main():
 
-    projection = projection_engine(
-        account_tax_map,
-        rmd_table,
-        start_bal, 
-        cf, 
-        income_streams,
-        months, 
-        assumptions,
-        balances_actuals = bal
-    )
+    if assumptions["withdrawal_type"].lower() == "Optimizer":
+        result = random_search_optimizer(
+            account_tax_map=account_tax_map,
+            rmd_table=rmd_table,
+            start_bal=start_bal,
+            cf=cf,
+            income_streams=income_streams,
+            months=months,
+            assumptions=assumptions,
+            balances_actuals=balances_actuals,
+            target_annual_net_income_real=120000.0,
+            block_size=5,
+            n_trials=200,
+            roth_min=0.0,
+            roth_max=150000.0,
+            seed=42,
+        )
+
+        print("Best score:", result["best_score"])
+        print("Best policy:", result["best_policy"])
+
+        assumptions["optimizer_policy"] = result["best_policy"]
+        projection = projection_engine(
+            account_tax_map=account_tax_map,
+            rmd_table=rmd_table,
+            start_bal= start_bal, 
+            cf=cf, 
+            income_streams=income_streams,
+            months=months, 
+            assumptions=assumptions,
+            balances_actuals = balances_actuals,
+        )
+        annual_summary = build_annual_summary(projection)
+    else:
+        projection = projection_engine(
+            account_tax_map=account_tax_map,
+            rmd_table=rmd_table,
+            start_bal= start_bal, 
+            cf=cf, 
+            income_streams=income_streams,
+            months=months, 
+            assumptions=assumptions,
+            balances_actuals = balances_actuals,
+        )
+        annual_summary = build_annual_summary(projection)
+
+
 
     annual = projection.copy()
     annual["Year"] = pd.to_datetime(annual["Date"]).dt.year
@@ -142,25 +179,7 @@ def main():
 
     fig = plotting(projection, annual_summary, assumptions["withdrawal_order"], BALANCES_CSV)
 
-    # result = random_search_optimizer(
-    #     start_bal=start_bal,
-    #     cf=cf,
-    #     months=months,
-    #     assumptions=assumptions,
-    #     balances_actuals=bal,
-    #     account_tax_map=account_tax_map,
-    #     rmd_table=rmd_table,
-    #     n_iter=200,
-    #     objective="terminal_wealth",
-    #     min_monthly_income_real=10000.0,
-    #     income_bounds=(10000.0, 18000.0),
-    #     roth_bounds=(0.0, 120000.0),
-    # )
-
-    # print("Best score:", result.best_score)
-    # pretty_print_policy(result.best_policy)
-
-    # best_df = result.best_projection
+    
 
     scenario_path = Path(sys.argv[1]).resolve()
 
