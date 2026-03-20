@@ -118,7 +118,7 @@ def calc_withdrawal_optimizer(
             )
             balances["ROTH IRA"] += roth_amt
     debug_month = pd.Timestamp("2040-01-01")
-    if m == debug_month
+    if m == debug_month:
         print("month", m)
         print("annual target", annual_income_target)
         print("monthly target", monthly_income_target)
