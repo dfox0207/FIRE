@@ -121,7 +121,7 @@ def main():
             income_streams=income_streams,
             months=months,
             assumptions=assumptions,
-            balances_actuals=balances_actuals,
+            balances_actuals=bal,
             target_annual_net_income_real=100000.0,
             block_size=5,
             n_trials=200,
