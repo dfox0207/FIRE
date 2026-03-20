@@ -225,7 +225,7 @@ def projection_engine(
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
         row["Withdrawal_real"] = withdrawal_real
         print("row withdrawal", withdrawal)
-        print("row income real", income_real)
+        
         for key in income_sources:
             income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
         
@@ -399,6 +399,7 @@ def projection_engine(
         row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
         income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
         row["Income_Real"] =  income_real
+        print("row income real", income_real)
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
