@@ -77,7 +77,9 @@ def calc_withdrawal_optimizer(
 ):
 
     year = m.year
+    policy = policy or {}
     year_policy = policy.get(year, {})
+
 
     annual_income_target = year_policy.get("target_net_income_real_annual", 120000.0)
     annual_roth_target = year_policy.get("roth_target_ordinary_income_annual", 0.0)
