@@ -8,7 +8,7 @@ from projection_engine import projection_engine
 
 def build_annual_summary(proj: pd.DataFrame) -> pd.DataFrame:
     annual = proj.copy()
-    annual[]"Year"] = pd.to_datetime(annual["Date"]).dt.year
+    annual["Year"] = pd.to_datetime(annual["Date"]).dt.year
 
     agg_map = {
         "Income": "sum",
@@ -174,4 +174,3 @@ def random_search_optimizer(
         "block_ranges": block_ranges,
     }
 
-    
