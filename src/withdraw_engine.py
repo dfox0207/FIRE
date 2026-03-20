@@ -79,15 +79,19 @@ def calc_withdrawal_optimizer(
     year = m.year
     year_policy = policy.get(year, {})
 
-    target_income = year_policy.get("target_net_income_real", 0.0)
-    roth_target = year_policy.get("roth_target_ordinary_income", 0.0)
+    annual_income_target = year_policy.get("target_net_income_real_annual", 120000.0)
+    annual_roth_target = year_policy.get("roth_target_ordinary_income_annual", 0.0)
+
+    monthly_income_target = annual_income_target / 12.0
 
     current_income_real = sum(income_sources.values())
-
-    required_withdrawal = max(0.0, target_income - current_income_real)
+    required_withdrawal = max(0.0, monthly_income_target - current_income_real)
 
     current_ordinary_income = 0.0 if ytd_tax_buckets is None else getattr(ytd_tax_buckets, "federal_ordinary_income", 0.0)
-    roth_conversion = max(0.0, roth_target - current_ordinary_income)
+    
+    month_num = m.month 
+    roth_ytd_target = annual_roth_target * month_num/12.0
+    roth_conversion = max(0.0, roth_ytd_target - current_ordinary_income)
 
     balances, withdrawal_dict, actual_withdrawal = withdrawal_waterfall(
         balances,
