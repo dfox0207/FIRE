@@ -284,7 +284,7 @@ def projection_engine(
                 continue
 
             
-            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA", "Roth Conversion", "Penn State Salary"}:
+            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA", "Roth Conversion", "roth_conversion", "Penn State Salary"}:
                 continue
             
             income_type = income_type_from_account(acct, account_tax_map)
