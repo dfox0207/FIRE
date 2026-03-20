@@ -117,7 +117,16 @@ def calc_withdrawal_optimizer(
                 income_sources.get("roth_conversion", 0.0) + roth_amt
             )
             balances["ROTH IRA"] += roth_amt
-    
+    debug_month = pd.Timestamp("2040-01-01")
+    if m == debug_month
+        print("month", m)
+        print("annual target", annual_income_target)
+        print("monthly target", monthly_income_target)
+        print("current_income_real", current_income_real)
+        print("required_withdrawal", required_withdrawal)
+        print("roth_conversion", roth_conversion)
+        print("actual_withdrawal", actual_withdrawal)
+        print("income_sources", income_sources)
     
 
     return balances, income_sources, actual_withdrawal

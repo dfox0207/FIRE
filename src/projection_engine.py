@@ -224,7 +224,8 @@ def projection_engine(
         row["Withdrawal"] = withdrawal
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
         row["Withdrawal_real"] = withdrawal_real
-
+        print("row withdrawal", withdrawal)
+        print("row income real", income_real)
         for key in income_sources:
             income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
         
