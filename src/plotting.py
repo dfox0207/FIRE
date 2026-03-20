@@ -104,7 +104,7 @@ def plot_annual_taxes(annual_summary, ax):
 
 def plotting(df, annual_summary, order, BALANCES_CSV):
     # Create two side-by-side subplots
-    fig, ax = plt.subplots(2, 3, figsize=(14, 8), sharex=True)
+    fig, ax = plt.subplots(3, 2, figsize=(14, 8), sharex=True)
 
     # Top Left Plot: Networth
     plot_networth(df, ax[0,0], BALANCES_CSV)
