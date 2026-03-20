@@ -13,7 +13,7 @@ from typing import Dict, Optional, List
 
 from projection_engine import projection_engine
 from plotting import plotting
-from optimizer import random_search_optimizer
+from optimizer import random_search_optimizer, build_annual_summary
 
 
 
