@@ -61,7 +61,7 @@ def build_block_policy(
     for (start_year, end_year), roth_target in zip(block_ranges, roth_targets_by_block):
         for yr in years:
             if start_year <= yr <= end_year:
-                policy[years] = {
+                policy[yr] = {
                     "target_annual_net_income_real": float(target_annual_net_income_real),
                     "roth_target_ordinary_income_annual": float(roth_target),
                 }
