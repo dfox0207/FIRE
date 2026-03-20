@@ -190,7 +190,7 @@ def calc_withdrawal(
         )
         print("withdrawal variable:", withdrawal)
         print("income_sources:", income_sources)
-        return blances, income_sources, 0.0, annual_w0, t0
+        return balances, income_sources, 0.0, annual_w0, t0
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
