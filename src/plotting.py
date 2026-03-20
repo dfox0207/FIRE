@@ -99,6 +99,7 @@ def plot_annual_income(annual_summary, ax):
     ax.set_title('Annual Income')
     ax.set_xlabel('Year')
     ax.set_ylabel('($)')
+    ax.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
     ax.tick_params(axis="x", rotation=45)
     ax.grid(True)
@@ -113,6 +114,7 @@ def plot_annual_taxes(annual_summary, ax):
     ax.set_title('Annual Taxes')
     ax.set_xlabel('Year')
     ax.set_ylabel('($)')
+    ax.xaxis.set_major_locator(ticker.MaxNLocator(integer=True))
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda v, _: f"${v/1e3:.2f}k"))
     ax.tick_params(axis="x", rotation=45)
     ax.grid(True)
@@ -122,7 +124,7 @@ def plot_annual_taxes(annual_summary, ax):
 
 def plotting(df, annual_summary, order, BALANCES_CSV):
     # Create two side-by-side subplots
-    fig, ax = plt.subplots(3, 2, figsize=(14, 8), sharex=True)
+    fig, ax = plt.subplots(3, 2, figsize=(14, 8), sharex=False)
 
     # Top Left Plot: Networth
     plot_networth(df, ax[0,0], BALANCES_CSV)
