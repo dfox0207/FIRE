@@ -122,7 +122,7 @@ def main():
             months=months,
             assumptions=assumptions,
             balances_actuals=balances_actuals,
-            target_annual_net_income_real=120000.0,
+            target_annual_net_income_real=100000.0,
             block_size=5,
             n_trials=200,
             roth_min=0.0,
