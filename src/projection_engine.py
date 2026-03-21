@@ -81,24 +81,6 @@ def summarize_monthly_events(monthly_events):
         
     return spendable_income_real, reported_income_real, monthly_tax_buckets
 
-def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=None):
-    account_type = account_tax_map.loc[acct, "account_type"]
-
-    if account_type in {"401k", "403b", "457b", "traditional_ira", "annuity", "pension", "tsp"}:
-        return RetirementDistributionIncome()
-
-    if account_type in {"roth_conv", "salary"}:
-        return EarnedIncome()
-
-    if account_type in {"roth_ira", "roth_401k", "roth_tsp"}:
-        return RothDistributionIncome()
-    
-    if account_type == "brokerage":
-        return None
- 
-    raise ValueError(f"Unknown account_type: {account_type}")
-
-
 
 def projection_engine(
     account_tax_map, 
