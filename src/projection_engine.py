@@ -248,47 +248,23 @@ def projection_engine(
         interest_real= brokerage_balance*assumptions["brokerage_interest_yield"]/12
         qdiv_real=brokerage_balance*assumptions["brokerage_qdiv_yield"]/12
         row["qdiv real"] = qdiv_real
-        if interest_real>0:
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Brokerage Interest",
-                        income_type=InterestIncome(),
-                        account="Brokerage"
-                    ),
-                    gross_amount=interest_real
-                )
+       
+        add_event(monthly_events, m, "Brokerage Interest", interest_real, InterestIncome(), "Brokerage")
+        add_event(monthly_events, m, "Brokerage Qualified Dividends", qdiv_real, QualifiedDividendIncome(), "Brokerage")
+        
+        brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
+        if brokerage_withdrawal > 0:
+            ltcg_ratio= assumptions.get("brokerage_ltcg_realization_ratio", 0.30)
+            ltcg_amount= brokerage_withdrawal*ltcg_ratio
+            add_event(
+                monthly_events,
+                m,
+                "Brokerage LTCG Withdrawal",
+                ltcg_amount,
+                LongTermCapitalGainIncome(),
+                "Brokerage",
             )
-        if qdiv_real>0:
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Brokerage Qualified Dividends",
-                        income_type=QualifiedDividendIncome(),
-                        account="Brokerage"
-                    ),
-                    gross_amount=qdiv_real
-                )
-            )
-        brokerage_withdrawal=income_sources.get("Brokerage", 0.0)
-        if brokerage_withdrawal>0:
-            ltcg_ratio=assumptions["brokerage_ltcg_realization_ratio"]
-            ltcg_amount=brokerage_withdrawal*ltcg_ratio
-            if ltcg_amount>0:
-                monthly_events.append(
-                    IncomeEvent(
-                        date=m,
-                        source=IncomeSource(
-                            name="Brokerage LTCG",
-                            income_type=LongTermCapitalGainIncome(),
-                            account="Brokerage"
-                        ),
-                        gross_amount=ltcg_amount
-                    )
-                )
-
+        
 
         
 
@@ -323,19 +299,7 @@ def projection_engine(
         add_event(monthly_events, m, "Special Annuity", spec_annuity_real, RetirementDistributionIncome(), "Special Annuity")
         add_event(monthly_events, m, "Social Security", ssa_annuity_real, SocialSecurityIncome(), "SSA")
 
-        brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
-        if brokerage_withdrawal > 0:
-            ltcg_ratio= assumptions.get("brokerage_ltcg_ratio", 0.30)
-            ltcg_amount= brokerage_withdrawal*ltcg_ratio
-            add_event(
-                monthly_events,
-                m,
-                "Brokerage LTCG Withdrawal",
-                ltcg_amount,
-                LongTermCapitalGainIncome(),
-                "Brokerage",
-            )
-        
+
        
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
