@@ -63,6 +63,24 @@ def calc_real(m, basis, amount, inflation):
     amount_real = amount*(1+inflation)**(delta_months/12)
     return amount_real
 
+def summarize_monthly_events(monthly_events):
+    spendable_income_real = 0.0
+    reported_income_real = 0.0
+    monthly_tax_buckets = 0.0
+
+    for event in monthly_events:
+        income_type = event.source.income_type
+        amount = event.gross_amount
+
+        if income_type.is_spendable():
+            spendable_income_real += amount
+        if income_type.is_reported_income():
+            reported_income_real += amount
+        if income_type.is_taxable_event():
+            monthly_tax_buckets += income_type.classify_for_tax(amount)
+        
+    return spendable_income_real, reported_income_real, monthly_tax_buckets
+
 def income_type_from_account(acct: str, account_tax_map, event_kind:str | None=None):
     account_type = account_tax_map.loc[acct, "account_type"]
 
@@ -280,13 +298,13 @@ def projection_engine(
         for key in income_sources:
             ytd_income_sources[key] = ytd_income_sources.get(key, 0) + income_sources[key]
         
-        for acct, amount in income_sources.items():
-            if amount <= 0:
-                continue
-
+        for event in monthly_events:
+            if event.source.income_type.is_spendable():
+                spendable_income_real += event.gross_amount
             
-            if acct in {"Brokerage", "FERS", "SERS", "pension", "Pension", "Special Annuity", "SSA", "Roth Conversion", "roth_conversion", "Penn State Salary"}:
-                continue
+            tax_result = event.source.income_type.tax(event.gross_amount)
+            monthly_tax_buckets.add(tax_result)
+
             
             income_type = income_type_from_account(acct, account_tax_map)
             if income_type is None:
@@ -397,7 +415,7 @@ def projection_engine(
 
         # Sum Total Income
         row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
-        income_real = (pension_real + withdrawal_real + spec_annuity_real + ssa_annuity_real + interest_real + qdiv_real + salary_income_real)
+        income_real = sum(amt for key, amt in income_sources.items() if key !="roth_conversion")
         row["Income_Real"] =  income_real
         print("row income real", income_real)
         #3. add cashflows to new balances

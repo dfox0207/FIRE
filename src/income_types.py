@@ -51,6 +51,16 @@ class IncomeType(ABC):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
         pass
 
+    def is_spendable(self) -> bool:
+        return True 
+    
+    def is_reported_income(self) -> bool:
+        return True 
+    
+    def is_taxable_income(self) -> bool:
+        return True 
+    
+
 class EarnedIncome(IncomeType):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
         return TaxResult(
@@ -102,6 +112,16 @@ class RetirementDistributionIncome(IncomeType):
             federal_ordinary_income=amount,
             va_ordinary_income=amount
         )
+
+class RothConversionIncome(IncomeType):
+    def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
+        return TaxResult(
+            federal_ordinary_income=amount,
+            va_ordinary_income=amount 
+        )
+    
+    def is_spendable(self) -> bool:
+        return False 
 
 class RothDistributionIncome(IncomeType):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
