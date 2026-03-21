@@ -81,6 +81,21 @@ def summarize_monthly_events(monthly_events):
         
     return spendable_income_real, reported_income_real, monthly_tax_buckets
 
+def add_event(monthly_events, m, name, amount, income_type, account=None):
+    if amount <=0:
+        return 
+    monthly_events.append(
+        IncomeEvent(
+            date=m,
+            source=IncomeSource(
+                name=name,
+                income_type=income_type,
+                account=account or name,
+            ),
+            gross_amount=amount,
+        )
+    )
+
 
 def projection_engine(
     account_tax_map, 
@@ -302,90 +317,26 @@ def projection_engine(
                 )
             )
         
-        if salary_income_real > 0:
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Penn State Salary",
-                        income_type=EarnedIncome(),
-                        account="Penn State Salary"
-                    ),
-                    gross_amount=salary_income_real
-                )
-            )
-
-        if pension_real > 0 :
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="FERS",
-                        income_type=RetirementDistributionIncome(),
-                        account="FERS"
-                    ),
-                    gross_amount = pension_real
-                )
-            )
-        
-        if roth_conv_real > 0 :
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Roth Conversion",
-                        income_type=RetirementDistributionIncome(),
-                        account="Roth Conversion"
-                    ),
-                    gross_amount = roth_conv_real
-                )
-            )
+        add_event(monthly_events, m, "Penn State Salary", salary_income_real, EarnedIncome(), "Penn State Salary")
+        add_event(monthly_events, m, "FERS", pension_real, RetirementDistributionIncome(), "FERS")
+        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "roth_conversion")
+        add_event(monthly_events, m, "Special Annuity", spec_annuity_real, RetirementDistributionIncome(), "Special Annuity")
+        add_event(monthly_events, m, "Social Security", ssa_annuity_real, SocialSecurityIncome(), "SSA")
 
         brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
-
         if brokerage_withdrawal > 0:
             ltcg_ratio= assumptions.get("brokerage_ltcg_ratio", 0.30)
             ltcg_amount= brokerage_withdrawal*ltcg_ratio
-            if ltcg_amount>0:
-                brokerage_ltcg_source = IncomeSource(
-                    name="Brokerage LTCG Withdrawal", 
-                    income_type=LongTermCapitalGainIncome(), 
-                    account="Brokerage"
-                )
-                monthly_events.append(
-                    IncomeEvent(
-                        date=m,
-                        source=brokerage_ltcg_source,
-                        gross_amount=ltcg_amount
-                    )
-                )
-        
-        if spec_annuity_real>0:
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Special Annuity",
-                        income_type=RetirementDistributionIncome(),
-                        account="Special Annuity"
-                    ),
-                    gross_amount=spec_annuity_real
-                )
+            add_event(
+                monthly_events,
+                m,
+                "Brokerage LTCG Withdrawal",
+                ltcg_amount,
+                LongTermCapitalGainIncome(),
+                "Brokerage",
             )
         
-        if ssa_annuity_real>0:
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=IncomeSource(
-                        name="Social Security",
-                        income_type=SocialSecurityIncome(),
-                        account="SSA"
-                    ),
-                    gross_amount=ssa_annuity_real
-                )
-            )
-        
+       
         row["interest real"] = interest_real
         monthly_tax_buckets = TaxResult.zero()
         for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
