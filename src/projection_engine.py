@@ -17,6 +17,7 @@ from income_types import (
     ShortTermCapitalGainIncome,
     LongTermCapitalGainIncome,
     RothDistributionIncome,
+    RothConversionIncome,
     SocialSecurityIncome
 )
 
