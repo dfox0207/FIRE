@@ -278,7 +278,7 @@ def projection_engine(
             if event.source.income_type.is_spendable():
                 spendable_income_real += event.gross_amount
             
-            tax_result = event.source.income_type.tax(event.gross_amount)
+            tax_result = event.tax_result()
             monthly_tax_buckets.add(tax_result)
 
             
