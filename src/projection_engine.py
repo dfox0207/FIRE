@@ -238,7 +238,7 @@ def projection_engine(
             balances_actuals=balances_actuals
             )
 
-        
+        add_event(monthly_events,m,f"{acct} Withdrawal",amount,income_type,acct)
         row["Withdrawal"] = withdrawal
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
         row["Withdrawal_real"] = withdrawal_real
