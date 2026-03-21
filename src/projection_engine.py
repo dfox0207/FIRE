@@ -281,20 +281,6 @@ def projection_engine(
             tax_result = event.tax_result()
             monthly_tax_buckets.add(tax_result)
 
-            
-            source = IncomeSource(
-                name=f"{acct} Withdrawal",
-                income_type=income_type,
-                account=acct
-            )
-
-            monthly_events.append(
-                IncomeEvent(
-                    date=m,
-                    source=source,
-                    gross_amount=amount
-                )
-            )
         
         add_event(monthly_events, m, "Penn State Salary", salary_income_real, EarnedIncome(), "Penn State Salary")
         add_event(monthly_events, m, "FERS", pension_real, RetirementDistributionIncome(), "FERS")
