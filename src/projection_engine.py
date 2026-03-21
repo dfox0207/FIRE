@@ -297,7 +297,7 @@ def projection_engine(
 
         # Sum Total Income
         row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
-        income_real = sum(amt for key, amt in income_sources.items() if key !="roth_conversion")
+        income_real = sum(event.gross_amount for event in monthly_events if event.source.income_type.is_spendable())
         row["Income_Real"] =  income_real
         print("row income real", income_real)
         #3. add cashflows to new balances
