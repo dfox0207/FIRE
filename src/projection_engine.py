@@ -288,10 +288,6 @@ def projection_engine(
             monthly_tax_buckets.add(tax_result)
 
             
-            income_type = income_type_from_account(acct, account_tax_map)
-            if income_type is None:
-                continue
-
             source = IncomeSource(
                 name=f"{acct} Withdrawal",
                 income_type=income_type,
