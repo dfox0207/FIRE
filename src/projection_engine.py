@@ -135,7 +135,9 @@ def projection_engine(
     ytd_income_sources= {}
     ytd_tax_buckets = TaxResult.zero()
     ytd_medicare_tax = 0.0
-
+    spendable_income_real = 0.0
+    reported_income_real = 0.0
+    monthly_tax_buckets = 0.0
     
     
 
