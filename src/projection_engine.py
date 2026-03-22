@@ -181,7 +181,7 @@ def projection_engine(
         pension = get_monthly_income_amount(active_streams, "Pension")
         pension_real = calc_real(m, basis, pension, inflation)
         if pension_real > 0:
-            income_sources["pension"] = pension_real
+            income_sources["Pension"] = pension_real
         row["Pension"] = pension
         row["Pension_Real"] = pension_real
         
