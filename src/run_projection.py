@@ -100,10 +100,12 @@ income_streams_months = pd.date_range(start_month, end_month, freq="MS")
 
 #read account_meta.csv
 ACCOUNT_META_CSV = Path("/content/FIRE/Config/account_meta.csv")
-acct_meta = pd.read_csv(ACCOUNT_META_CSV)
-acct_meta["account"] = acct_meta["account"].str.strip()
-account_tax_map = acct_meta.set_index("account")
+account_meta = pd.read_csv(ACCOUNT_META_CSV)
+account_meta["name"] = account_meta["name"].astype(str).str.strip()
+account_meta["event_type"] = account_meta["event_type"].astype(str).str.strip().lower()
+account_meta = account_meta.set_index("name")
 
+#read Uniform Lifetime Table
 UNIFORM_LIFETIME_TABLE_CSV = Path("/content/FIRE/Config/uniform_lifetime_table.csv")
 rmd_df = pd.read_csv(UNIFORM_LIFETIME_TABLE_CSV)
 rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float)))
