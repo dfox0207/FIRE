@@ -232,7 +232,7 @@ def projection_engine(
         roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
         row["ROTH Conversion"] = roth_conv    
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
-        income_sources["Rothe Conversion"] = roth_conv_real
+        income_sources["Roth Conversion"] = roth_conv_real
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["Roth Conversion"] = roth_conv_real        
         
