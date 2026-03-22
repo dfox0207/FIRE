@@ -83,10 +83,10 @@ months = pd.date_range(start_month, end_month, freq="MS")
 #read income_streams.csv
 INCOME_STREAMS_CSV = Path("/content/drive/MyDrive/Finances/FIRE/income_streams.csv")
 income_streams = pd.read_csv(INCOME_STREAMS_CSV).set_index("source")
+income_streams.index= income_streams.index.astype(str).str.strip()
 income_streams["start_date"]= pd.to_datetime(income_streams["start_date"]).dt.to_period("M").dt.to_timestamp() + pd.DateOffset(months=1)
 income_streams["end_date"]= pd.to_datetime(income_streams["end_date"], errors="coerce").dt.to_period("M").dt.to_timestamp()
 income_streams["monthly_amount"]= pd.to_numeric(income_streams["monthly_amount"]).fillna(0.0)
-income_streams["source"]= income_streams["source"].astype(str).str.strip()
 income_streams["source_type"]= income_streams["source_type"].astype(str).str.strip()
 if income_streams["end_date"].notna().any():
     last_sched_end = income_streams["end_date"].dropna().max()
