@@ -258,7 +258,7 @@ def projection_engine(
                 income_sources["Brokerage LTCG Withdrawal"] = ltcg_amount
             
         row["qdiv real"] = qdiv_real
-        row["interest real"] = income_real
+        row["interest real"] = interest_real
 
         # Create Monthly Income Events
         for source_name, amount in income_sources.items():
