@@ -52,13 +52,11 @@ def get_active_income_streams(income_streams: pd.DataFrame, m: pd.Timestamp) -> 
     ]
 
 def get_monthly_income_amount(active_streams: pd.DataFrame, source_name: str) -> float:
-    rows = active_streams[active_streams["source"] == source_name]
-
-    if rows.empty:
+    if source_name not in active_streams.index:
         return 0.0
-    if len(rows) == 1:
-        return float(rows["monthly_amount"].iloc[0])
-    raise ValueError(f"Expected one active row for {source_name}, found {len(rows)}")
+
+    rows = active_streams.loc[[source_name]]
+    return float(rows["monthly_amount"].sum())
 
 
 def calc_real(m, basis, amount, inflation):
