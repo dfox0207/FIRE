@@ -235,8 +235,6 @@ def projection_engine(
 
         row["ROTH Conversion"] = roth_conv    
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
-        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "Roth Conversion")
-
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["Roth Conversion"] = roth_conv_real        
         
@@ -265,7 +263,22 @@ def projection_engine(
             if amount < 0:
                 continue
             
+            account_type = account_tax_map.loc[acct, "account"]
+            income_type = income_type_from_account_type(account_type)
+
             add_event(monthly_events, m, source_name, amount, income_type, source_name)
+
+        for acct, amount in withdrawal_sources.items():
+            if amount <= 0:
+                continue
+            account_type = account_tax_map.loc[acct, "account"]
+            income_type = income_type_from_account_type(account_type)
+
+            if income_type is None:
+                continue
+            
+            add_event(monthly_events, m, f"{acct} Withdrawal", amount, income_type, acct)
+
 
         # Summarize Events
         income_real, reported_income_real, monthly_tax_buckets = summarize_monthly_events(monthly_events)
