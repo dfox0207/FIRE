@@ -267,7 +267,7 @@ def projection_engine(
             if income_type is None:
                 continue
 
-            add_event(monthly_events, m, source_name, amount, income_type, acct=None)
+            add_event(monthly_events, m, source_name, amount, income_type, account=None)
 
         for acct, amount in withdrawal_sources.items():
             if amount <= 0:
