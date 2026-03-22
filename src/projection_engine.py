@@ -169,15 +169,11 @@ def projection_engine(
         income_sources = {}
 
         # Take Roth Conversion
-        roth_conv = convert_to_roth(
-            m,
-            balances,
-            assumptions,
-            roth_state,
-        )
-   
+        roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
+
         row["ROTH Conversion"] = roth_conv    
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "Roth Conversion")
 
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["Roth Conversion"] = roth_conv_real
@@ -216,9 +212,6 @@ def projection_engine(
         
        
         #2a. Take Retirement withdrawals
-        
-        
-
         balances, income_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
@@ -239,9 +232,12 @@ def projection_engine(
             balances_actuals=balances_actuals
             )
 
-        
+
         row["Withdrawal"] = withdrawal
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
+        for acct, amount in income_sources.items():
+            add_event(monthly_events, m, f"{acct} Withdrawal", amount, RetirementDistributionIncome(), acct)
+
         row["Withdrawal_real"] = withdrawal_real
         print("row withdrawal", withdrawal)
         

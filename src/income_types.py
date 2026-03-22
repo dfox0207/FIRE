@@ -123,6 +123,9 @@ class RothConversionIncome(IncomeType):
     def is_spendable(self) -> bool:
         return False 
 
+    def is_reported_income(self) -> bool:
+        return False
+
 class RothDistributionIncome(IncomeType):
     def classify_for_tax(self, amount: float, **kwargs) -> TaxResult:
         return TaxResult(

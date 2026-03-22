@@ -138,7 +138,7 @@ def calc_withdrawal_optimizer(
 
     return balances, income_sources, actual_withdrawal
 
-def withdrawal_waterfall(balances, withdrawal, order, monthly_events=None, m=None):
+def withdrawal_waterfall(balances, withdrawal, order):
     remaining_withdrawal = withdrawal
     row = balances.copy()
     income_sources = {}
@@ -157,9 +157,6 @@ def withdrawal_waterfall(balances, withdrawal, order, monthly_events=None, m=Non
             row[acct] = 0.0
             remaining_withdrawal -= taken
         income_sources[acct] = taken
-
-        if monthly_events is not None and m is not None and taken >0:
-            add_event(monthly_events, m, f"{acct} Withdrawal", taken, RetirementDistributionIncome(), acct)
 
     actual_withdrawal = withdrawal - remaining_withdrawal
 
@@ -180,7 +177,6 @@ def calc_withdrawal(
     withdrawal_rate, 
     order, 
     inflation, 
-    monthly_events,
     annual_w0=None, 
     t0=None, 
     balances_actuals=None,
@@ -217,7 +213,7 @@ def calc_withdrawal(
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
     #Take withdrawal from accounts in order
-    balances, income_sources, actual_withdrawal = withdrawal_waterfall(balances, withdrawal, order, monthly_events, m=m)
+    balances, income_sources, actual_withdrawal = withdrawal_waterfall(balances, withdrawal, order)
 
     #Calculate RMD
     rmd_by_account = calc_monthly_rmds(
