@@ -259,14 +259,14 @@ def projection_engine(
         row["interest real"] = interest_real
 
         # Create Monthly Income Events
-        for source_name, amount in income_sources.items():
+        for acct, amount in income_sources.items():
             if amount < 0:
                 continue
             
             account_type = account_tax_map.loc[acct, "account"]
             income_type = income_type_from_account_type(account_type)
 
-            add_event(monthly_events, m, source_name, amount, income_type, source_name)
+            add_event(monthly_events, m, source_name, amount, income_type, acct)
 
         for acct, amount in withdrawal_sources.items():
             if amount <= 0:
