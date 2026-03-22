@@ -18,7 +18,9 @@ from income_types import (
     LongTermCapitalGainIncome,
     RothDistributionIncome,
     RothConversionIncome,
-    SocialSecurityIncome
+    SocialSecurityIncome,
+    income_type_from_account_type,
+    income_type_from_source_type,
 )
 
 def calc_pension(pension_real, retirement, inflation, m):
@@ -77,7 +79,7 @@ def summarize_monthly_events(monthly_events):
             spendable_income_real += amount
         if income_type.is_reported_income():
             reported_income_real += amount
-        if income_type.is_taxable_event():
+        if income_type.is_taxable_income():
             monthly_tax_buckets.add(event.tax_result())
         
     return spendable_income_real, reported_income_real, monthly_tax_buckets
@@ -168,8 +170,6 @@ def projection_engine(
         #2. Calculate Income
         income_sources = {}
 
-
-
         # Add Salary
         salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
         salary_income_real = calc_real(m, basis, salary_income, inflation)
@@ -232,9 +232,9 @@ def projection_engine(
 
         # Take Roth Conversion
         roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
-
         row["ROTH Conversion"] = roth_conv    
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+        income_sources["Rothe Conversion"] = roth_conv_real
         row["ROTH Conversion Real"] = roth_conv_real
         income_sources["Roth Conversion"] = roth_conv_real        
         
@@ -259,19 +259,19 @@ def projection_engine(
         row["interest real"] = interest_real
 
         # Create Monthly Income Events
-        for acct, amount in income_sources.items():
+        for source_name, amount in income_sources.items():
             if amount < 0:
                 continue
             
-            account_type = account_tax_map.loc[acct, "account"]
+            account_type = income_streams.loc[source_name, "account_type"]
             income_type = income_type_from_account_type(account_type)
 
-            add_event(monthly_events, m, source_name, amount, income_type, acct)
+            add_event(monthly_events, m, source_name, amount, income_type, acct=None)
 
         for acct, amount in withdrawal_sources.items():
             if amount <= 0:
                 continue
-            account_type = account_tax_map.loc[acct, "account"]
+            account_type = account_tax_map.loc[acct, "account_type"]
             income_type = income_type_from_account_type(account_type)
 
             if income_type is None:
