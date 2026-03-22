@@ -263,8 +263,8 @@ def projection_engine(
             if amount < 0:
                 continue
             
-            account_type = income_streams.loc[source_name, "account_type"]
-            income_type = income_type_from_account_type(account_type)
+            account_type = income_streams.loc[source_name, "source_type"]
+            income_type = income_type_from_account_type(source_type)
 
             add_event(monthly_events, m, source_name, amount, income_type, acct=None)
 

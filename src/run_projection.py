@@ -82,7 +82,7 @@ months = pd.date_range(start_month, end_month, freq="MS")
 
 #read income_streams.csv
 INCOME_STREAMS_CSV = Path("/content/drive/MyDrive/Finances/FIRE/income_streams.csv")
-income_streams = pd.read_csv(INCOME_STREAMS_CSV)
+income_streams = pd.read_csv(INCOME_STREAMS_CSV).set_index("source")
 income_streams["start_date"]= pd.to_datetime(income_streams["start_date"]).dt.to_period("M").dt.to_timestamp() + pd.DateOffset(months=1)
 income_streams["end_date"]= pd.to_datetime(income_streams["end_date"], errors="coerce").dt.to_period("M").dt.to_timestamp()
 income_streams["monthly_amount"]= pd.to_numeric(income_streams["monthly_amount"]).fillna(0.0)
