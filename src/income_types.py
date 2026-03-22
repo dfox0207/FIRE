@@ -2,37 +2,34 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
 from typing import Dict, Any
 
-def income_type_from_account_type(account_type: str):
-    account_type = str(account_type).strip().lower()
+def income_type_from_account_type(event_type: str):
+    event_type = str(account_type).strip().lower()
 
-    if account_type in {"401k", "403b", "457b", "traditional_ira", "annuity", "pension", "tsp"}:
-        return RetirementDistributionIncome()
-    if account_type in {"roth_ira", "roth_401k", "roth_tsp"}:
-        return RothDistributionIncome()
-    if account_type in {"brokerage"}:
-        return None
-    raise ValueError(f"Unknwon account_type: {account_type}")
-
-def income_type_from_source_type(source_type: str):
-    source_type = str(source_type).strip().lower()
-
-    if source_type == "salary":
+    if event_type == "salary":
         return EarnedIncome()
-    if source_type == "pension":
+    if event_type == "pension":
         return RetirementDistributionIncome()
-    if source_type == "special_annuity":
+    if event_type == "special_annuity":
         return RetirementDistributionIncome()
-    if source_type == "ssa":
+    if event_type == "ssa":
         return SocialSecurityIncome()   
-    if source_type == "roth_conversion":
+    if event_type in {"roth_conversion", "roth_conv", "Roth Conversion"}:
         return RothConversionIncome()
-    if source_type == "interest":
+    if event_type == "interest":
         return InterestIncome()
-    if source_type == "qualified_dividend":
+    if event_type == "qualified_dividend":
         return QualifiedDividendIncome()
-    if source_type == "ltcg":
+    if event_type == "stcg":
         return LongTermCapitalGainIncome()
-    raise ValueError(f"Unknown source_type: {source_type}")
+    if event_type == "ltcg":
+        return LongTermCapitalGainIncome()
+    if event_type in {"401k", "403b", "457b", "traditional_ira", "annuity", "pension", "tsp", "pretax"}:
+        return RetirementDistributionIncome()
+    if event_type in {"roth_ira", "roth_401k", "roth_tsp", "roth"}:
+        return RothDistributionIncome()
+    if event_type in {"brokerage"}:
+        return None
+    raise ValueError(f"Unknwon account_type: {event_type}")
 
 @dataclass
 class TaxResult:

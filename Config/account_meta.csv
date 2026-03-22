@@ -9,5 +9,7 @@ ROTH IRA,roth_ira
 Checking,cash
 Savings,cash
 Special Annuity,annuity
-SSA Annuity,annuity
-Pension, pension
+SSA Annuity,ssa
+Pension,pension
+Brokerage Interest,Interest
+Roth Conversion,roth_conversion
