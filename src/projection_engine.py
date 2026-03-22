@@ -265,7 +265,7 @@ def projection_engine(
             if amount < 0:
                 continue
             
-           add_event(monthly_events, m, source_name, amount, income_type, source_name)
+            add_event(monthly_events, m, source_name, amount, income_type, source_name)
 
         # Summarize Events
         income_real, reported_income_real, monthly_tax_buckets = summarize_monthly_events(monthly_events)
