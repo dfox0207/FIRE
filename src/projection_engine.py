@@ -67,7 +67,7 @@ def calc_real(m, basis, amount, inflation):
 def summarize_monthly_events(monthly_events):
     spendable_income_real = 0.0
     reported_income_real = 0.0
-    monthly_tax_buckets = 0.0
+    monthly_tax_buckets = TaxResult.zero()
 
     for event in monthly_events:
         income_type = event.source.income_type
@@ -78,7 +78,7 @@ def summarize_monthly_events(monthly_events):
         if income_type.is_reported_income():
             reported_income_real += amount
         if income_type.is_taxable_event():
-            monthly_tax_buckets += income_type.classify_for_tax(amount)
+            monthly_tax_buckets.add(event.tax_result())
         
     return spendable_income_real, reported_income_real, monthly_tax_buckets
 
@@ -168,51 +168,45 @@ def projection_engine(
         #2. Calculate Income
         income_sources = {}
 
-        # Take Roth Conversion
-        roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
 
-        row["ROTH Conversion"] = roth_conv    
-        roth_conv_real = calc_real(m, basis, roth_conv, inflation)
-        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "Roth Conversion")
-
-        row["ROTH Conversion Real"] = roth_conv_real
-        income_sources["Roth Conversion"] = roth_conv_real
 
         # Add Salary
         salary_income = get_monthly_income_amount(active_streams, "Penn State Salary")
-        row["Penn State Salary Income"] = salary_income
         salary_income_real = calc_real(m, basis, salary_income, inflation)
-        row["Penn State Salary Real"] = salary_income_real
         if salary_income_real > 0:
             income_sources["Penn State Salary"] = salary_income_real
+        row["Penn State Salary Income"] = salary_income
+        row["Penn State Salary Real"] = salary_income_real
+        
 
         # Add Pension
         pension = get_monthly_income_amount(active_streams, "Pension")
-        row["Pension"] = pension
         pension_real = calc_real(m, basis, pension, inflation)
-        row["Pension_Real"] = pension_real
         if pension_real > 0:
             income_sources["pension"] = pension_real
+        row["Pension"] = pension
+        row["Pension_Real"] = pension_real
+        
 
         # Take Special Supplemental Annuity
         spec_annuity = get_monthly_income_amount(active_streams, "Special Annuity")
-        row["Special Annuity"] = spec_annuity
         spec_annuity_real = calc_real(m, basis, spec_annuity, inflation)
         if spec_annuity_real > 0:
             income_sources["Special Annuity"] = spec_annuity_real
-
+        row["Special Annuity"] = spec_annuity
+        
+        
         # Take SSA Annuity
         ssa_annuity = get_monthly_income_amount(active_streams, "SSA")
-        row["SSA"] = ssa_annuity
         ssa_annuity_real = calc_real(m, basis, ssa_annuity, inflation)
-        row["SSA_Real"] = ssa_annuity_real
         if ssa_annuity_real > 0:
             income_sources["SSA"] = ssa_annuity_real
-        
+        row["SSA"] = ssa_annuity
+        row["SSA_Real"] = ssa_annuity_real
         
        
         #2a. Take Retirement withdrawals
-        balances, income_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
+        balances, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
             account_tax_map=account_tax_map,
@@ -231,71 +225,56 @@ def projection_engine(
             balances_actuals=balances_actuals
             )
 
-
+        income_sources.update(withdrawal_sources)
         row["Withdrawal"] = withdrawal
         withdrawal_real = calc_real(m, basis, withdrawal, inflation)
-        for acct, amount in income_sources.items():
-            add_event(monthly_events, m, f"{acct} Withdrawal", amount, RetirementDistributionIncome(), acct)
-
         row["Withdrawal_real"] = withdrawal_real
-        print("row withdrawal", withdrawal)
+
+        # Take Roth Conversion
+        roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
+
+        row["ROTH Conversion"] = roth_conv    
+        roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "Roth Conversion")
+
+        row["ROTH Conversion Real"] = roth_conv_real
+        income_sources["Roth Conversion"] = roth_conv_real        
         
-        for key in income_sources:
-            income_sources[key] = calc_real(m, basis, income_sources[key], inflation)
-        
+        # Brokerage Flows
         brokerage_balance = balances.get("Brokerage", 0.0)
-        interest_real= brokerage_balance*assumptions["brokerage_interest_yield"]/12
+        interest_real= brokerage_balance * assumptions["brokerage_interest_yield"]/12
         qdiv_real=brokerage_balance*assumptions["brokerage_qdiv_yield"]/12
-        row["qdiv real"] = qdiv_real
-       
-        add_event(monthly_events, m, "Brokerage Interest", interest_real, InterestIncome(), "Brokerage")
-        add_event(monthly_events, m, "Brokerage Qualified Dividends", qdiv_real, QualifiedDividendIncome(), "Brokerage")
+
+        if interest_real >0:
+            income_sources["Brokerage Interest"] = interest_real
+        if qdiv_real >0:
+            income_sources["Brokerage Qualified Dividends"] = qdiv_real
         
-        brokerage_withdrawal = income_sources.get("Brokerage", 0.0)
+        brokerage_withdrawal = withdrawal_sources.get("Brokerage", 0.0)
         if brokerage_withdrawal > 0:
-            ltcg_ratio= assumptions.get("brokerage_ltcg_realization_ratio", 0.30)
-            ltcg_amount= brokerage_withdrawal*ltcg_ratio
-            add_event(
-                monthly_events,
-                m,
-                "Brokerage LTCG Withdrawal",
-                ltcg_amount,
-                LongTermCapitalGainIncome(),
-                "Brokerage",
-            )
-        
-
-        
-
-        for key in income_sources:
-            ytd_income_sources[key] = ytd_income_sources.get(key, 0) + income_sources[key]
-        
-        for event in monthly_events:
-            if event.source.income_type.is_spendable():
-                spendable_income_real += event.gross_amount
+            ltcg_ratio= assumptions.get("brokerage_ltcg_realization_ratio")
+            ltcg_amount= brokerage_withdrawal * ltcg_ratio
+            if ltcg_amount > 0:
+                income_sources["Brokerage LTCG Withdrawal"] = ltcg_amount
             
-            tax_result = event.tax_result()
-            monthly_tax_buckets.add(tax_result)
+        row["qdiv real"] = qdiv_real
+        row["interest real"] = income_real
 
-        
-        add_event(monthly_events, m, "Penn State Salary", salary_income_real, EarnedIncome(), "Penn State Salary")
-        add_event(monthly_events, m, "FERS", pension_real, RetirementDistributionIncome(), "FERS")
-        add_event(monthly_events, m, "Roth Conversion", roth_conv_real, RothConversionIncome(), "roth_conversion")
-        add_event(monthly_events, m, "Special Annuity", spec_annuity_real, RetirementDistributionIncome(), "Special Annuity")
-        add_event(monthly_events, m, "Social Security", ssa_annuity_real, SocialSecurityIncome(), "SSA")
+        # Create Monthly Income Events
+        for source_name, amount in income_sources.items():
+            if amount < 0:
+                continue
+            
+           add_event(monthly_events, m, source_name, amount, income_type, source_name)
 
-
-       
-        row["interest real"] = interest_real
-        monthly_tax_buckets = TaxResult.zero()
-        for event in monthly_events: monthly_tax_buckets.add(event.tax_result())
+        # Summarize Events
+        income_real, reported_income_real, monthly_tax_buckets = summarize_monthly_events(monthly_events)
         ytd_tax_buckets.add(monthly_tax_buckets)
 
-        # Sum Total Income
         row["Income"] = (pension + withdrawal + spec_annuity + ssa_annuity + salary_income)
         income_real = sum(event.gross_amount for event in monthly_events if event.source.income_type.is_spendable())
         row["Income_Real"] =  income_real
-        print("row income real", income_real)
+        
         #3. add cashflows to new balances
         balances = apply_flows(balances, cf, m)
         row.update(balances.to_dict())
