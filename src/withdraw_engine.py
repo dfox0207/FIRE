@@ -180,6 +180,7 @@ def calc_withdrawal(
     withdrawal_rate, 
     order, 
     inflation, 
+    monthly_events,
     annual_w0=None, 
     t0=None, 
     balances_actuals=None,

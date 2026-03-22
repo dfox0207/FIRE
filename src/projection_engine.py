@@ -230,6 +230,7 @@ def projection_engine(
             withdrawal_rate=withdrawal_rate, 
             order=order, 
             inflation=inflation, 
+            monthly_events=monthly_events,
             rmd_start_age=73,
             policy = policy,
             ytd_tax_buckets = ytd_tax_buckets,
