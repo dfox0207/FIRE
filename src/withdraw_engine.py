@@ -51,12 +51,6 @@ def calc_monthly_rmds(
             rmd_by_account[acct] = monthly_rmd
     return rmd_by_account
 
-def append_withdrawal_events(*, monthly_events, m, withdrawal_dict):
-    for acct, amt in withdrawal_dict.items():
-        if amt <=0:
-            continue
-        add_event(monthly_events, m, f"{acct} Withdrawal", amt, RetirementDistributionIncome(), acct)
-
 def classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation):
     if annual_w0 is None:
         if balances_actuals is not None and withdrawal_start_date in balances_actuals.index:
@@ -78,7 +72,6 @@ def calc_withdrawal_optimizer(
     m,
     balances,
     income_sources,
-    monthly_events,
     inflation,
     policy,
     ytd_tax_buckets,
@@ -201,7 +194,6 @@ def calc_withdrawal(
             m=m, 
             balances=balances, 
             income_sources=income_sources, 
-            monthly_events=monthly_events,
             inflation=inflation, 
             policy=policy, 
             ytd_tax_buckets=ytd_tax_buckets or {}, 
