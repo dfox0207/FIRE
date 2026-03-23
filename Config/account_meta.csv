@@ -13,4 +13,6 @@ SSA Annuity,ssa
 Pension,pension
 Brokerage Interest,Interest
 Brokerage Qualified Dividends,qualified_dividend
+Brokerage LTCG Withdrawal,ltcg
+Brokerage STCG Withdrawal,stcg
 Roth Conversion,roth_conversion
