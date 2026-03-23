@@ -194,7 +194,7 @@ def projection_engine(
         
         
         # Take SSA Annuity
-        ssa_annuity = get_monthly_income_amount(active_streams, "SSA")
+        ssa_annuity = get_monthly_income_amount(active_streams, "SSA Benefit")
         ssa_annuity_real = calc_real(m, basis, ssa_annuity, inflation)
         if ssa_annuity_real > 0:
             income_sources["SSA"] = ssa_annuity_real
