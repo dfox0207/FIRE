@@ -256,27 +256,27 @@ def projection_engine(
 
         # Create Monthly Income Events
         for source_name, amount in income_sources.items():
-            if amount < 0:
+            if amount <= 0:
                 continue
             
-            source_type = income_streams.loc[source_name, "source_type"]
-            income_type = income_type_from_source_type(source_type)
+            event_type = account_meta.loc[source_name, "event_type"]
+            income_type = income_type_from_event_type(event_type)
 
             if income_type is None:
                 continue
 
-            add_event(monthly_events, m, source_name, amount, income_type, account=None)
+            add_event(monthly_events, m, source_name, amount, income_type)
 
         for acct, amount in withdrawal_sources.items():
             if amount <= 0:
                 continue
-            account_type = account_meta.loc[acct, "account_type"]
-            income_type = income_type_from_account_type(account_type)
+            event_type = account_meta.loc[acct, "event_type"]
+            income_type = income_type_from_event_type(account_type)
 
             if income_type is None:
                 continue
             
-            add_event(monthly_events, m, f"{acct} Withdrawal", amount, income_type, acct)
+            add_event(monthly_events, m, f"{acct} Withdrawal", amount, income_type, account = acct)
 
 
         # Summarize Events
