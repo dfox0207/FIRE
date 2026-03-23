@@ -19,8 +19,7 @@ from income_types import (
     RothDistributionIncome,
     RothConversionIncome,
     SocialSecurityIncome,
-    income_type_from_account_type,
-    income_type_from_source_type,
+    income_type_from_event_type,
 )
 
 def calc_pension(pension_real, retirement, inflation, m):
@@ -99,7 +98,7 @@ def add_event(monthly_events, m, name, amount, income_type, account=None):
 
 
 def projection_engine(
-    account_tax_map, 
+    account_meta, 
     rmd_table,
     start_bal, 
     cf, 
@@ -207,7 +206,7 @@ def projection_engine(
         balances, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
-            account_tax_map=account_tax_map,
+            account_meta=account_meta,
             age=age,
             withdrawal_start_date= withdrawal_start_date, 
             withdrawal_type= withdrawal_type, 
@@ -271,7 +270,7 @@ def projection_engine(
         for acct, amount in withdrawal_sources.items():
             if amount <= 0:
                 continue
-            account_type = account_tax_map.loc[acct, "account_type"]
+            account_type = account_meta.loc[acct, "account_type"]
             income_type = income_type_from_account_type(account_type)
 
             if income_type is None:

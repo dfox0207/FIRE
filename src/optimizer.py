@@ -69,7 +69,7 @@ def build_block_policy(
 
 def evaluate_policy(
     policy: Dict[int, Dict[str, float]],
-    account_tax_map,
+    account_meta,
     rmd_table,
     start_bal,
     cf,
@@ -85,7 +85,7 @@ def evaluate_policy(
     assumptions_mod["optimizer_policy"] = policy
 
     proj = projection_engine(
-        account_tax_map=account_tax_map,
+        account_meta=account_meta,
         rmd_table=rmd_table,
         start_bal=start_bal,
         cf=cf,
@@ -104,7 +104,7 @@ def evaluate_policy(
     return score, proj, annual_summary
 
 def random_search_optimizer(
-    account_tax_map,
+    account_meta,
     rmd_table,
     start_bal,
     cf,
@@ -143,7 +143,7 @@ def random_search_optimizer(
 
         score, proj, annual_summary = evaluate_policy(
             policy=policy,
-            account_tax_map=account_tax_map,
+            account_meta=account_meta,
             rmd_table=rmd_table,
             start_bal=start_bal,
             cf=cf,

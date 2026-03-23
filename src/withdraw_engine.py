@@ -8,8 +8,8 @@ RMD_ELIGIGIBLE_ACCOUNT_TYPES = {
     "401k",
 }
 
-def is_rmd_eligible(acct: str, account_tax_map) -> bool:
-    account_type = str(account_tax_map.loc[acct, "account_type"]).strip().lower()
+def is_rmd_eligible(acct: str, account_meta) -> bool:
+    account_type = str(account_meta.loc[acct, "account_type"]).strip().lower()
     return account_type in RMD_ELIGIGIBLE_ACCOUNT_TYPES
 
 def get_rmd_divisor(age: int, rmd_table: dict[float, float]) -> float | None:
@@ -22,7 +22,7 @@ def calc_annual_rmd(balance: float, divisor: float) -> float:
 
 def calc_monthly_rmds(
     balances,
-    account_tax_map,
+    account_meta,
     age: float,
     rmd_table: dict[float, float],
     rmd_start_age: int = 73,
@@ -38,7 +38,7 @@ def calc_monthly_rmds(
     rmd_by_account = {}
     
     for acct in balances.index:
-        if not is_rmd_eligible(acct, account_tax_map):
+        if not is_rmd_eligible(acct, account_meta):
             continue
         bal = float(balances.get(acct, 0.0))
         if bal <= 0:
@@ -169,7 +169,7 @@ def calc_withdrawal(
     *, 
     m,
     rmd_table, 
-    account_tax_map,
+    account_meta,
     age,
     withdrawal_start_date, 
     withdrawal_type, 
@@ -218,7 +218,7 @@ def calc_withdrawal(
     #Calculate RMD
     rmd_by_account = calc_monthly_rmds(
         balances= balances,
-        account_tax_map = account_tax_map,
+        account_meta = account_meta,
         age = age,
         rmd_table=rmd_table,
         rmd_start_age=rmd_start_age,

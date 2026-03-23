@@ -116,7 +116,7 @@ def main():
 
     if assumptions["withdrawal_type"].lower() == "optimizer":
         result = random_search_optimizer(
-            account_tax_map=account_tax_map,
+            account_meta=account_meta,
             rmd_table=rmd_table,
             start_bal=start_bal,
             cf=cf,
@@ -137,7 +137,7 @@ def main():
 
         assumptions["optimizer_policy"] = result["best_policy"]
         projection = projection_engine(
-            account_tax_map=account_tax_map,
+            account_meta=account_meta,
             rmd_table=rmd_table,
             start_bal= start_bal, 
             cf=cf, 
@@ -149,7 +149,7 @@ def main():
         annual_summary = build_annual_summary(projection)
     else:
         projection = projection_engine(
-            account_tax_map=account_tax_map,
+            account_meta=account_meta,
             rmd_table=rmd_table,
             start_bal= start_bal, 
             cf=cf, 
