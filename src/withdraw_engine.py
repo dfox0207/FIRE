@@ -9,7 +9,7 @@ RMD_ELIGIGIBLE_ACCOUNT_TYPES = {
 }
 
 def is_rmd_eligible(acct: str, account_meta) -> bool:
-    account_type = str(account_meta.loc[acct, "account_type"]).strip().lower()
+    account_type = str(account_meta.loc[acct, "event_type"]).strip().lower()
     return account_type in RMD_ELIGIGIBLE_ACCOUNT_TYPES
 
 def get_rmd_divisor(age: int, rmd_table: dict[float, float]) -> float | None:
