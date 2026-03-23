@@ -221,10 +221,10 @@ def projection_engine(
             t0=t0,
             balances_actuals=balances_actuals
             )
-
-        income_sources.update(withdrawal_sources)
+        
+        withdrawal_sources_real = {acct: calc_real(m, basis, amt, inflation) for acct, amt in withdrawal_sources.items()}
+        income_sources.update(withdrawal_sources_real)
         row["Withdrawal"] = withdrawal
-        withdrawal_real = calc_real(m, basis, withdrawal, inflation)
         row["Withdrawal_real"] = withdrawal_real
 
         # Take Roth Conversion
