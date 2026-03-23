@@ -102,7 +102,7 @@ income_streams_months = pd.date_range(start_month, end_month, freq="MS")
 ACCOUNT_META_CSV = Path("/content/FIRE/Config/account_meta.csv")
 account_meta = pd.read_csv(ACCOUNT_META_CSV)
 account_meta["name"] = account_meta["name"].astype(str).str.strip()
-account_meta["event_type"] = account_meta["event_type"].astype(str).str.strip().lower()
+account_meta["event_type"] = account_meta["event_type"].astype(str).str.strip().str.lower()
 account_meta = account_meta.set_index("name")
 
 #read Uniform Lifetime Table
