@@ -266,15 +266,6 @@ def projection_engine(
                 continue
 
             add_event(monthly_events, m, source_name, amount, income_type)
-
-        for acct, amount in withdrawal_sources.items():
-            if amount <= 0:
-                continue
-            event_type = account_meta.loc[acct, "event_type"]
-            income_type = income_type_from_event_type(event_type)
-
-            if income_type is None:
-                continue
             
             add_event(monthly_events, m, f"{acct} Withdrawal", amount, income_type, account = acct)
 
