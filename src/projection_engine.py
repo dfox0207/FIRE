@@ -267,7 +267,7 @@ def projection_engine(
 
             add_event(monthly_events, m, source_name, amount, income_type)
             
-            add_event(monthly_events, m, f"{acct} Withdrawal", amount, income_type, account = acct)
+        
 
 
         # Summarize Events
