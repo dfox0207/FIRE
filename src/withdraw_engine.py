@@ -115,7 +115,7 @@ def calc_withdrawal_optimizer(
         if spend_amt > 0:
             income_sources[acct] = income_sources.get(acct, 0.0) + spend_amt
         if roth_amt > 0:
-            income_sources["roth_conversion"] = (income_sources.get("roth_conversion", 0.0) + roth_amt)
+            income_sources["Roth Conversion"] = (income_sources.get("Roth Conversion", 0.0) + roth_amt)
             balances["ROTH IRA"] += roth_amt
 
  
