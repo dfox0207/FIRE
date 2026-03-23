@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field, asdict
 from typing import Dict, Any
 
-def income_type_from_account_type(event_type: str):
-    event_type = str(account_type).strip().lower()
+def income_type_from_evnt_type(event_type: str):
+    event_type = str(event_type).strip().lower()
 
     if event_type == "salary":
         return EarnedIncome()
