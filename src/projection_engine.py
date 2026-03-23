@@ -125,7 +125,7 @@ def projection_engine(
     service_length = assumptions["service_length"]
     
     filing_status = assumptions["filing_status"]
-    active_streams = get_active_income_streams(income_streams, m)
+    
     annual_w0 = None
     t0 = None
     
@@ -150,7 +150,7 @@ def projection_engine(
         year_policy = assumptions.get("optimizer_policy", {}).get(m.year, {})
         target_net_income_real = year_policy.get("target_net_income_real", 10000.0)
         roth_target_ordinary_income = year_policy.get("roth_target_ordinary_income", 0.0)
-        
+        active_streams = get_active_income_streams(income_streams, m)
 
         if m.month == 1:
             ytd_tax = 0.0
