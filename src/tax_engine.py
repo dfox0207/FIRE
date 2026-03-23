@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, Tuple
+from dataclass import replace
 
 import numpy as np
 import pandas as pd
@@ -224,18 +225,26 @@ def tax_engine(
     ytd_medicare_tax: float,
     filing_status: str = "mfs",
 ):
-    tax_systems = load_tax_systems("Config/tax_system.json")
-
-    
+    tax_systems = load_tax_systems("Config/tax_system.json")``
     ltcg_brackets = load_brackets("Config/ltcg_brackets.csv")    
     
+    # Taxable Social Security
+    taxable_ss = calc_taxable_social_security(
+        ordinary_income = tax_buckets.ordinary_income,
+        pref_income = tax_buckets.pref_income,
+        tax_exempt_interest = tax_buckets.tax_exempt_interest,
+        social_security_income=tax_buckets.social_security_income,
+        filing_status=filing_status
+    )
+
     #Federal Taxes
     fed_bracket = load_brackets("Config/federal_tax_2025.csv")
-
     std_deduct = tax_systems["federal"]["standard_deduction"]
+
+    fed_tax_buckets = replace(tax_buckets, ordinary_income=tax_buckets.ordinary_income + taxable_ss)
     
     monthly_tax, new_ytd_tax = calc_federal_ytd_tax_from_buckets(
-        tax_buckets, 
+        fed_tax_buckets, 
         std_deduct, 
         fed_bracket, 
         ltcg_brackets,
@@ -248,10 +257,8 @@ def tax_engine(
         filing_status=filing_status,
      )   
 
-
     #Virginia Taxes
     va_bracket = load_brackets("Config/virginia_tax_2025.csv")
-
     va_std_deduct = tax_systems["virginia"]["standard_deduction"]
 
     va_monthly_tax, va_new_ytd_tax = calc_va_ytd_tax(
