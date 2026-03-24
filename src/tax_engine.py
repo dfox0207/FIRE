@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, Tuple
-from dataclass import replace
+from dataclasses import replace
 
 import numpy as np
 import pandas as pd
