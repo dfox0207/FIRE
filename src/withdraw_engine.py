@@ -200,7 +200,7 @@ def calc_withdrawal(
         result = random_search_optimizer(
             account_meta=account_meta,
             rmd_table=rmd_table,
-            start_bal=start_bal,
+            start_bal=balances_actuals,
             cf=cf,
             income_streams=income_streams,
             months=months,
