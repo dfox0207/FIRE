@@ -225,7 +225,7 @@ def tax_engine(
     ytd_medicare_tax: float,
     filing_status: str = "mfs",
 ):
-    tax_systems = load_tax_systems("Config/tax_system.json")``
+    tax_systems = load_tax_systems("Config/tax_system.json")
     ltcg_brackets = load_brackets("Config/ltcg_brackets.csv")    
     
     # Taxable Social Security
