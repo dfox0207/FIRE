@@ -120,7 +120,7 @@ def projection_engine(
     birthday = assumptions["birthday"]
     inflation = assumptions["inflation"]
     basis = assumptions["basis"]
-    retirement = pd.Timestamp("2025-10-01")
+    retirement = assumptions["retirement"]
     annual_return = assumptions["annual_return"]
     service_length = assumptions["service_length"]
     
