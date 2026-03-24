@@ -63,6 +63,11 @@ def calc_real(m, basis, amount, inflation):
     amount_real = amount*(1+inflation)**(delta_months/12)
     return amount_real
 
+def calc_nominal(m, basis, amount, inflation):
+    delta_months = (m.to_period("M") - basis.to_period("M")).n          #months since basis is positive
+    amount_real = amount*(1+inflation)**(delta_months/12)
+    return amount_nominal
+
 def summarize_monthly_events(monthly_events):
     spendable_income_real = 0.0
     reported_income_real = 0.0
@@ -161,10 +166,11 @@ def projection_engine(
 
             
 
-        #1.apply growth to balances
+        # Apply growth to balances
         balances = growth(balances, annual_return)
+        balances_real = calc_real(m, basis, balances, inflation)
 
-        #2. Calculate Income
+        # Calculate Income
         income_sources = {}
 
         # Add Salary
@@ -203,14 +209,14 @@ def projection_engine(
         
        
         #2a. Take Retirement withdrawals
-        balances, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
+        balances_real, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
             account_meta=account_meta,
             age=age,
             withdrawal_start_date= withdrawal_start_date, 
             withdrawal_type= withdrawal_type, 
-            balances=balances, 
+            balances=balances_real, 
             withdrawal_rate=withdrawal_rate, 
             order=order, 
             inflation=inflation, 
@@ -230,14 +236,15 @@ def projection_engine(
         # Take Roth Conversion
         roth_conv = convert_to_roth(m, balances, assumptions, roth_state)
         roth_conv_real = calc_real(m, basis, roth_conv, inflation)
+        income_sources["Roth Conversion"] = roth_conv_real
         row["ROTH Conversion"] = roth_conv 
         row["ROTH Conversion Real"] = roth_conv_real
-        income_sources["Roth Conversion"] = roth_conv_real        
+                
         
         # Brokerage Flows
-        brokerage_balance = balances.get("Brokerage", 0.0)
-        interest_real= brokerage_balance * assumptions["brokerage_interest_yield"]/12
-        qdiv_real=brokerage_balance*assumptions["brokerage_qdiv_yield"]/12
+        brokerage_balance_real = balances_real.get("Brokerage", 0.0)
+        interest_real= brokerage_balance_real * assumptions["brokerage_interest_yield"]/12
+        qdiv_real=brokerage_balance_real*assumptions["brokerage_qdiv_yield"]/12
 
         if interest_real >0:
             income_sources["Brokerage Interest"] = interest_real
@@ -279,9 +286,10 @@ def projection_engine(
         row["Income_Real"] =  income_real
         
         #3. add cashflows to new balances
-        balances = apply_flows(balances, cf, m)
+        balances_real = apply_flows(balances_real, cf, m)
+        row.update(balances_real.to_dict())
+        balances = calc_nominal(m, basis, balances_real, inflation)
         row.update(balances.to_dict())
-        balances_real = calc_real(m, basis, balances, inflation)
 
         #4 sum net worth  
         row["Net_Worth"] = balances.sum() 
