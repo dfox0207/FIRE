@@ -210,6 +210,31 @@ def projection_engine(
         
        
         #2a. Take Retirement withdrawals
+        if withdrawal_type == "Optimizer":
+            result = random_search_optimizer(
+                account_meta=account_meta,
+                rmd_table=rmd_table,
+                start_bal=balances_actuals,
+                cf=cf,
+                income_streams=income_streams,
+                months=months,
+                assumptions=assumptions,
+                balances_actuals=bal,
+                target_annual_net_income_real=100000.0,
+                block_size=5,
+                n_trials=200,
+                roth_min=0.0,
+                roth_max=150000.0,
+                seed=42,
+            )
+
+            print("Best score:", result["best_score"])
+            print("Best policy:", result["best_policy"])
+
+           
+            annual_summary = build_annual_summary(projection)
+
+            
         balances_real, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
@@ -223,7 +248,7 @@ def projection_engine(
             order=order, 
             inflation=inflation, 
             rmd_start_age=73,
-            policy = policy,
+            policy = result["best_policy"],
             ytd_tax_buckets = ytd_tax_buckets,
             annual_w0=annual_w0,
             t0=t0,

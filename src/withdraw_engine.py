@@ -185,50 +185,19 @@ def calc_withdrawal(
         withdrawal, annual_w0, t0 = classic_withdrawal(m, annual_w0, balances_actuals, withdrawal_start_date, balances, withdrawal_rate, t0, inflation)
 
     elif withdrawal_type == "Optimizer":
-        # balances, income_sources, withdrawal = calc_withdrawal_optimizer(
-        #     m=m, 
-        #     balances=balances, 
-        #     income_sources=income_sources, 
-        #     inflation=inflation, 
-        #     policy=policy, 
-        #     ytd_tax_buckets=ytd_tax_buckets or {}, 
-        #     order=order
-        # )
-        
-        # return balances, income_sources, withdrawal, annual_w0, t0
-        
-        result = random_search_optimizer(
-            account_meta=account_meta,
-            rmd_table=rmd_table,
-            start_bal=balances_actuals,
-            cf=cf,
-            income_streams=income_streams,
-            months=months,
-            assumptions=assumptions,
-            balances_actuals=bal,
-            target_annual_net_income_real=100000.0,
-            block_size=5,
-            n_trials=200,
-            roth_min=0.0,
-            roth_max=150000.0,
-            seed=42,
+        balances, income_sources, withdrawal = calc_withdrawal_optimizer(
+            m=m, 
+            balances=balances, 
+            income_sources=income_sources, 
+            inflation=inflation, 
+            policy=policy, 
+            ytd_tax_buckets=ytd_tax_buckets or {}, 
+            order=order
         )
+        
+        return balances, income_sources, withdrawal, annual_w0, t0
+        
 
-        print("Best score:", result["best_score"])
-        print("Best policy:", result["best_policy"])
-
-        assumptions["optimizer_policy"] = result["best_policy"]
-        projection = projection_engine(
-            account_meta=account_meta,
-            rmd_table=rmd_table,
-            start_bal= start_bal, 
-            cf=cf, 
-            income_streams=income_streams,
-            months=months, 
-            assumptions=assumptions,
-            balances_actuals = bal,
-        )
-        annual_summary = build_annual_summary(projection)
         
 
     else:
