@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple
 
 import pandas as pd 
 
-from projection_engine import projection_engine
+
 
 def build_annual_summary(proj: pd.DataFrame) -> pd.DataFrame:
     annual = proj.copy()
