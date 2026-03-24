@@ -227,24 +227,8 @@ def calc_withdrawal(
             balances_actuals = bal,
         )
         annual_summary = build_annual_summary(projection)
+        
 
-   
-
-
-
-    annual = projection.copy()
-    annual["Year"] = pd.to_datetime(annual["Date"]).dt.year
-    annual_summary = annual.groupby("Year", as_index=False).agg({
-        "Income": "sum",
-        "Income_Real": "sum",
-        "Net_Income_Real": "sum",
-        "Fed Tax": "sum",
-        "VA Tax": "sum",
-        "Medicare Tax": "sum" if "Medicare Tax" in annual.columns else "sum",
-        "Total Tax": "sum",
-        "Net_Worth": "last",
-        "Net_Worth_Real": "last",
-    })
     else:
         raise ValueError(f"Unknown withdrawal type: {withdrawal_type}")
 
