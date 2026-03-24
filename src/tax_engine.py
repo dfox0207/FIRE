@@ -241,7 +241,7 @@ def tax_engine(
     fed_bracket = load_brackets("Config/federal_tax_2025.csv")
     std_deduct = tax_systems["federal"]["standard_deduction"]
 
-    fed_tax_buckets = replace(tax_buckets, ordinary_income=tax_buckets.federal_ordinary_income + taxable_ss)
+    fed_tax_buckets = replace(tax_buckets, federal_ordinary_income=tax_buckets.federal_ordinary_income + taxable_ss)
     
     monthly_tax, new_ytd_tax = calc_federal_ytd_tax_from_buckets(
         fed_tax_buckets, 
