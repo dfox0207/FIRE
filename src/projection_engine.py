@@ -210,6 +210,7 @@ def projection_engine(
         
        
         #2a. Take Retirement withdrawals
+        policy = None
         if withdrawal_type == "Optimizer":
             result = random_search_optimizer(
                 account_meta=account_meta,
@@ -231,7 +232,7 @@ def projection_engine(
             print("Best score:", result["best_score"])
             print("Best policy:", result["best_policy"])
 
-           
+            policy = result["best_policy"]
             annual_summary = build_annual_summary(projection)
 
             
@@ -248,7 +249,7 @@ def projection_engine(
             order=order, 
             inflation=inflation, 
             rmd_start_age=73,
-            policy = result["best_policy"],
+            policy = policy,
             ytd_tax_buckets = ytd_tax_buckets,
             annual_w0=annual_w0,
             t0=t0,
