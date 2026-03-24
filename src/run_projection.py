@@ -13,7 +13,7 @@ from typing import Dict, Optional, List
 
 from projection_engine import projection_engine
 from plotting import plotting
-from optimizer import random_search_optimizer, build_annual_summary
+from optimizer import build_annual_summary
 
 
 
@@ -142,7 +142,7 @@ def main():
         "Net_Worth": "last",
         "Net_Worth_Real": "last",
     })
-    
+
     print(json.dumps(cfg, indent=2, sort_keys=True))
 
     fig = plotting(projection, annual_summary, assumptions["withdrawal_order"], BALANCES_CSV)

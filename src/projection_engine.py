@@ -5,6 +5,7 @@ from typing import Dict, List, Tuple
 from tax_engine import tax_engine
 from roth_engine import convert_to_roth
 from withdraw_engine import calc_withdrawal
+from optimizer import random_search_optimizer, build_annual_summary
 
 from income_types import (
     TaxResult,
