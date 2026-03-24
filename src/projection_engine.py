@@ -65,7 +65,7 @@ def calc_real(m, basis, amount, inflation):
 
 def calc_nominal(m, basis, amount, inflation):
     delta_months = (m.to_period("M") - basis.to_period("M")).n          #months since basis is positive
-    amount_real = amount*(1+inflation)**(delta_months/12)
+    amount_nominal = amount*(1+inflation)**(delta_months/12)
     return amount_nominal
 
 def summarize_monthly_events(monthly_events):
