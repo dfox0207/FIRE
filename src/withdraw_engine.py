@@ -1,5 +1,7 @@
 import pandas as pd
 
+from optimizer import random_search_optimizer, build_annual_summary
+
 RMD_ELIGIGIBLE_ACCOUNT_TYPES = {
     "tsp", 
     "457b"
