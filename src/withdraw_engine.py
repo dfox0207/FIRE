@@ -227,19 +227,8 @@ def calc_withdrawal(
             balances_actuals = bal,
         )
         annual_summary = build_annual_summary(projection)
-        
-    else:
-        projection = projection_engine(
-            account_meta=account_meta,
-            rmd_table=rmd_table,
-            start_bal= start_bal, 
-            cf=cf, 
-            income_streams=income_streams,
-            months=months, 
-            assumptions=assumptions,
-            balances_actuals = bal,
-        )
-        annual_summary = build_annual_summary(projection)
+
+   
 
 
 
