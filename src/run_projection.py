@@ -113,8 +113,6 @@ rmd_table = dict(zip(rmd_df["age"].astype(int), rmd_df["divisor"].astype(float))
 
 
 def main():
-
-    
     projection = projection_engine(
         account_meta=account_meta,
         rmd_table=rmd_table,
@@ -126,30 +124,27 @@ def main():
         balances_actuals = bal,
     )
     annual_summary = build_annual_summary(projection)
-
-
-
-    annual = projection.copy()
-    annual["Year"] = pd.to_datetime(annual["Date"]).dt.year
-    annual_summary = annual.groupby("Year", as_index=False).agg({
-        "Income": "sum",
-        "Income_Real": "sum",
-        "Net_Income_Real": "sum",
-        "Fed Tax": "sum",
-        "VA Tax": "sum",
-        "Medicare Tax": "sum" if "Medicare Tax" in annual.columns else "sum",
-        "Total Tax": "sum",
-        "Net_Worth": "last",
-        "Net_Worth_Real": "last",
-    })
-
-    print(json.dumps(cfg, indent=2, sort_keys=True))
-
+    print(json.dumps(cfg, indent=2, sort_keys=True, default=str))
     fig = plotting(projection, annual_summary, assumptions["withdrawal_order"], BALANCES_CSV)
+    scenario_path = Path(sys.argv[1]).resolve()
+
+    # annual = projection.copy()
+    # annual["Year"] = pd.to_datetime(annual["Date"]).dt.year
+    # annual_summary = annual.groupby("Year", as_index=False).agg({
+    #     "Income": "sum",
+    #     "Income_Real": "sum",
+    #     "Net_Income_Real": "sum",
+    #     "Fed Tax": "sum",
+    #     "VA Tax": "sum",
+    #     "Medicare Tax": "sum" if "Medicare Tax" in annual.columns else "sum",
+    #     "Total Tax": "sum",
+    #     "Net_Worth": "last",
+    #     "Net_Worth_Real": "last",
+    # })
 
     
-
-    scenario_path = Path(sys.argv[1]).resolve()
+    
+    
 
     # assuming config is in ClientFolder/Config/base.json
     client_root = scenario_path.parent.parent
