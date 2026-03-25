@@ -137,13 +137,13 @@ def plotting(df, annual_summary, order, BALANCES_CSV):
     plot_income(df, ax[1,0])
 
     # Middle Right Plot: Annual Income
-    plot_annual_income(annual_summary, ax[1,1])
+    #plot_annual_income(annual_summary, ax[1,1])
 
     #Bottom Left Plot: Taxes
     plot_tax(df, ax[2,0])
 
     # Bottom Right Plot: Annual Taxes
-    plot_annual_taxes(annual_summary, ax[2,1])
+    #plot_annual_taxes(annual_summary, ax[2,1])
 
     plt.tight_layout()
     plt.show()
