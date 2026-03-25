@@ -209,33 +209,30 @@ def projection_engine(
         row["SSA_Real"] = ssa_annuity_real
         
        
-        #2a. Take Retirement withdrawals
-        policy = None
-        if withdrawal_type == "Optimizer":
-            result = random_search_optimizer(
-                account_meta=account_meta,
-                rmd_table=rmd_table,
-                start_bal=start_bal,
-                cf=cf,
-                income_streams=income_streams,
-                months=months,
-                assumptions=assumptions,
-                balances_actuals=balances_actuals,
-                target_annual_net_income_real=100000.0,
-                block_size=5,
-                n_trials=200,
-                roth_min=0.0,
-                roth_max=150000.0,
-                seed=42,
-            )
-
-            print("Best score:", result["best_score"])
-            print("Best policy:", result["best_policy"])
-
-            policy = result["best_policy"]
-            annual_summary = build_annual_summary(projection)
-
+    #Calculate Optimized Policy    
+    policy = None
+    if withdrawal_type == "Optimizer":
+        result = random_search_optimizer(
+            account_meta=account_meta,
+            rmd_table=rmd_table,
+            start_bal=start_bal,
+            cf=cf,
+            income_streams=income_streams,
+            months=months,
+            assumptions=assumptions,
+            balances_actuals=balances_actuals,
+            target_annual_net_income_real=100000.0,
+            block_size=5,
+            n_trials=200,
+            roth_min=0.0,
+            roth_max=150000.0,
+            seed=42,
+        )
+        print("Best score:", result["best_score"])
+        print("Best policy:", result["best_policy"])
+        policy = result["best_policy"]
             
+        #2a. Take Retirement withdrawals
         balances_real, withdrawal_sources, withdrawal,  annual_w0, t0 = calc_withdrawal(
             m=m, 
             rmd_table=rmd_table,
