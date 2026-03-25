@@ -131,7 +131,7 @@ def plotting(df, annual_summary, order, BALANCES_CSV):
     
 
     # Top Right Plot: Account Balances
-    plot_accounts(df, order, ax[0,1])
+    #plot_accounts(df, order, ax[0,1])
 
     # Middle Left Plot: Monthly Income
     plot_income(df, ax[1,0])
